@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import TrainerCard from '../../components/TrainerCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+export async function getStaticPaths() {
+  const trainers = trainersRaw as any[];
+  const bySlug = new Map<string, { name: string; trainers: any[] }>();
+  for (const t of trainers) {
+    if (!bySlug.has(t.class_slug)) bySlug.set(t.class_slug, { name: t.class, trainers: [] });
+    bySlug.get(t.class_slug)!.trainers.push(t);
+  }
+  return [...bySlug.entries()].map(([slug, data]) => ({
+    params: { slug },
+    props: { slug, className: data.name, trainers: data.trainers },
+  }));
+}
+
+const { className, trainers } = Astro.props as { slug: string; className: string; trainers: any[] };
+const count = trainers.length;
+const games = [...new Set(trainers.map((t: any) => t.game))];
+const pkm = [...new Set(trainers.flatMap((t: any) => t.team ?? []))].slice(0, 16);
+
+const title = `${className} — ${count} dresseurs Pokémon | PokéNom`;
+const description = `${count} dresseurs de la classe ${className} dans les jeux Pokémon. Retrouvez leurs équipes et leurs prénoms.`;
+---
+<Base title={title} description={description} canonical={`https://pokenom.fr/classe/${Astro.params.slug}`}>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: className }]} />
+    <header class="page-header">
+      <div class="game-badge">🏷️ Classe</div>
+      <h1>{className}</h1>
+      <p class="page-sub">{count} dresseur{count>1?'s':''} dans {games.length} jeu{games.length>1?'x':''}</p>
+    </header>
+    <AdSlot slot="SLOT_CLASSE_TOP" format="auto" />
+    {pkm.length > 0 && (
+      <section class="section-block">
+        <h2>Pokémon favoris</h2>
+        <div class="related-chips">
+          {pkm.map((p: string) => {
+            return <a href={`/pokemon/${toPokemonSlug(p)}`} class="pkm-link">{p}</a>;
+          })}
+        </div>
+      </section>
+    )}
+    <section class="section-block">
+      <h2>Tous les {className}s</h2>
+      <div class="cards-grid" style="margin-top:16px">
+        {trainers.slice(0,6).map((t: any) => <TrainerCard trainer={t} />)}
+      </div>
+      {count > 6 && (
+        <>
+          <AdSlot slot="SLOT_CLASSE_MID" format="fluid" layout="in-article" />
+          <div class="cards-grid" style="margin-top:16px">
+            {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
+          </div>
+        </>
+      )}
+    </section>
+    <AdSlot slot="SLOT_CLASSE_BOTTOM" format="auto" />
+  </main>
+</Base>
+<style>
+.page-header { padding:36px 0 28px; border-bottom:1.5px solid var(--border); margin-bottom:32px; }
+.game-badge { font-size:0.7rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
+.page-sub { color:var(--soft); margin-top:8px; }
+.section-block { margin:32px 0; }
+.section-block h2 { margin-bottom:14px; }
+.related-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.pkm-link { padding:6px 14px; background:var(--bg2); border:1.5px solid var(--border); border-radius:999px; font-size:0.85rem; font-weight:500; color:var(--mid); transition:border-color 0.15s; }
+.pkm-link:hover { border-color:var(--red); color:var(--red); text-decoration:none; }
+</style>

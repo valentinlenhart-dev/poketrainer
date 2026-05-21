@@ -1,0 +1,185 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import '../../styles/global.css';
+
+const trainers = trainersRaw as any[];
+
+// Agrégation par nom
+const nameMap = new Map<string, { count: number; slug: string; name: string }>();
+for (const t of trainers) {
+  if (!nameMap.has(t.name)) nameMap.set(t.name, { count: 0, slug: t.name_slug, name: t.name });
+  nameMap.get(t.name)!.count++;
+}
+const sorted = [...nameMap.values()].sort((a, b) => b.count - a.count).slice(0, 100);
+
+const podium = sorted.slice(0, 3);
+const rest   = sorted.slice(3);
+
+const title = "Top 100 prénoms Pokémon les plus répandus | PokéNom";
+const description = `Classement des 100 prénoms les plus portés par les dresseurs Pokémon. Le prénom #1 est partagé par ${sorted[0]?.count ?? '?'} dresseurs ! Et le tien ?`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Top 100 prénoms de dresseurs Pokémon",
+  "description": description,
+  "url": "https://pokenom.fr/top/repandus",
+  "numberOfItems": sorted.length,
+  "itemListElement": sorted.map((n, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "item": {
+      "@type": "Thing",
+      "name": n.name,
+      "url": `https://pokenom.fr/prenom/${n.slug}`
+    }
+  }))
+};
+---
+
+<Base
+  title={title}
+  description={description}
+  canonical="https://pokenom.fr/top/repandus"
+  schema={schema}
+>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[
+      { label: 'Accueil', href: '/' },
+      { label: 'Top prénoms' },
+    ]} />
+
+    <header class="top-header">
+      <div class="top-header__label">🔥 Classement</div>
+      <h1>Prénoms les plus répandus</h1>
+      <p class="top-header__sub">
+        Les 100 prénoms les plus portés par les dresseurs Pokémon dans toute la saga.
+        Combien partagent le tien ?
+      </p>
+    </header>
+
+    <AdSlot slot="SLOT_TOP_REPANDUS_TOP" format="auto" />
+
+    <!-- Podium top 3 -->
+    <section class="podium" aria-label="Podium top 3">
+      {podium.map((n, i) => {
+        const medals = ['🥇', '🥈', '🥉'];
+        const classes = ['podium__item--gold', 'podium__item--silver', 'podium__item--bronze'];
+        return (
+          <a href={`/prenom/${n.slug}`} class={`podium__item ${classes[i]}`}>
+            <span class="podium__medal">{medals[i]}</span>
+            <span class="podium__rank">#{i + 1}</span>
+            <span class="podium__name">{n.name}</span>
+            <span class="podium__count">{n.count} dresseurs</span>
+          </a>
+        );
+      })}
+    </section>
+
+    <!-- Classement #4–#100 -->
+    <section aria-label="Classement complet" style="margin-top:32px">
+      <ol class="top-list" start={4}>
+        {rest.map((n, i) => {
+          const rank = i + 4;
+          const isTop10 = rank <= 10;
+          return (
+            <li class={`top-list__item${isTop10 ? ' top-list__item--highlight' : ''}`}>
+              <span class="top-list__rank">#{rank}</span>
+              <a href={`/prenom/${n.slug}`} class="top-list__name">{n.name}</a>
+              <div class="top-list__bar-wrap">
+                <div
+                  class="top-list__bar"
+                  style={`width:${Math.round(n.count / sorted[0].count * 100)}%`}
+                ></div>
+              </div>
+              <span class="top-list__count">{n.count}×</span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <AdSlot slot="SLOT_TOP_REPANDUS_BOTTOM" format="auto" />
+
+    <!-- Lien croisé -->
+    <div class="crosslink">
+      <a href="/top/legendaires" class="crosslink__btn">
+        🏆 Voir les prénoms légendaires (uniques) →
+      </a>
+    </div>
+  </main>
+</Base>
+
+<style>
+.top-header {
+  padding: 40px 0 32px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 32px;
+}
+.top-header__label {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 10px;
+}
+.top-header h1 { margin-bottom: 14px; }
+.top-header__sub { color: var(--soft); font-size: 1.05rem; max-width: 540px; line-height: 1.65; }
+
+/* Podium */
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 540px) {
+  .podium { grid-template-columns: 1fr; }
+}
+.podium__item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 24px 16px; border-radius: var(--radius);
+  border: 2px solid var(--border);
+  text-align: center; transition: transform 0.18s, box-shadow 0.18s;
+}
+.podium__item:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); text-decoration: none; }
+.podium__item--gold   { background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%); border-color: #f0c040; }
+.podium__item--silver { background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ee 100%); border-color: #b0b0c0; }
+.podium__item--bronze { background: linear-gradient(135deg, #fdf0e8 0%, #f5e0d0 100%); border-color: #d08060; }
+.podium__medal { font-size: 2.4rem; line-height: 1; }
+.podium__rank  { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; color: var(--soft); text-transform: uppercase; }
+.podium__name  { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
+.podium__count { font-size: 0.82rem; color: var(--soft); font-weight: 500; }
+
+/* Liste classement */
+.top-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+  counter-reset: top-list;
+}
+.top-list__item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 16px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color 0.12s;
+}
+.top-list__item:hover { border-color: var(--red); }
+.top-list__item--highlight { background: var(--cream); }
+.top-list__rank { font-size: 0.7rem; font-weight: 800; color: var(--soft); width: 30px; flex-shrink: 0; text-align: right; }
+.top-list__name { min-width: 80px; font-weight: 700; color: var(--dark); font-size: 0.95rem; }
+.top-list__name:hover { color: var(--red); text-decoration: none; }
+.top-list__bar-wrap { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.top-list__bar { height: 100%; background: var(--red); border-radius: 999px; transition: width 0.4s ease; }
+.top-list__count { font-size: 0.75rem; font-weight: 700; color: var(--soft); width: 28px; text-align: right; flex-shrink: 0; }
+
+.crosslink { margin: 48px 0 32px; text-align: center; }
+.crosslink__btn {
+  display: inline-block;
+  padding: 14px 28px;
+  background: var(--cream); color: var(--dark);
+  border: 2px solid var(--border);
+  border-radius: var(--radius); font-weight: 700; font-size: 0.95rem;
+  transition: border-color 0.15s, color 0.15s;
+}
+.crosslink__btn:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+</style>

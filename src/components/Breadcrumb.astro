@@ -1,0 +1,31 @@
+---
+export interface Props {
+  crumbs: { label: string; href?: string }[];
+}
+const { crumbs } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": crumbs.map((c, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": c.label,
+    ...(c.href ? { "item": `https://pokenom.fr${c.href}` } : {}),
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  {crumbs.map((c, i) => (
+    <>
+      {i > 0 && <span class="breadcrumb__sep" aria-hidden="true">›</span>}
+      {c.href
+        ? <a href={c.href}>{c.label}</a>
+        : <span aria-current="page">{c.label}</span>
+      }
+    </>
+  ))}
+</nav>

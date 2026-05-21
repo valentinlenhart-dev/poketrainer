@@ -1,0 +1,180 @@
+/* ─── Reset & Variables ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:       #e3350d;
+  --red-dark:  #b02a0a;
+  --red-light: #ff6b47;
+  --yellow:    #ffcb05;
+  --dark:      #1a1a2e;
+  --mid:       #3d405b;
+  --soft:      #6b6f8a;
+  --bg:        #f8f7f4;
+  --bg2:       #ffffff;
+  --cream:     #fef9f0;
+  --border:    rgba(0,0,0,0.08);
+  --shadow:    0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius:    14px;
+  --radius-sm: 8px;
+  --font:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-head: 'Inter', system-ui, sans-serif;
+  --max-w:     1100px;
+  --nav-h:     60px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Typography ───────────────────────────────────────────────── */
+h1,h2,h3,h4 { font-family: var(--font-head); font-weight: 800; line-height: 1.2; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p  { line-height: 1.7; }
+a  { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─── Layout ───────────────────────────────────────────────────── */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 20px; }
+.section    { padding: 56px 0; }
+
+/* ─── Navbar ───────────────────────────────────────────────────── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--dark);
+  height: var(--nav-h);
+  display: flex; align-items: center;
+}
+.nav__inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 20px;
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav__logo {
+  font-size: 1.3rem; font-weight: 900;
+  color: #fff; text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.nav__logo-ball {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(180deg, var(--red) 50%, #fff 50%);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px var(--red);
+  flex-shrink: 0;
+}
+.nav__links {
+  display: flex; gap: 24px; list-style: none;
+}
+.nav__links a {
+  color: rgba(255,255,255,0.75); font-size: 0.9rem; font-weight: 500;
+  transition: color 0.15s;
+}
+.nav__links a:hover { color: #fff; text-decoration: none; }
+
+/* ─── Breadcrumb ───────────────────────────────────────────────── */
+.breadcrumb {
+  font-size: 0.8rem; color: var(--soft);
+  padding: 14px 0 0;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.breadcrumb a { color: var(--soft); }
+.breadcrumb a:hover { color: var(--red); text-decoration: none; }
+.breadcrumb__sep { opacity: 0.4; }
+
+/* ─── Rarity Badge ─────────────────────────────────────────────── */
+.rarity {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 999px;
+  font-size: 0.85rem; font-weight: 700;
+}
+.rarity--legendaire { background: #fff8dc; color: #a07800; border: 1.5px solid #ffd700; }
+.rarity--rare       { background: #f0e8ff; color: #6b21a8; border: 1.5px solid #c084fc; }
+.rarity--repandu    { background: #e8f4ff; color: #1d4ed8; border: 1.5px solid #93c5fd; }
+.rarity--partout    { background: #fff0e8; color: #c2410c; border: 1.5px solid #fb923c; }
+.rarity--unique     { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
+
+/* ─── Trainer Card ─────────────────────────────────────────────── */
+.trainer-card {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.trainer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(227,53,13,0.2);
+}
+.trainer-card a { text-decoration: none; color: inherit; }
+.trainer-card__class {
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--red);
+}
+.trainer-card__name { font-size: 1.25rem; font-weight: 800; color: var(--dark); }
+.trainer-card__meta {
+  font-size: 0.82rem; color: var(--soft);
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+}
+.trainer-card__team {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;
+}
+.pkm-badge {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.78rem; font-weight: 500; color: var(--mid);
+}
+
+/* ─── Grid ─────────────────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ─── Ad slots ─────────────────────────────────────────────────── */
+.ad-slot {
+  width: 100%; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; padding: 12px 0;
+}
+.ad-slot__label {
+  font-size: 0.6rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--soft); opacity: 0.6;
+}
+
+/* ─── Footer ───────────────────────────────────────────────────── */
+.footer {
+  background: var(--dark); color: rgba(255,255,255,0.55);
+  padding: 40px 0 24px; margin-top: 80px;
+  font-size: 0.82rem;
+}
+.footer__inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 20px;
+  display: flex; flex-wrap: wrap; gap: 32px; justify-content: space-between;
+}
+.footer__brand { color: #fff; font-size: 1rem; font-weight: 800; margin-bottom: 8px; }
+.footer__bottom {
+  max-width: var(--max-w); margin: 24px auto 0; padding: 16px 20px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.footer a { color: rgba(255,255,255,0.6); }
+.footer a:hover { color: #fff; }
+
+/* ─── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .nav__links { display: none; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .section { padding: 36px 0; }
+}

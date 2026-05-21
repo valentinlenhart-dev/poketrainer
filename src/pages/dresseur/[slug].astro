@@ -1,0 +1,209 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+export async function getStaticPaths() {
+  const trainers = trainersRaw as any[];
+  return trainers.map(t => ({
+    params: { slug: t.slug },
+    props: { trainer: t },
+  }));
+}
+
+const { trainer: t } = Astro.props as { trainer: any };
+
+const gameName  = t.game.replace('Pokémon ', '');
+const placeText = t.place ? t.place.replace(/-/g, ' ') : null;
+const teamText  = (t.team ?? []).join(', ');
+
+const title = `${t.class} ${t.name} — ${gameName} | PokéNom`;
+const description = placeText
+  ? `${t.class} ${t.name} est un dresseur Pokémon rencontré ${placeText} dans ${t.game}. Son équipe : ${teamText || 'inconnue'}.`
+  : `${t.class} ${t.name} est un dresseur Pokémon de ${t.game}. Son équipe : ${teamText || 'inconnue'}.`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": `${t.class} ${t.name}`,
+  "jobTitle": t.class,
+  "description": description,
+  "url": `https://pokenom.fr/dresseur/${t.slug}`,
+  "knowsAbout": t.team ?? [],
+};
+---
+
+<Base
+  title={title}
+  description={description}
+  canonical={`https://pokenom.fr/dresseur/${t.slug}`}
+  schema={schema}
+>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[
+      { label: 'Accueil', href: '/' },
+      { label: t.name, href: `/prenom/${t.name_slug}` },
+      { label: `${t.class} ${t.name}` },
+    ]} />
+
+    <article class="trainer-page">
+
+      <!-- En-tête dresseur -->
+      <header class="trainer-page__header">
+        <div class="trainer-page__class">{t.class}</div>
+        <h1 class="trainer-page__name">{t.name}</h1>
+
+        <div class="trainer-page__meta">
+          <div class="meta-item">
+            <span class="meta-item__icon">🎮</span>
+            <a href={`/jeu/${t.game_slug}`}>{gameName}</a>
+          </div>
+          {placeText && (
+            <div class="meta-item">
+              <span class="meta-item__icon">📍</span>
+              <a href={`/lieu/${t.place_slug}`}>{placeText}</a>
+            </div>
+          )}
+          <div class="meta-item">
+            <span class={`rarity rarity--${t.rarity_key}`}>
+              {t.rarity_emoji} {t.rarity_label}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Pub in-article après l'en-tête -->
+      <AdSlot slot="SLOT_DRESSEUR_TOP" format="fluid" layout="in-article" />
+
+      <!-- Équipe Pokémon -->
+      {(t.team ?? []).length > 0 && (
+        <section class="team-section" aria-label="Équipe Pokémon">
+          <h2>Équipe Pokémon</h2>
+          <ul class="team-list" role="list">
+            {t.team.map((pkm: string) => {
+              const pSlug = toPokemonSlug(pkm);
+              return (
+                <li>
+                  <a href={`/pokemon/${pSlug}`} class="team-pkm">
+                    <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                    <span class="team-pkm__name">{pkm}</span>
+                    <span class="team-pkm__arrow">→</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      <!-- Description naturelle (pour LLM + SEO) -->
+      <section class="trainer-page__lore">
+        <h2>À propos de {t.class} {t.name}</h2>
+        <p>
+          <strong>{t.class} {t.name}</strong> est un dresseur Pokémon
+          {placeText ? ` que l'on rencontre ${placeText}` : ''} dans
+          <a href={`/jeu/${t.game_slug}`}>{t.game}</a>.
+          {(t.team ?? []).length > 0 && (
+            ` Son équipe est composée de ${teamText}.`
+          )}
+        </p>
+        <p>
+          Le prénom <a href={`/prenom/${t.name_slug}`}>{t.name}</a> est
+          {t.rarity_key === 'legendaire'
+            ? ` légendaire dans Pokémon — c'est le seul dresseur à le porter !`
+            : t.rarity_key === 'rare'
+            ? ` rare dans l'univers Pokémon, avec seulement ${t.name_count} dresseurs.`
+            : ` porté par ${t.name_count} dresseurs dans la base.`
+          }
+        </p>
+      </section>
+
+      <!-- Liens connexes -->
+      <aside class="trainer-page__related">
+        <h2>Explorer</h2>
+        <div class="related-links">
+          <a href={`/prenom/${t.name_slug}`} class="related-link">
+            👤 Tous les dresseurs nommés {t.name}
+          </a>
+          <a href={`/jeu/${t.game_slug}`} class="related-link">
+            🎮 Tous les dresseurs de {gameName}
+          </a>
+          <a href={`/classe/${t.class_slug}`} class="related-link">
+            🏷️ Tous les {t.class}s
+          </a>
+          {placeText && (
+            <a href={`/lieu/${t.place_slug}`} class="related-link">
+              📍 Dresseurs à {placeText}
+            </a>
+          )}
+        </div>
+      </aside>
+
+      <!-- Pub bas -->
+      <AdSlot slot="SLOT_DRESSEUR_BOTTOM" format="auto" />
+
+    </article>
+  </main>
+</Base>
+
+<style>
+.trainer-page { padding: 0 0 80px; }
+
+.trainer-page__header {
+  padding: 36px 0 28px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 32px;
+}
+.trainer-page__class {
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 10px;
+}
+.trainer-page__name { font-size: clamp(2rem, 5vw, 3rem); }
+.trainer-page__meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+  margin-top: 16px;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+.meta-item__icon { font-size: 1rem; }
+.meta-item a { color: var(--mid); font-weight: 500; }
+.meta-item a:hover { color: var(--red); }
+
+.team-section { margin: 32px 0; }
+.team-section h2 { margin-bottom: 16px; }
+.team-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
+.team-pkm {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-weight: 600; color: var(--dark);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.team-pkm:hover { border-color: var(--red); transform: translateX(4px); text-decoration: none; }
+.team-pkm__ball { font-size: 1rem; }
+.team-pkm__name { flex: 1; }
+.team-pkm__arrow { color: var(--soft); font-size: 0.85rem; }
+
+.trainer-page__lore {
+  background: var(--cream); border-radius: var(--radius);
+  padding: 28px 32px; margin: 32px 0;
+}
+.trainer-page__lore h2 { margin-bottom: 14px; font-size: 1.1rem; }
+.trainer-page__lore p { color: var(--mid); margin-bottom: 10px; }
+.trainer-page__lore p:last-child { margin-bottom: 0; }
+
+.trainer-page__related { margin: 32px 0; }
+.trainer-page__related h2 { margin-bottom: 16px; }
+.related-links { display: flex; flex-direction: column; gap: 10px; }
+.related-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.9rem; font-weight: 500; color: var(--mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.related-link:hover { border-color: var(--red); color: var(--dark); text-decoration: none; }
+</style>

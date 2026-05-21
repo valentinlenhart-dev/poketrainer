@@ -1,0 +1,19 @@
+{
+  "name": "pokenom",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/preact": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.8.0",
+    "preact": "10.24.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

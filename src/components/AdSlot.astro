@@ -1,0 +1,25 @@
+---
+export interface Props {
+  slot: string;
+  format?: 'auto' | 'fluid' | 'rectangle';
+  layout?: 'in-article' | '';
+  label?: boolean;
+}
+
+const { slot, format = 'auto', layout = '', label = true } = Astro.props;
+const PUBLISHER = 'ca-pub-XXXXXXXXXXXXXXXX'; // ← remplacer
+---
+
+<div class="ad-slot">
+  {label && <span class="ad-slot__label">Publicité</span>}
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client={PUBLISHER}
+    data-ad-slot={slot}
+    data-ad-format={format}
+    data-ad-layout={layout || undefined}
+    data-full-width-responsive="true"
+  ></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>

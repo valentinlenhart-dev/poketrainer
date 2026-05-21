@@ -1,0 +1,263 @@
+---
+import Base from '../../layouts/Base.astro';
+import TrainerCard from '../../components/TrainerCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+export async function getStaticPaths() {
+  const trainers = trainersRaw as any[];
+  const bySlug = new Map<string, any[]>();
+
+  for (const t of trainers) {
+    const key = t.name_slug;
+    if (!bySlug.has(key)) bySlug.set(key, []);
+    bySlug.get(key)!.push(t);
+  }
+
+  return [...bySlug.entries()].map(([prenom, group]) => ({
+    params: { prenom },
+    props: { prenom, trainers: group },
+  }));
+}
+
+const { prenom, trainers } = Astro.props as { prenom: string; trainers: any[] };
+
+// Données de rareté (basées sur le 1er dresseur)
+const first     = trainers[0];
+const count     = trainers.length;
+const displayName = first.name; // nom original avec accents
+
+// Rareté
+const rarityKey   = count === 1 ? 'legendaire' : count <= 3 ? 'rare' : count <= 10 ? 'repandu' : 'partout';
+const rarityEmoji = count === 1 ? '🏆' : count <= 3 ? '💜' : count <= 10 ? '👀' : '🔥';
+const rarityLabel = count === 1 ? 'Légendaire' : count <= 3 ? 'Rare' : count <= 10 ? 'Répandu' : 'Partout !';
+const rarityDesc  = count === 1
+  ? `Un seul dresseur légendaire dans tout l'univers Pokémon s'appelle ${displayName} !`
+  : count <= 3
+  ? `Ce prénom est assez rare — seulement ${count} dresseurs le portent.`
+  : count <= 10
+  ? `${count} dresseurs portent ce prénom dans les jeux Pokémon.`
+  : `${count} dresseurs s'appellent ${displayName}, c'est l'un des prénoms les plus répandus !`;
+
+// Pokémon utilisés par ces dresseurs (pour maillage + SEO)
+const pokemonUsed = [...new Set(trainers.flatMap(t => t.team ?? []))];
+
+// Jeux représentés
+const gamesUsed = [...new Set(trainers.map(t => t.game))];
+
+// Meta
+const title       = `${displayName} — Dresseur${count > 1 ? 's' : ''} Pokémon (${rarityLabel}) | PokéNom`;
+const description = count === 1
+  ? `Le dresseur ${first.class} ${displayName} est un dresseur Pokémon de ${first.game}. ${rarityDesc} Découvrez son équipe : ${(first.team ?? []).join(', ')}.`
+  : `${count} dresseurs Pokémon s'appellent ${displayName}. ${rarityDesc} Retrouvez-les dans ${gamesUsed.slice(0,3).join(', ')}${gamesUsed.length > 3 ? '…' : ''}.`;
+
+// Schema.org — ItemList + FAQ
+const schemaFAQ = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `Existe-t-il un dresseur Pokémon nommé ${displayName} ?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": count === 0
+          ? `Non, aucun dresseur ne s'appelle ${displayName} dans les jeux Pokémon officiels.`
+          : count === 1
+          ? `Oui ! Le ${first.class} ${displayName} est le seul dresseur Pokémon à porter ce prénom. On le trouve dans ${first.game}, à ${first.place?.replace(/-/g,' ') ?? 'un lieu mystérieux'}.`
+          : `Oui ! ${count} dresseurs Pokémon s'appellent ${displayName}, dans ${gamesUsed.length} jeu${gamesUsed.length > 1 ? 'x' : ''} différent${gamesUsed.length > 1 ? 's' : ''}.`
+      }
+    },
+    ...(count === 1 && (first.team ?? []).length > 0 ? [{
+      "@type": "Question",
+      "name": `Quel Pokémon utilise ${first.class} ${displayName} ?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${first.class} ${displayName} utilise ${first.team!.join(', ')} dans ${first.game}.`
+      }
+    }] : []),
+    {
+      "@type": "Question",
+      "name": `Le prénom ${displayName} est-il rare dans Pokémon ?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": rarityDesc
+      }
+    },
+  ]
+};
+
+const schemaList = count > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": `Dresseurs Pokémon nommés ${displayName}`,
+  "numberOfItems": count,
+  "itemListElement": trainers.map((t, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "item": {
+      "@type": "Person",
+      "name": `${t.class} ${t.name}`,
+      "description": `Dresseur ${t.class} dans ${t.game}`,
+      "url": `https://pokenom.fr/dresseur/${t.slug}`
+    }
+  }))
+} : null;
+---
+
+<Base
+  title={title}
+  description={description}
+  canonical={`https://pokenom.fr/prenom/${prenom}`}
+  schema={[schemaFAQ, ...(schemaList ? [schemaList] : [])]}
+>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[
+      { label: 'Accueil', href: '/' },
+      { label: 'Prénoms', href: '/' },
+      { label: displayName },
+    ]} />
+
+    <!-- En-tête -->
+    <header class="prenom-header">
+      <div class="prenom-header__badge">
+        <span class={`rarity rarity--${rarityKey}`}>
+          {rarityEmoji} {rarityLabel}
+        </span>
+      </div>
+      <h1>{displayName}</h1>
+      <p class="prenom-header__desc">{rarityDesc}</p>
+    </header>
+
+    <!-- Pub leaderboard — après le titre, avant les résultats -->
+    <AdSlot slot="SLOT_PRENOM_TOP" format="auto" />
+
+    <!-- Résultats -->
+    {count === 0 ? (
+      <div class="empty-state">
+        <p class="empty-state__emoji">✨</p>
+        <h2>Prénom introuvable</h2>
+        <p>Aucun dresseur ne s'appelle <strong>{displayName}</strong> dans notre base.<br />
+           C'est littéralement unique au monde Pokémon !</p>
+        <a href="/" class="btn-red" style="margin-top:24px">Chercher un autre prénom</a>
+      </div>
+    ) : (
+      <>
+        <section aria-label={`${count} dresseur${count>1?'s':''} nommé${count>1?'s':''} ${displayName}`}>
+          <div class="cards-grid">
+            {trainers.slice(0, 3).map(t => (
+              <TrainerCard trainer={t} headingLevel="h2" />
+            ))}
+          </div>
+
+          {count > 3 && (
+            <>
+              <!-- Pub in-article après les 3 premiers -->
+              <AdSlot slot="SLOT_PRENOM_MID" format="fluid" layout="in-article" />
+              <div class="cards-grid" style="margin-top:16px">
+                {trainers.slice(3).map(t => (
+                  <TrainerCard trainer={t} headingLevel="h2" />
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+
+        <!-- Pokémon utilisés — maillage interne -->
+        {pokemonUsed.length > 0 && (
+          <section class="related-section">
+            <h2>Pokémon de {displayName}</h2>
+            <p style="color:var(--soft);margin:8px 0 16px;font-size:0.9rem">
+              Les Pokémon que ces dresseurs utilisent dans leurs équipes.
+            </p>
+            <div class="related-chips">
+              {pokemonUsed.map(p => (
+                <a
+                  href={`/pokemon/${toPokemonSlug(p)}`}
+                  class="pkm-link"
+                >
+                  {p}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- FAQ visible pour SEO -->
+        <section class="faq-section" aria-label="Questions fréquentes">
+          <h2>Questions fréquentes sur {displayName}</h2>
+          <dl class="faq-list">
+            <div class="faq-item">
+              <dt>Existe-t-il un dresseur Pokémon nommé {displayName} ?</dt>
+              <dd>
+                {count === 1
+                  ? `Oui ! Le ${first.class} ${displayName} est le seul dresseur Pokémon à porter ce prénom — c'est un prénom légendaire. On le trouve dans ${first.game}.`
+                  : `Oui ! ${count} dresseurs s'appellent ${displayName} dans les jeux Pokémon officiels.`
+                }
+              </dd>
+            </div>
+            <div class="faq-item">
+              <dt>Le prénom {displayName} est-il rare dans Pokémon ?</dt>
+              <dd>{rarityDesc}</dd>
+            </div>
+            {count === 1 && first.team && first.team.length > 0 && (
+              <div class="faq-item">
+                <dt>Quelle est l'équipe du dresseur {displayName} ?</dt>
+                <dd>{first.class} {displayName} utilise {first.team.join(', ')} dans {first.game}.</dd>
+              </div>
+            )}
+          </dl>
+        </section>
+
+        <!-- Maillage jeux -->
+        {gamesUsed.length > 0 && (
+          <section class="related-section">
+            <h2>Dans quels jeux ?</h2>
+            <div class="related-chips">
+              {gamesUsed.map(g => {
+                const gs = g.replace('Pokémon ','').toLowerCase()
+                  .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+                return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
+              })}
+            </div>
+          </section>
+        )}
+
+        <!-- Pub bas de page -->
+        <AdSlot slot="SLOT_PRENOM_BOTTOM" format="auto" />
+      </>
+    )}
+  </main>
+</Base>
+
+<style>
+.prenom-header { padding: 36px 0 28px; }
+.prenom-header__badge { margin-bottom: 16px; }
+.prenom-header h1 { margin: 10px 0 12px; }
+.prenom-header__desc { font-size: 1.05rem; color: var(--soft); max-width: 560px; }
+
+.related-section { margin: 48px 0 0; }
+.related-section h2 { margin-bottom: 4px; }
+.related-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pkm-link {
+  padding: 6px 14px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: 999px;
+  font-size: 0.85rem; font-weight: 500; color: var(--mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+
+.faq-section { margin: 48px 0; padding: 32px; background: var(--cream); border-radius: var(--radius); }
+.faq-section h2 { margin-bottom: 20px; }
+.faq-list { display: flex; flex-direction: column; gap: 20px; }
+.faq-item dt { font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+.faq-item dd { color: var(--soft); line-height: 1.65; margin-left: 0; }
+
+.empty-state { text-align: center; padding: 80px 20px; }
+.empty-state__emoji { font-size: 4rem; display: block; margin-bottom: 20px; }
+.btn-red { display: inline-block; background: var(--red); color: #fff; padding: 12px 24px; border-radius: var(--radius); font-weight: 700; }
+.btn-red:hover { background: var(--red-dark); text-decoration: none; }
+</style>

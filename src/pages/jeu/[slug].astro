@@ -1,0 +1,99 @@
+---
+import Base from '../../layouts/Base.astro';
+import TrainerCard from '../../components/TrainerCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+export async function getStaticPaths() {
+  const trainers = trainersRaw as any[];
+  const bySlug = new Map<string, { name: string; trainers: any[] }>();
+  for (const t of trainers) {
+    if (!bySlug.has(t.game_slug)) bySlug.set(t.game_slug, { name: t.game, trainers: [] });
+    bySlug.get(t.game_slug)!.trainers.push(t);
+  }
+  return [...bySlug.entries()].map(([slug, data]) => ({
+    params: { slug },
+    props: { slug, gameName: data.name, trainers: data.trainers },
+  }));
+}
+
+const { gameName, trainers } = Astro.props as { slug: string; gameName: string; trainers: any[] };
+const shortName = gameName.replace('Pokémon ', '');
+const count = trainers.length;
+
+// Classes présentes dans ce jeu
+const classes = [...new Set(trainers.map((t: any) => t.class))];
+// Pokémon utilisés
+const pkm = [...new Set(trainers.flatMap((t: any) => t.team ?? []))].slice(0, 20);
+
+const title = `Dresseurs de ${shortName} (${count}) | PokéNom`;
+const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs prénoms, équipes Pokémon et lieux de rencontre.`;
+---
+<Base title={title} description={description} canonical={`https://pokenom.fr/jeu/${Astro.params.slug}`}>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: shortName }]} />
+
+    <header class="page-header">
+      <div class="game-badge">🎮 Jeu</div>
+      <h1>{shortName}</h1>
+      <p class="page-sub">{count} dresseurs dans {gameName}</p>
+    </header>
+
+    <AdSlot slot="SLOT_JEU_TOP" format="auto" />
+
+    <!-- Classes présentes -->
+    <section class="section-block">
+      <h2>Classes de dresseurs</h2>
+      <div class="related-chips">
+        {classes.map((c: string) => {
+          const cs = (c as string).toLowerCase().normalize('NFD')
+            .replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+          return <a href={`/classe/${cs}`} class="pkm-link">{c}</a>;
+        })}
+      </div>
+    </section>
+
+    <!-- Top Pokémon du jeu -->
+    {pkm.length > 0 && (
+      <section class="section-block">
+        <h2>Pokémon utilisés</h2>
+        <div class="related-chips">
+          {pkm.map((p: string) => {
+            return <a href={`/pokemon/${toPokemonSlug(p)}`} class="pkm-link">{p}</a>;
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- Dresseurs -->
+    <section class="section-block">
+      <h2>Tous les dresseurs</h2>
+      <div class="cards-grid" style="margin-top:16px">
+        {trainers.slice(0,6).map((t: any) => <TrainerCard trainer={t} />)}
+      </div>
+      {count > 6 && (
+        <>
+          <AdSlot slot="SLOT_JEU_MID" format="fluid" layout="in-article" />
+          <div class="cards-grid" style="margin-top:16px">
+            {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
+          </div>
+        </>
+      )}
+    </section>
+
+    <AdSlot slot="SLOT_JEU_BOTTOM" format="auto" />
+  </main>
+</Base>
+<style>
+.page-header { padding: 36px 0 28px; border-bottom: 1.5px solid var(--border); margin-bottom: 32px; }
+.game-badge { font-size:0.7rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
+.page-sub { color:var(--soft); margin-top:8px; font-size:1rem; }
+.section-block { margin: 32px 0; }
+.section-block h2 { margin-bottom: 14px; }
+.related-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.pkm-link { padding:6px 14px; background:var(--bg2); border:1.5px solid var(--border); border-radius:999px; font-size:0.85rem; font-weight:500; color:var(--mid); transition:border-color 0.15s,color 0.15s; }
+.pkm-link:hover { border-color:var(--red); color:var(--red); text-decoration:none; }
+</style>

@@ -1,0 +1,297 @@
+---
+import Base from '../../layouts/Base.astro';
+import TrainerCard from '../../components/TrainerCard.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import trainersRaw from '../../data/trainers.json';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+// Charger les métadonnées PokéAPI si disponibles
+let pokemonMeta: Record<string, any> = {};
+try {
+  const mod = await import('../../data/pokemon-meta.json');
+  pokemonMeta = mod.default as Record<string, any>;
+} catch { /* fichier optionnel — lance fetch-pokemon.py pour l'obtenir */ }
+
+export async function getStaticPaths() {
+  const trainers = trainersRaw as any[];
+  const bySlug = new Map<string, { name: string; trainers: any[] }>();
+
+  for (const t of trainers) {
+    for (const pkm of (t.team ?? [])) {
+      const slug = toPokemonSlug(pkm);
+      if (!bySlug.has(slug)) bySlug.set(slug, { name: pkm, trainers: [] });
+      bySlug.get(slug)!.trainers.push(t);
+    }
+  }
+
+  return [...bySlug.entries()].map(([slug, data]) => ({
+    params: { slug },
+    props: { slug, pokemonName: data.name, trainers: data.trainers },
+  }));
+}
+
+const { slug, pokemonName, trainers } = Astro.props as {
+  slug: string;
+  pokemonName: string;
+  trainers: any[];
+};
+
+const meta = pokemonMeta[pokemonName] ?? null;
+const spriteUrl  = meta?.sprite_hd ?? meta?.sprite ?? null;
+const types      = (meta?.types ?? []) as string[];
+const stats      = (meta?.stats ?? {}) as Record<string, number>;
+const trainerCount = trainers.length;
+
+// Jeux où ce Pokémon apparaît
+const gamesSet = new Set(trainers.map((t: any) => t.game));
+const games = [...gamesSet];
+
+// Classes qui l'utilisent le plus
+const classCount: Record<string, number> = {};
+for (const t of trainers) {
+  classCount[t.class] = (classCount[t.class] ?? 0) + 1;
+}
+const topClasses = Object.entries(classCount)
+  .sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+const TYPE_COLORS: Record<string, string> = {
+  fire:'#f08030', water:'#6890f0', grass:'#78c850', electric:'#f8d030',
+  ice:'#98d8d8', fighting:'#c03028', poison:'#a040a0', ground:'#e0c068',
+  flying:'#a890f0', psychic:'#f85888', bug:'#a8b820', rock:'#b8a038',
+  ghost:'#705898', dragon:'#7038f8', dark:'#705848', steel:'#b8b8d0',
+  fairy:'#ee99ac', normal:'#a8a878',
+};
+const TYPE_FR: Record<string, string> = {
+  fire:'Feu', water:'Eau', grass:'Plante', electric:'Électrik',
+  ice:'Glace', fighting:'Combat', poison:'Poison', ground:'Sol',
+  flying:'Vol', psychic:'Psy', bug:'Insecte', rock:'Roche',
+  ghost:'Spectre', dragon:'Dragon', dark:'Ténèbres', steel:'Acier',
+  fairy:'Fée', normal:'Normal',
+};
+
+const title       = `${pokemonName} — ${trainerCount} dresseur${trainerCount>1?'s':''} l'utilisent | PokéNom`;
+const description = `${trainerCount} dresseurs Pokémon utilisent ${pokemonName} dans leur équipe${types.length ? ` (type ${types.map(t => TYPE_FR[t]??t).join('/')})` : ''}. Retrouvez-les tous sur PokéNom.`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Thing",
+  "name": pokemonName,
+  "description": description,
+  "url": `https://pokenom.fr/pokemon/${slug}`,
+};
+---
+
+<Base
+  title={title}
+  description={description}
+  canonical={`https://pokenom.fr/pokemon/${slug}`}
+  ogImage={spriteUrl ?? '/og-default.png'}
+  schema={schema}
+>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[
+      { label: 'Accueil', href: '/' },
+      { label: 'Pokémon', href: '/' },
+      { label: pokemonName },
+    ]} />
+
+    <header class="pkm-header">
+      <div class="pkm-header__visual">
+        {spriteUrl ? (
+          <img
+            src={spriteUrl}
+            alt={`Illustration officielle de ${pokemonName}`}
+            width="220" height="220"
+            class="pkm-sprite"
+            loading="eager"
+          />
+        ) : (
+          <div class="pkm-sprite pkm-sprite--placeholder" aria-hidden="true">
+            <span>?</span>
+          </div>
+        )}
+      </div>
+
+      <div class="pkm-header__info">
+        {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
+        <h1>{pokemonName}</h1>
+
+        {types.length > 0 && (
+          <div class="pkm-types">
+            {types.map((type: string) => (
+              <span
+                class="type-badge"
+                style={`background:${TYPE_COLORS[type] ?? '#888'}`}
+              >
+                {TYPE_FR[type] ?? type}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <p class="pkm-summary">
+          <strong>{trainerCount} dresseur{trainerCount > 1 ? 's' : ''}</strong>
+          {trainerCount > 1 ? ' utilisent ' : ' utilise '}
+          {pokemonName} dans les jeux Pokémon officiels,
+          dans {games.length} jeu{games.length > 1 ? 'x' : ''} différent{games.length > 1 ? 's' : ''}.
+        </p>
+
+        {Object.keys(stats).length > 0 && (
+          <details class="pkm-stats">
+            <summary>Statistiques de base</summary>
+            <div class="stats-bars">
+              {Object.entries(stats).map(([stat, val]) => (
+                <div class="stat-row">
+                  <span class="stat-name">{stat.replace('special-','sp.')}</span>
+                  <div class="stat-bar">
+                    <div class="stat-fill" style={`width:${Math.min(100, Math.round((val as number)/255*100))}%`}></div>
+                  </div>
+                  <span class="stat-val">{val as number}</span>
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+    </header>
+
+    <AdSlot slot="SLOT_POKEMON_TOP" format="auto" />
+
+    <!-- Dresseurs -->
+    <section class="trainers-section">
+      <h2>Dresseurs utilisant {pokemonName}</h2>
+      <p style="color:var(--soft);margin:8px 0 20px;font-size:0.9rem">
+        {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
+        {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
+      </p>
+
+      <div class="cards-grid">
+        {trainers.slice(0, 6).map((t: any) => <TrainerCard trainer={t} />)}
+      </div>
+
+      {trainerCount > 6 && (
+        <>
+          <AdSlot slot="SLOT_POKEMON_MID" format="fluid" layout="in-article" />
+          <div class="cards-grid" style="margin-top:16px">
+            {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
+          </div>
+        </>
+      )}
+    </section>
+
+    <!-- Classes qui l'utilisent -->
+    {topClasses.length > 0 && (
+      <section class="related-section">
+        <h2>Qui utilise {pokemonName} ?</h2>
+        <div class="class-stats">
+          {topClasses.map(([cls, count]) => {
+            const cs = cls.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+            return (
+              <a href={`/classe/${cs}`} class="class-stat-item">
+                <span class="class-stat-name">{cls}</span>
+                <span class="class-stat-count">{count}×</span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- Maillage jeux -->
+    <section class="related-section">
+      <h2>Dans quels jeux ?</h2>
+      <div class="related-chips">
+        {games.map((g: string) => {
+          const gs = g.replace('Pokémon ','').toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g,'')
+            .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+          return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
+        })}
+      </div>
+    </section>
+
+    <AdSlot slot="SLOT_POKEMON_BOTTOM" format="auto" />
+  </main>
+</Base>
+
+<style>
+.pkm-header {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  align-items: start;
+  padding: 36px 0 40px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 40px;
+}
+@media (max-width: 640px) {
+  .pkm-header { grid-template-columns: 1fr; }
+}
+
+.pkm-header__visual {
+  display: flex; justify-content: center; align-items: center;
+  background: linear-gradient(135deg, var(--cream) 0%, #e8f0e8 100%);
+  border-radius: var(--radius); padding: 24px;
+  border: 1.5px solid var(--border);
+}
+.pkm-sprite {
+  width: 180px; height: 180px; object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
+}
+.pkm-sprite--placeholder {
+  width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; color: var(--soft); opacity: 0.3;
+}
+
+.pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--soft); letter-spacing: 0.1em; margin-bottom: 6px; }
+.pkm-header__info h1 { margin-bottom: 12px; }
+.pkm-types { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.type-badge {
+  padding: 4px 14px; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.pkm-summary { color: var(--mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
+
+/* Stats */
+.pkm-stats { margin-top: 12px; }
+.pkm-stats summary {
+  font-size: 0.85rem; font-weight: 700; color: var(--soft);
+  cursor: pointer; user-select: none; padding: 8px 0;
+}
+.stats-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.stat-row { display: flex; align-items: center; gap: 10px; }
+.stat-name { width: 70px; font-size: 0.72rem; color: var(--soft); text-transform: capitalize; flex-shrink: 0; }
+.stat-bar { flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.stat-fill { height: 100%; background: var(--red); border-radius: 999px; transition: width 0.6s ease; }
+.stat-val { width: 28px; font-size: 0.75rem; font-weight: 700; color: var(--dark); text-align: right; }
+
+/* Classes */
+.class-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.class-stat-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+.class-stat-item:hover { border-color: var(--red); text-decoration: none; }
+.class-stat-name { font-weight: 600; color: var(--dark); font-size: 0.9rem; }
+.class-stat-count { font-size: 0.78rem; color: var(--red); font-weight: 700; }
+
+/* Réutilisés */
+.related-section { margin: 40px 0; }
+.related-section h2 { margin-bottom: 12px; }
+.related-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pkm-link {
+  padding: 6px 14px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: 999px;
+  font-size: 0.85rem; font-weight: 500; color: var(--mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.trainers-section { margin: 0 0 40px; }
+.trainers-section h2 { margin-bottom: 4px; }
+</style>

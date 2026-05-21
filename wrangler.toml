@@ -1,0 +1,11 @@
+# Cloudflare Pages — configuration build
+# Doc : https://developers.cloudflare.com/pages/configuration/build-configuration/
+
+name = "poketrainer"
+
+[build]
+command = "npm run build"
+destination = "dist"
+
+[build.environment_variables]
+NODE_VERSION = "20"

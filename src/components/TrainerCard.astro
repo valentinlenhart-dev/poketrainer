@@ -1,0 +1,48 @@
+---
+import { toPokemonSlug } from '../utils/slug';
+
+export interface Props {
+  trainer: {
+    slug: string;
+    name: string;
+    class: string;
+    game: string;
+    place?: string;
+    team?: string[];
+    rarity_emoji: string;
+    rarity_label: string;
+    rarity_key: string;
+  };
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { trainer: t, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article class="trainer-card">
+  <a href={`/dresseur/${t.slug}`} aria-label={`${t.class} ${t.name} — ${t.game}`}>
+    <p class="trainer-card__class">{t.class}</p>
+    <Heading class="trainer-card__name">{t.name}</Heading>
+    <div class="trainer-card__meta">
+      <span>🎮 {t.game.replace('Pokémon ', '')}</span>
+      {t.place && <span>📍 {t.place.replace(/-/g, ' ')}</span>}
+      <span class={`rarity rarity--${t.rarity_key}`} style="font-size:0.72rem;padding:3px 10px">
+        {t.rarity_emoji} {t.rarity_label}
+      </span>
+    </div>
+    {t.team && t.team.length > 0 && (
+      <div class="trainer-card__team" aria-label="Équipe Pokémon">
+        {t.team.map(p => (
+          <a
+            href={`/pokemon/${toPokemonSlug(p)}`}
+            class="pkm-badge"
+            aria-label={`Voir ${p}`}
+          >
+            {p}
+          </a>
+        ))}
+      </div>
+    )}
+  </a>
+</article>

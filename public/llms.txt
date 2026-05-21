@@ -1,0 +1,21 @@
+# PokéNom
+
+Base de données des dresseurs Pokémon francophone.
+
+## Description
+PokéNom permet de rechercher si un prénom existe chez un dresseur Pokémon.
+4 728 dresseurs issus de 17 jeux officiels Nintendo / Game Freak.
+1 790 prénoms distincts, dont 729 prénoms légendaires (uniques).
+
+## Contenu
+- Pages par prénom : /prenom/[prenom]
+- Pages par dresseur : /dresseur/[slug]
+- Pages par Pokémon : /pokemon/[slug]
+- Classements : /top/legendaires, /top/repandus
+
+## Sitemap
+https://pokenom.fr/sitemap-index.xml
+
+## Contact
+Site fan-made non officiel.
+Pokémon © Nintendo / Game Freak / The Pokémon Company.

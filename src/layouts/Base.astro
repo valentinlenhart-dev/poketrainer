@@ -1,0 +1,121 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  schema?: object | object[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.href,
+  ogImage = '/og-default.png',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const SITE = 'https://pokenom.fr';
+const fullOg = ogImage.startsWith('http') ? ogImage : `${SITE}${ogImage}`;
+const schemaJson = schema
+  ? JSON.stringify(Array.isArray(schema) ? schema : [schema])
+  : null;
+
+// AdSense pub ID — remplacer après approbation
+const ADSENSE_ID = 'ca-pub-XXXXXXXXXXXXXXXX';
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex,nofollow" />}
+  {!noindex && <meta name="robots" content="index,follow,max-image-preview:large" />}
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:locale"      content="fr_FR" />
+  <meta property="og:site_name"   content="PokéNom" />
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content={fullOg} />
+  <meta property="og:url"         content={canonical} />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image"       content={fullOg} />
+
+  <!-- Schema.org -->
+  {schemaJson && <script type="application/ld+json" set:html={schemaJson} />}
+
+  <!-- Google AdSense (activer après approbation) -->
+  <!-- <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`} crossorigin="anonymous"></script> -->
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
+  </style>
+</head>
+<body>
+
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo" aria-label="PokéNom — Accueil">
+        <div class="nav__logo-ball" aria-hidden="true"></div>
+        PokéNom
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="/">Recherche</a></li>
+        <li><a href="/duel">Duel ⚔️</a></li>
+        <li><a href="/top/legendaires">Légendaires</a></li>
+        <li><a href="/top/repandus">Top prénoms</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <slot />
+
+  <footer class="footer" aria-label="Pied de page">
+    <div class="footer__inner">
+      <div>
+        <div class="footer__brand">⚪ PokéNom</div>
+        <p>Trouve ton dresseur Pokémon.<br />4 728 dresseurs issus de 17 jeux officiels.</p>
+      </div>
+      <div>
+        <strong style="color:#fff;display:block;margin-bottom:8px">Explorer</strong>
+        <p><a href="/top/legendaires">Prénoms légendaires</a></p>
+        <p><a href="/top/repandus">Prénoms populaires</a></p>
+      </div>
+      <div>
+        <strong style="color:#fff;display:block;margin-bottom:8px">Légal</strong>
+        <p><a href="/mentions-legales">Mentions légales</a></p>
+        <p><a href="/confidentialite">Confidentialité</a></p>
+        <p style="margin-top:8px;font-size:0.75rem">
+          Pokémon © Nintendo / Game Freak / The Pokémon Company.<br />
+          Site fan-made non officiel.
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2025 PokéNom</span>
+      <span>Données issues des jeux officiels Pokémon</span>
+    </div>
+  </footer>
+
+</body>
+</html>
+
+<style is:global>
+/* Import styles globaux */
+</style>
