@@ -87,17 +87,17 @@ const schema = {
       })}
     </section>
 
-    <!-- Classement #4–#100 -->
+    <!-- Classement #4 à #100 -->
     <section aria-label="Classement complet" style="margin-top:32px">
       <ol class="top-list" start={4}>
         {rest.map((n) => (
-          <li class={`top-list__item${n.highlight ? ' top-list__item--highlight' : ''}`}>
+          <li class={n.highlight ? 'top-list__item top-list__item--highlight' : 'top-list__item'}>
             <span class="top-list__rank">#{n.rank}</span>
             <a href={`/prenom/${n.slug}`} class="top-list__name">{n.name}</a>
             <div class="top-list__bar-wrap">
               <div class="top-list__bar" style={`width:${n.barPct}%`}></div>
             </div>
-            <span class="top-list__count">{n.count}×</span>
+            <span class="top-list__count">{n.count}x</span>
           </li>
         ))}
       </ol>
@@ -142,11 +142,12 @@ const schema = {
   padding: 24px 16px; border-radius: var(--radius);
   border: 2px solid var(--border);
   text-align: center; transition: transform 0.18s, box-shadow 0.18s;
+  text-decoration: none;
 }
-.podium__item:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); text-decoration: none; }
-.podium__item--gold   { background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%); border-color: #f0c040; }
-.podium__item--silver { background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ee 100%); border-color: #b0b0c0; }
-.podium__item--bronze { background: linear-gradient(135deg, #fdf0e8 0%, #f5e0d0 100%); border-color: #d08060; }
+.podium__item:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.podium__item--gold   { background: linear-gradient(135deg,#fff9e6,#fff3cc); border-color:#f0c040; }
+.podium__item--silver { background: linear-gradient(135deg,#f5f5f7,#e8e8ee); border-color:#b0b0c0; }
+.podium__item--bronze { background: linear-gradient(135deg,#fdf0e8,#f5e0d0); border-color:#d08060; }
 .podium__medal { font-size: 2.4rem; line-height: 1; }
 .podium__rank  { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; color: var(--soft); text-transform: uppercase; }
 .podium__name  { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
@@ -156,7 +157,6 @@ const schema = {
 .top-list {
   list-style: none;
   display: flex; flex-direction: column; gap: 4px;
-  counter-reset: top-list;
 }
 .top-list__item {
   display: flex; align-items: center; gap: 14px;
@@ -170,17 +170,16 @@ const schema = {
 .top-list__name { min-width: 80px; font-weight: 700; color: var(--dark); font-size: 0.95rem; }
 .top-list__name:hover { color: var(--red); text-decoration: none; }
 .top-list__bar-wrap { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
-.top-list__bar { height: 100%; background: var(--red); border-radius: 999px; transition: width 0.4s ease; }
+.top-list__bar { height: 100%; background: var(--red); border-radius: 999px; }
 .top-list__count { font-size: 0.75rem; font-weight: 700; color: var(--soft); width: 28px; text-align: right; flex-shrink: 0; }
 
 .crosslink { margin: 48px 0 32px; text-align: center; }
 .crosslink__btn {
-  display: inline-block;
-  padding: 14px 28px;
+  display: inline-block; padding: 14px 28px;
   background: var(--cream); color: var(--dark);
   border: 2px solid var(--border);
   border-radius: var(--radius); font-weight: 700; font-size: 0.95rem;
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color 0.15s, color 0.15s; text-decoration: none;
 }
-.crosslink__btn:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.crosslink__btn:hover { border-color: var(--red); color: var(--red); }
 </style>
