@@ -16,7 +16,15 @@ for (const t of trainers) {
 const sorted = [...nameMap.values()].sort((a, b) => b.count - a.count).slice(0, 100);
 
 const podium = sorted.slice(0, 3);
-const rest   = sorted.slice(3);
+const top1Count = sorted[0]?.count ?? 1;
+
+// Précompute rank + highlight pour éviter <= dans le JSX (bug parser Astro)
+const rest = sorted.slice(3).map((n, i) => ({
+  ...n,
+  rank: i + 4,
+  highlight: i + 4 < 11,
+  barPct: Math.round(n.count / top1Count * 100),
+}));
 
 const title = "Top 100 prénoms Pokémon les plus répandus | PokéNom";
 const description = `Classement des 100 prénoms les plus portés par les dresseurs Pokémon. Le prénom #1 est partagé par ${sorted[0]?.count ?? '?'} dresseurs ! Et le tien ?`;
@@ -82,23 +90,16 @@ const schema = {
     <!-- Classement #4–#100 -->
     <section aria-label="Classement complet" style="margin-top:32px">
       <ol class="top-list" start={4}>
-        {rest.map((n, i) => {
-          const rank = i + 4;
-          const isTop10 = rank <= 10;
-          return (
-            <li class={`top-list__item${isTop10 ? ' top-list__item--highlight' : ''}`}>
-              <span class="top-list__rank">#{rank}</span>
-              <a href={`/prenom/${n.slug}`} class="top-list__name">{n.name}</a>
-              <div class="top-list__bar-wrap">
-                <div
-                  class="top-list__bar"
-                  style={`width:${Math.round(n.count / sorted[0].count * 100)}%`}
-                ></div>
-              </div>
-              <span class="top-list__count">{n.count}×</span>
-            </li>
-          );
-        })}
+        {rest.map((n) => (
+          <li class={`top-list__item${n.highlight ? ' top-list__item--highlight' : ''}`}>
+            <span class="top-list__rank">#{n.rank}</span>
+            <a href={`/prenom/${n.slug}`} class="top-list__name">{n.name}</a>
+            <div class="top-list__bar-wrap">
+              <div class="top-list__bar" style={`width:${n.barPct}%`}></div>
+            </div>
+            <span class="top-list__count">{n.count}×</span>
+          </li>
+        ))}
       </ol>
     </section>
 
