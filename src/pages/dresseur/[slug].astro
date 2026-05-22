@@ -3,8 +3,11 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
+import pokemonMetaRaw from '../../data/pokemon-meta.json';
 import { toPokemonSlug } from '../../utils/slug';
 import '../../styles/global.css';
+
+const pokemonMeta = pokemonMetaRaw as Record<string, { sprite?: string; id?: number }>;
 
 export async function getStaticPaths() {
   const trainers = trainersRaw as any[];
@@ -85,10 +88,14 @@ const schema = {
           <ul class="team-list" role="list">
             {t.team.map((pkm: string) => {
               const pSlug = toPokemonSlug(pkm);
+              const sprite = pokemonMeta[pkm]?.sprite ?? null;
               return (
                 <li>
                   <a href={`/pokemon/${pSlug}`} class="team-pkm">
-                    <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                    {sprite
+                      ? <img src={sprite} alt={pkm} width="40" height="40" class="team-pkm__sprite" loading="lazy" />
+                      : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                    }
                     <span class="team-pkm__name">{pkm}</span>
                     <span class="team-pkm__arrow">→</span>
                   </a>
@@ -184,6 +191,7 @@ const schema = {
 }
 .team-pkm:hover { border-color: var(--red); transform: translateX(4px); text-decoration: none; }
 .team-pkm__ball { font-size: 1rem; }
+.team-pkm__sprite { width: 40px; height: 40px; image-rendering: pixelated; flex-shrink: 0; }
 .team-pkm__name { flex: 1; }
 .team-pkm__arrow { color: var(--soft); font-size: 0.85rem; }
 

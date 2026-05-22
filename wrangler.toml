@@ -1,11 +1,8 @@
-# Cloudflare Pages — configuration build
-# Doc : https://developers.cloudflare.com/pages/configuration/build-configuration/
+# Cloudflare Workers Static Assets — configuration déploiement
+# Doc : https://developers.cloudflare.com/workers/static-assets/
 
 name = "poketrainer"
+compatibility_date = "2026-05-21"
 
-[build]
-command = "npm run build"
-destination = "dist"
-
-[build.environment_variables]
-NODE_VERSION = "20"
+[assets]
+directory = "./dist"
