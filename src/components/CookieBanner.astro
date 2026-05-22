@@ -1,0 +1,105 @@
+---
+// CookieBanner.astro — bandeau consentement RGPD minimaliste
+// Consent stocké dans localStorage sous la clé "pkn_consent"
+// Valeurs : "granted" | "denied" | absent (pas encore choisi)
+---
+
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Bandeau cookies" hidden>
+  <div class="cookie-banner__inner">
+    <p class="cookie-banner__text">
+      Ce site utilise des cookies publicitaires (Google AdSense) pour financer son fonctionnement.
+      <a href="/confidentialite" class="cookie-banner__link">En savoir plus</a>
+    </p>
+    <div class="cookie-banner__actions">
+      <button id="cookie-deny"  class="cookie-btn cookie-btn--secondary">Refuser</button>
+      <button id="cookie-accept" class="cookie-btn cookie-btn--primary">Accepter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const KEY = 'pkn_consent';
+  const banner = document.getElementById('cookie-banner');
+
+  function loadAds() {
+    // Charge le script AdSense seulement si consentement donné
+    const existing = document.querySelector('script[data-adsense]');
+    if (existing) return;
+    const pubId = document.documentElement.dataset.adsPub;
+    if (!pubId || pubId.includes('XXXX')) return;
+    const s = document.createElement('script');
+    s.async = true;
+    s.setAttribute('data-adsense', '1');
+    s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
+    s.crossOrigin = 'anonymous';
+    document.head.appendChild(s);
+    // Pousser tous les blocs déjà dans le DOM
+    s.onload = () => {
+      document.querySelectorAll('.adsbygoogle').forEach(() => {
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(_) {}
+      });
+    };
+  }
+
+  function setConsent(value) {
+    localStorage.setItem(KEY, value);
+    if (banner) banner.hidden = true;
+    if (value === 'granted') loadAds();
+  }
+
+  // Au chargement : vérifier l'état existant
+  const saved = localStorage.getItem(KEY);
+  if (saved === 'granted') {
+    loadAds();
+  } else if (!saved) {
+    // Pas encore choisi → afficher le bandeau après un court délai
+    if (banner) setTimeout(() => { banner.hidden = false; }, 600);
+  }
+  // Si "denied" : on ne charge pas AdSense, bandeau caché
+
+  document.getElementById('cookie-accept')?.addEventListener('click', () => setConsent('granted'));
+  document.getElementById('cookie-deny')?.addEventListener('click',  () => setConsent('denied'));
+})();
+</script>
+
+<style>
+.cookie-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 999;
+  background: #1a1a2e;
+  border-top: 2px solid var(--red, #e63946);
+  padding: 16px 24px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+}
+.cookie-banner__inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cookie-banner__text {
+  flex: 1;
+  color: #e0e0e0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.cookie-banner__link { color: #aab4ff; }
+.cookie-banner__actions { display: flex; gap: 10px; flex-shrink: 0; }
+.cookie-btn {
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+.cookie-btn:hover { opacity: 0.85; }
+.cookie-btn--primary  { background: var(--red, #e63946); color: #fff; }
+.cookie-btn--secondary { background: #2e2e4e; color: #ccc; border: 1px solid #444; }
+</style>
