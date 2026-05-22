@@ -24,13 +24,12 @@
 
   function loadAds() {
     // Charge le script AdSense seulement si consentement donné
-    const existing = document.querySelector('script[data-adsense]');
-    if (existing) return;
     const pubId = document.documentElement.dataset.adsPub;
     if (!pubId || pubId.includes('XXXX')) return;
+    const existing = document.querySelector('script[src*="adsbygoogle.js"]');
+    if (existing) return;
     const s = document.createElement('script');
     s.async = true;
-    s.setAttribute('data-adsense', '1');
     s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
     s.crossOrigin = 'anonymous';
     document.head.appendChild(s);
