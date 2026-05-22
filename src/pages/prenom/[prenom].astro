@@ -7,6 +7,7 @@ import trainersRaw from '../../data/trainers.json';
 import { toPokemonSlug } from '../../utils/slug';
 import '../../styles/global.css';
 
+
 export async function getStaticPaths() {
   const trainers = trainersRaw as any[];
   const bySlug = new Map<string, any[]>();
@@ -170,7 +171,7 @@ const schemaList = count > 0 ? {
         {pokemonUsed.length > 0 && (
           <section class="related-section">
             <h2>Pokémon de {displayName}</h2>
-            <p style="color:var(--soft);margin:8px 0 16px;font-size:0.9rem">
+            <p style="color:var(--text-soft);margin:8px 0 16px;font-size:0.9rem">
               Les Pokémon que ces dresseurs utilisent dans leurs équipes.
             </p>
             <div class="related-chips">
@@ -235,26 +236,27 @@ const schemaList = count > 0 ? {
 
 <style>
 .prenom-header { padding: 36px 0 28px; }
-.prenom-header__badge { margin-bottom: 16px; }
+.prenom-header__badge { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .prenom-header h1 { margin: 10px 0 12px; }
-.prenom-header__desc { font-size: 1.05rem; color: var(--soft); max-width: 560px; }
+.prenom-header__desc { font-size: 1.05rem; color: var(--text-soft); max-width: 560px; }
 
+/* Sections */
 .related-section { margin: 48px 0 0; }
 .related-section h2 { margin-bottom: 4px; }
 .related-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .pkm-link {
   padding: 6px 14px; background: var(--bg2);
   border: 1.5px solid var(--border); border-radius: 999px;
-  font-size: 0.85rem; font-weight: 500; color: var(--mid);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-mid);
   transition: border-color 0.15s, color 0.15s;
 }
 .pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
 
-.faq-section { margin: 48px 0; padding: 32px; background: var(--cream); border-radius: var(--radius); }
+.faq-section { margin: 48px 0; padding: 32px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius); }
 .faq-section h2 { margin-bottom: 20px; }
 .faq-list { display: flex; flex-direction: column; gap: 20px; }
-.faq-item dt { font-weight: 700; color: var(--dark); margin-bottom: 6px; }
-.faq-item dd { color: var(--soft); line-height: 1.65; margin-left: 0; }
+.faq-item dt { font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.faq-item dd { color: var(--text-soft); line-height: 1.65; margin-left: 0; }
 
 .empty-state { text-align: center; padding: 80px 20px; }
 .empty-state__emoji { font-size: 4rem; display: block; margin-bottom: 20px; }

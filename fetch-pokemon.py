@@ -70,7 +70,25 @@ def normalize_slug(name: str) -> str:
     n = re.sub(r'[^a-z0-9\-]', '', n)
     return n.strip('-')
 
-# ── 2. Enrichissement ────────────────────────────────────────────
+# ── 2. Charge les données existantes (merge-safe) ────────────────
+# On préserve les champs ajoutés par fetch-pokemon-species.py
+SPECIES_FIELDS = {
+    "description_fr", "descriptions_fr", "category_fr", "generation",
+    "capture_rate", "is_legendary", "is_mythical", "gender_fr",
+    "habitat_fr", "base_happiness", "hatch_counter",
+    "evolves_from", "evolves_to", "abilities",
+}
+
+existing = {}
+if DEST.exists():
+    try:
+        with open(DEST, encoding="utf-8") as f:
+            existing = json.load(f)
+        print(f"📂 {len(existing)} entrées existantes chargées (les données species seront préservées)\n")
+    except Exception as e:
+        print(f"⚠️  Impossible de charger l'existant ({e}) — repartir de zéro\n")
+
+# ── 3. Enrichissement ────────────────────────────────────────────
 results = {}
 errors  = []
 ok      = 0
@@ -94,15 +112,63 @@ for i, name in enumerate(sorted(all_pokemon), 1):
         if r.status_code == 200:
             d = r.json()
             pid = d["id"]
+            sp  = d.get("sprites", {})
+            sp_other = sp.get("other", {})
+
+            # Récupère les données species existantes pour ce Pokémon
+            prev = existing.get(name, {})
+            species_data = {k: v for k, v in prev.items() if k in SPECIES_FIELDS}
+
             results[name] = {
-                "id":        pid,
-                "slug":      d["name"],
-                "sprite":    d["sprites"]["front_default"],
-                "sprite_hd": f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{pid}.png",
-                "types":     [t["type"]["name"] for t in d["types"]],
-                "stats":     {s["stat"]["name"]: s["base_stat"] for s in d["stats"]},
-                "height":    d["height"],
-                "weight":    d["weight"],
+                **species_data,   # préserve description_fr, abilities, etc.
+
+                # ── Identité ──────────────────────────────────────
+                "id":     pid,
+                "slug":   d["name"],
+
+                # ── Sprites pixel art ─────────────────────────────
+                "sprite":        sp.get("front_default"),
+                "sprite_shiny":  sp.get("front_shiny"),
+                "sprite_female": sp.get("front_female"),  # ♀ si différent
+
+                # ── Artwork HD officiel ───────────────────────────
+                "sprite_hd":       sp_other.get("official-artwork", {}).get("front_default")
+                                   or f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{pid}.png",
+                "sprite_hd_shiny": sp_other.get("official-artwork", {}).get("front_shiny"),
+
+                # ── Sprite animé Showdown ─────────────────────────
+                "sprite_anim":       sp_other.get("showdown", {}).get("front_default"),
+                "sprite_anim_shiny": sp_other.get("showdown", {}).get("front_shiny"),
+
+                # ── Types ─────────────────────────────────────────
+                "types":      [t["type"]["name"] for t in d.get("types", [])],
+                "past_types": [
+                    {
+                        "gen":   pt["generation"]["name"],
+                        "types": [t["type"]["name"] for t in pt["types"]],
+                    }
+                    for pt in d.get("past_types", [])
+                ],
+
+                # ── Stats de base ─────────────────────────────────
+                "stats":           {s["stat"]["name"]: s["base_stat"] for s in d.get("stats", [])},
+                "base_experience": d.get("base_experience"),
+
+                # ── Morphologie ───────────────────────────────────
+                "height": d["height"],   # en décimètres
+                "weight": d["weight"],   # en hectogrammes
+
+                # ── Objets tenus dans la nature ───────────────────
+                "held_items": [
+                    {
+                        "item":  hi["item"]["name"],
+                        "rarity": hi["version_details"][-1]["rarity"] if hi.get("version_details") else None,
+                    }
+                    for hi in d.get("held_items", [])
+                ],
+
+                # ── Jeux où le Pokémon apparaît ───────────────────
+                "game_indices": [gi["version"]["name"] for gi in d.get("game_indices", [])],
             }
             ok += 1
             status = f"✅ {name} → #{pid} ({d['name']})"

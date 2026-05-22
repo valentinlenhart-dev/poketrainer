@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+---
+
+<Base
+  title="Politique de confidentialité | PokéNom"
+  description="Politique de confidentialité de PokéNom — cookies, données personnelles, droits RGPD."
+  canonical="https://pokenom.fr/confidentialite"
+  noindex={true}
+>
+  <main id="main" class="container legal-page">
+    <h1>Politique de confidentialité</h1>
+    <p class="legal-page__date">Dernière mise à jour : mai 2025</p>
+
+    <section>
+      <h2>Données collectées</h2>
+      <p>
+        PokéNom ne collecte aucune donnée personnelle directement. Aucun compte utilisateur,
+        aucun formulaire, aucun tracking propriétaire.
+      </p>
+    </section>
+
+    <section>
+      <h2>Cookies publicitaires (Google AdSense)</h2>
+      <p>
+        Ce site utilise <strong>Google AdSense</strong> pour afficher des publicités.
+        AdSense peut déposer des cookies tiers pour personnaliser les annonces en fonction
+        de vos centres d'intérêt (<em>publicité personnalisée</em>).
+      </p>
+      <p>
+        Ces cookies ne sont activés <strong>qu'après votre consentement explicite</strong>
+        via le bandeau cookies affiché à votre première visite.
+      </p>
+      <p>
+        Vous pouvez retirer votre consentement à tout moment en effaçant les données de
+        navigation de votre navigateur (localStorage → clé <code>pkn_consent</code>).
+      </p>
+      <p>
+        Pour en savoir plus sur la gestion des données par Google :
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">
+          Politique de confidentialité Google
+        </a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Hébergement et logs serveur</h2>
+      <p>
+        Le site est hébergé sur Cloudflare Workers. Cloudflare peut collecter des données
+        techniques (adresse IP, user-agent) à des fins de sécurité et de performance,
+        conformément à sa propre
+        <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">
+          politique de confidentialité
+        </a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Vos droits (RGPD)</h2>
+      <p>
+        Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez
+        d'un droit d'accès, de rectification et de suppression de vos données.
+      </p>
+      <p>
+        Pour exercer ces droits ou pour toute question :
+        <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>Liens externes</h2>
+      <p>
+        Ce site contient des liens vers des sites tiers (PokeAPI, Pokémon Showdown, etc.).
+        PokéNom n'est pas responsable des pratiques de confidentialité de ces sites.
+      </p>
+    </section>
+  </main>
+</Base>
+
+<style>
+.legal-page {
+  max-width: 720px;
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+.legal-page__date {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  margin-bottom: 36px;
+}
+.legal-page h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 8px;
+}
+.legal-page section {
+  margin-bottom: 36px;
+}
+.legal-page h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.legal-page p {
+  color: var(--text-mid);
+  font-size: 0.93rem;
+  margin-bottom: 8px;
+}
+code {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.85em;
+}
+</style>

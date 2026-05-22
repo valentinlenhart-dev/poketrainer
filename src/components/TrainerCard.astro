@@ -1,6 +1,7 @@
 ---
 import { toPokemonSlug } from '../utils/slug';
 import pokemonMeta from '../data/pokemon-meta.json';
+import trainerSpritesRaw from '../data/trainer-class-sprites.json';
 
 export interface Props {
   trainer: {
@@ -20,12 +21,31 @@ export interface Props {
 const { trainer: t, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 const meta = pokemonMeta as Record<string, { sprite?: string; id?: number }>;
+const trainerSprites = trainerSpritesRaw as Record<string, string>;
+
+const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers';
+const classSlug = trainerSprites[t.class] ?? null;
+const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
 ---
 
 <article class="trainer-card">
   <a href={`/dresseur/${t.slug}`} aria-label={`${t.class} ${t.name} — ${t.game}`}>
-    <p class="trainer-card__class">{t.class}</p>
-    <Heading class="trainer-card__name">{t.name}</Heading>
+    <div class="trainer-card__header">
+      {classSprite && (
+        <img
+          src={classSprite}
+          alt={t.class}
+          width="40" height="40"
+          class="trainer-card__class-sprite"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+      )}
+      <div>
+        <p class="trainer-card__class">{t.class}</p>
+        <Heading class="trainer-card__name">{t.name}</Heading>
+      </div>
+    </div>
     <div class="trainer-card__meta">
       <span>🎮 {t.game.replace('Pokémon ', '')}</span>
       {t.place && <span>📍 {t.place.replace(/-/g, ' ')}</span>}
@@ -57,20 +77,31 @@ const meta = pokemonMeta as Record<string, { sprite?: string; id?: number }>;
 </article>
 
 <style>
+.trainer-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trainer-card__class-sprite {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
 .pkm-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 .pkm-badge__sprite {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   image-rendering: pixelated;
   flex-shrink: 0;
 }
 .pkm-badge__dot {
-  font-size: 0.5rem;
-  color: var(--soft, #aaa);
+  font-size: 0.45rem;
+  color: var(--text-soft, #aaa);
   flex-shrink: 0;
 }
 </style>

@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+---
+
+<Base
+  title="Page introuvable | PokéNom"
+  description="Cette page n'existe pas sur PokéNom."
+  noindex={true}
+>
+  <main id="main" class="container not-found">
+    <div class="not-found__inner">
+      <img
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+        alt="Psykokwak confus"
+        width="96" height="96"
+        class="not-found__sprite"
+      />
+      <h1>404</h1>
+      <p class="not-found__msg">Cette page n'existe pas… ou s'est enfuie dans les hautes herbes.</p>
+      <div class="not-found__actions">
+        <a href="/" class="not-found__btn">← Retour à l'accueil</a>
+        <a href="/top/legendaires" class="not-found__link">Voir les prénoms légendaires</a>
+        <a href="/top/repandus"    class="not-found__link">Voir les prénoms populaires</a>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+.not-found {
+  min-height: calc(100vh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+}
+.not-found__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 440px;
+}
+.not-found__sprite {
+  image-rendering: pixelated;
+  opacity: 0.85;
+}
+.not-found__inner h1 {
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+}
+.not-found__msg {
+  color: var(--text-soft);
+  font-size: 1rem;
+}
+.not-found__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.not-found__btn {
+  background: var(--red);
+  color: #fff;
+  padding: 11px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: background 0.15s;
+}
+.not-found__btn:hover { background: var(--red-dark); text-decoration: none; }
+.not-found__link {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+.not-found__link:hover { color: var(--text); }
+</style>

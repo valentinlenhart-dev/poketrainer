@@ -4,10 +4,27 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
 import pokemonMetaRaw from '../../data/pokemon-meta.json';
+import classSpritesRaw from '../../data/trainer-class-sprites.json';
 import { toPokemonSlug } from '../../utils/slug';
 import '../../styles/global.css';
 
-const pokemonMeta = pokemonMetaRaw as Record<string, { sprite?: string; id?: number }>;
+const pokemonMeta   = pokemonMetaRaw as Record<string, any>;
+const classSprites  = classSpritesRaw as Record<string, string>;
+
+const TYPE_COLORS: Record<string, string> = {
+  fire:'#f08030', water:'#6890f0', grass:'#78c850', electric:'#f8d030',
+  ice:'#98d8d8', fighting:'#c03028', poison:'#a040a0', ground:'#e0c068',
+  flying:'#a890f0', psychic:'#f85888', bug:'#a8b820', rock:'#b8a038',
+  ghost:'#705898', dragon:'#7038f8', dark:'#705848', steel:'#b8b8d0',
+  fairy:'#ee99ac', normal:'#a8a878',
+};
+const TYPE_FR: Record<string, string> = {
+  fire:'Feu', water:'Eau', grass:'Plante', electric:'Électrik',
+  ice:'Glace', fighting:'Combat', poison:'Poison', ground:'Sol',
+  flying:'Vol', psychic:'Psy', bug:'Insecte', rock:'Roche',
+  ghost:'Spectre', dragon:'Dragon', dark:'Ténèbres', steel:'Acier',
+  fairy:'Fée', normal:'Normal',
+};
 
 export async function getStaticPaths() {
   const trainers = trainersRaw as any[];
@@ -19,9 +36,10 @@ export async function getStaticPaths() {
 
 const { trainer: t } = Astro.props as { trainer: any };
 
-const gameName  = t.game.replace('Pokémon ', '');
-const placeText = t.place ? t.place.replace(/-/g, ' ') : null;
-const teamText  = (t.team ?? []).join(', ');
+const gameName    = t.game.replace('Pokémon ', '');
+const placeText   = t.place ? t.place.replace(/-/g, ' ') : null;
+const teamText    = (t.team ?? []).join(', ');
+const classSprite = classSprites[t.class] ?? null;
 
 const title = `${t.class} ${t.name} — ${gameName} | PokéNom`;
 const description = placeText
@@ -56,8 +74,17 @@ const schema = {
 
       <!-- En-tête dresseur -->
       <header class="trainer-page__header">
-        <div class="trainer-page__class">{t.class}</div>
-        <h1 class="trainer-page__name">{t.name}</h1>
+        <div class="trainer-page__class-row">
+          {classSprite && (
+            <img src={classSprite} alt={t.class} width="56" height="56"
+              class="trainer-page__class-sprite"
+              onerror="this.style.display='none'" loading="eager" />
+          )}
+          <div>
+            <div class="trainer-page__class">{t.class}</div>
+            <h1 class="trainer-page__name">{t.name}</h1>
+          </div>
+        </div>
 
         <div class="trainer-page__meta">
           <div class="meta-item">
@@ -87,16 +114,33 @@ const schema = {
           <h2>Équipe Pokémon</h2>
           <ul class="team-list" role="list">
             {t.team.map((pkm: string) => {
-              const pSlug = toPokemonSlug(pkm);
-              const sprite = pokemonMeta[pkm]?.sprite ?? null;
+              const pSlug  = toPokemonSlug(pkm);
+              const pMeta  = pokemonMeta[pkm] ?? null;
+              const sprite = pMeta?.sprite ?? null;
+              const types  = (pMeta?.types ?? []) as string[];
+              const nameEn = pMeta?.name_en ?? '';
               return (
                 <li>
                   <a href={`/pokemon/${pSlug}`} class="team-pkm">
-                    {sprite
-                      ? <img src={sprite} alt={pkm} width="40" height="40" class="team-pkm__sprite" loading="lazy" />
-                      : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
-                    }
-                    <span class="team-pkm__name">{pkm}</span>
+                    <div class="team-pkm__visual">
+                      {sprite
+                        ? <img src={sprite} alt={pkm} width="48" height="48" class="team-pkm__sprite" loading="lazy" />
+                        : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                      }
+                    </div>
+                    <div class="team-pkm__info">
+                      <span class="team-pkm__name">{pkm}</span>
+                      {nameEn && nameEn !== pkm && <span class="team-pkm__en">{nameEn}</span>}
+                      {types.length > 0 && (
+                        <div class="team-pkm__types">
+                          {types.map((type: string) => (
+                            <span class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`}>
+                              {TYPE_FR[type] ?? type}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <span class="team-pkm__arrow">→</span>
                   </a>
                 </li>
@@ -164,10 +208,16 @@ const schema = {
   border-bottom: 1.5px solid var(--border);
   margin-bottom: 32px;
 }
+.trainer-page__class-row {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 4px;
+}
+.trainer-page__class-sprite {
+  width: 56px; height: 56px; image-rendering: pixelated; flex-shrink: 0;
+}
 .trainer-page__class {
   font-size: 0.72rem; font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--red); margin-bottom: 10px;
+  color: var(--red); margin-bottom: 6px;
 }
 .trainer-page__name { font-size: clamp(2rem, 5vw, 3rem); }
 .trainer-page__meta {
@@ -176,31 +226,38 @@ const schema = {
 }
 .meta-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
 .meta-item__icon { font-size: 1rem; }
-.meta-item a { color: var(--mid); font-weight: 500; }
+.meta-item a { color: var(--text-mid); font-weight: 500; }
 .meta-item a:hover { color: var(--red); }
 
 .team-section { margin: 32px 0; }
 .team-section h2 { margin-bottom: 16px; }
-.team-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
+.team-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
 .team-pkm {
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 20px; background: var(--bg2);
+  padding: 12px 18px; background: var(--bg2);
   border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-weight: 600; color: var(--dark);
-  transition: border-color 0.15s, transform 0.15s;
+  color: var(--text); transition: border-color 0.15s, transform 0.15s;
 }
 .team-pkm:hover { border-color: var(--red); transform: translateX(4px); text-decoration: none; }
+.team-pkm__visual { width: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .team-pkm__ball { font-size: 1rem; }
-.team-pkm__sprite { width: 40px; height: 40px; image-rendering: pixelated; flex-shrink: 0; }
-.team-pkm__name { flex: 1; }
-.team-pkm__arrow { color: var(--soft); font-size: 0.85rem; }
+.team-pkm__sprite { width: 48px; height: 48px; image-rendering: pixelated; }
+.team-pkm__info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.team-pkm__name { font-weight: 700; font-size: 0.95rem; }
+.team-pkm__en { font-size: 0.75rem; color: var(--text-soft); }
+.team-pkm__types { display: flex; gap: 4px; flex-wrap: wrap; }
+.team-type-badge {
+  font-size: 0.65rem; font-weight: 700; color: #fff;
+  padding: 2px 7px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.team-pkm__arrow { color: var(--text-soft); font-size: 0.85rem; flex-shrink: 0; }
 
 .trainer-page__lore {
-  background: var(--cream); border-radius: var(--radius);
-  padding: 28px 32px; margin: 32px 0;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 28px 32px; margin: 32px 0;
 }
 .trainer-page__lore h2 { margin-bottom: 14px; font-size: 1.1rem; }
-.trainer-page__lore p { color: var(--mid); margin-bottom: 10px; }
+.trainer-page__lore p { color: var(--text-mid); margin-bottom: 10px; }
 .trainer-page__lore p:last-child { margin-bottom: 0; }
 
 .trainer-page__related { margin: 32px 0; }
@@ -210,8 +267,8 @@ const schema = {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 20px; background: var(--bg2);
   border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 0.9rem; font-weight: 500; color: var(--mid);
+  font-size: 0.9rem; font-weight: 500; color: var(--text-mid);
   transition: border-color 0.15s, color 0.15s;
 }
-.related-link:hover { border-color: var(--red); color: var(--dark); text-decoration: none; }
+.related-link:hover { border-color: var(--red); color: var(--text); text-decoration: none; }
 </style>

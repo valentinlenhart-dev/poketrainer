@@ -14,6 +14,13 @@ try {
   pokemonMeta = mod.default as Record<string, any>;
 } catch { /* fichier optionnel — lance fetch-pokemon.py pour l'obtenir */ }
 
+// Cartes TCG (optionnel — lance fetch-tcg.py)
+let pokemonTcg: Record<string, any[]> = {};
+try {
+  const mod = await import('../../data/pokemon-tcg.json');
+  pokemonTcg = mod.default as Record<string, any[]>;
+} catch { /* fichier optionnel */ }
+
 export async function getStaticPaths() {
   const trainers = trainersRaw as any[];
   const bySlug = new Map<string, { name: string; trainers: any[] }>();
@@ -38,11 +45,50 @@ const { slug, pokemonName, trainers } = Astro.props as {
   trainers: any[];
 };
 
-const meta = pokemonMeta[pokemonName] ?? null;
-const spriteUrl  = meta?.sprite_hd ?? meta?.sprite ?? null;
-const types      = (meta?.types ?? []) as string[];
-const stats      = (meta?.stats ?? {}) as Record<string, number>;
+const meta     = pokemonMeta[pokemonName] ?? null;
+const tcgCards = pokemonTcg[slug] ?? [];
+
+// Sprites
+const spriteUrl      = meta?.sprite_hd ?? meta?.sprite ?? null;
+const spriteShinyUrl = (meta?.sprite_hd_shiny ?? meta?.sprite_shiny ?? null) as string | null;
+const hasShiny       = !!spriteShinyUrl;
+
+// Base
+const types        = (meta?.types ?? []) as string[];
+const stats        = (meta?.stats ?? {}) as Record<string, number>;
 const trainerCount = trainers.length;
+
+// Données espèce
+const descFr      = (meta?.description_fr ?? '') as string;
+const categoryFr  = (meta?.category_fr ?? '') as string;
+const generation  = (meta?.generation ?? '') as string;
+const captureRate = meta?.capture_rate as number | null ?? null;
+const isLegendary = meta?.is_legendary ?? false;
+const isMythical  = meta?.is_mythical ?? false;
+const evolvesFrom = (meta?.evolves_from ?? null) as string | null;
+const evolvesTo   = (meta?.evolves_to ?? []) as string[];
+
+// Noms internationaux
+const namesIntl = (meta?.names_intl ?? {}) as Record<string, string>;
+const LANG_FLAGS: Record<string, string> = {
+  en:'🇬🇧', de:'🇩🇪', es:'🇪🇸', it:'🇮🇹',
+  ja:'🇯🇵', ko:'🇰🇷', 'zh-Hans':'🇨🇳', 'zh-Hant':'🇹🇼',
+};
+const LANG_LABEL: Record<string, string> = {
+  en:'EN', de:'DE', es:'ES', it:'IT',
+  ja:'JA', ko:'KO', 'zh-Hans':'ZH', 'zh-Hant':'ZH',
+};
+// Filtre ja-Hrkt (romanisation, redondant) et dédoublonne ZH
+const namesDisplay = Object.entries(namesIntl)
+  .filter(([l]) => l !== 'ja-Hrkt' && !(l === 'zh-Hant' && namesIntl['zh-Hans']));
+
+// Map slug anglais → nom français (pour les liens d'évolution)
+const slugToFr: Record<string, string> = {};
+for (const [frName, d] of Object.entries(pokemonMeta as Record<string, any>)) {
+  if (d?.slug) slugToFr[d.slug] = frName;
+}
+const evFromFr = evolvesFrom ? slugToFr[evolvesFrom] : null;
+const evToFr   = evolvesTo.map(s => ({ slug: s, fr: slugToFr[s] ?? s }));
 
 // Jeux où ce Pokémon apparaît
 const gamesSet = new Set(trainers.map((t: any) => t.game));
@@ -101,7 +147,10 @@ const schema = {
       <div class="pkm-header__visual">
         {spriteUrl ? (
           <img
+            id="pkm-sprite-img"
             src={spriteUrl}
+            data-normal={spriteUrl}
+            data-shiny={spriteShinyUrl ?? ''}
             alt={`Illustration officielle de ${pokemonName}`}
             width="220" height="220"
             class="pkm-sprite"
@@ -112,11 +161,34 @@ const schema = {
             <span>?</span>
           </div>
         )}
+        {hasShiny && (
+          <button id="shiny-toggle" class="shiny-btn" aria-pressed="false" title="Voir la version Shiny">
+            ✨ Shiny
+          </button>
+        )}
       </div>
 
       <div class="pkm-header__info">
-        {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
+        <div class="pkm-meta-row">
+          {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
+          {categoryFr && <p class="pkm-category">{categoryFr}</p>}
+          {generation && <p class="pkm-gen">{generation}</p>}
+          {isLegendary && <p class="pkm-badge pkm-badge--legendary">⭐ Légendaire</p>}
+          {isMythical  && <p class="pkm-badge pkm-badge--mythical">✨ Mythique</p>}
+        </div>
         <h1>{pokemonName}</h1>
+
+        {/* Noms internationaux */}
+        {namesDisplay.length > 0 && (
+          <div class="names-intl">
+            {namesDisplay.map(([lang, name]) => (
+              <span class="name-intl" title={LANG_LABEL[lang]}>
+                <span class="name-intl__flag">{LANG_FLAGS[lang] ?? '🌐'}</span>
+                <span class="name-intl__val">{name}</span>
+              </span>
+            ))}
+          </div>
+        )}
 
         {types.length > 0 && (
           <div class="pkm-types">
@@ -131,6 +203,8 @@ const schema = {
           </div>
         )}
 
+        {descFr && <blockquote class="pkm-desc">{descFr}</blockquote>}
+
         <p class="pkm-summary">
           <strong>{trainerCount} dresseur{trainerCount > 1 ? 's' : ''}</strong>
           {trainerCount > 1 ? ' utilisent ' : ' utilise '}
@@ -138,7 +212,24 @@ const schema = {
           dans {games.length} jeu{games.length > 1 ? 'x' : ''} différent{games.length > 1 ? 's' : ''}.
         </p>
 
-        {Object.keys(stats).length > 0 && (
+        {/* Évolutions */}
+        {(evFromFr || evToFr.length > 0) && (
+          <div class="pkm-evolutions">
+            {evFromFr && (
+              <a href={`/pokemon/${evolvesFrom}`} class="evo-chip evo-chip--from">
+                ← {evFromFr}
+              </a>
+            )}
+            <span class="evo-current">{pokemonName}</span>
+            {evToFr.map(e => (
+              <a href={`/pokemon/${e.slug}`} class="evo-chip evo-chip--to">
+                {e.fr} →
+              </a>
+            ))}
+          </div>
+        )}
+
+        {(Object.keys(stats).length > 0 || captureRate !== null) && (
           <details class="pkm-stats">
             <summary>Statistiques de base</summary>
             <div class="stats-bars">
@@ -151,6 +242,15 @@ const schema = {
                   <span class="stat-val">{val as number}</span>
                 </div>
               ))}
+              {captureRate !== null && (
+                <div class="stat-row">
+                  <span class="stat-name">Capture</span>
+                  <div class="stat-bar">
+                    <div class="stat-fill stat-fill--capture" style={`width:${Math.round(captureRate/255*100)}%`}></div>
+                  </div>
+                  <span class="stat-val">{captureRate}/255</span>
+                </div>
+              )}
             </div>
           </details>
         )}
@@ -162,7 +262,7 @@ const schema = {
     <!-- Dresseurs -->
     <section class="trainers-section">
       <h2>Dresseurs utilisant {pokemonName}</h2>
-      <p style="color:var(--soft);margin:8px 0 20px;font-size:0.9rem">
+      <p style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
         {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
         {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
       </p>
@@ -212,9 +312,89 @@ const schema = {
       </div>
     </section>
 
+    <!-- Cartes TCG -->
+    {tcgCards.length > 0 && (
+      <section class="related-section">
+        <div class="tcg-header">
+          <h2>Cartes Pokémon JCC</h2>
+          <span class="tcg-count">{tcgCards.length} carte{tcgCards.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="tcg-grid">
+          {tcgCards.slice(0, 8).map(card => (
+            <div class="tcg-card">
+              <img
+                src={card.image}
+                alt={`Carte ${card.name} — ${card.set}`}
+                width="245" height="342"
+                loading="lazy"
+                class="tcg-card__img"
+              />
+              <div class="tcg-card__info">
+                <span class="tcg-card__set">{card.set}</span>
+                {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+        {tcgCards.length > 8 && (
+          <>
+            <div class="tcg-grid tcg-grid--more" id="tcg-more" hidden>
+              {tcgCards.slice(8).map(card => (
+                <div class="tcg-card">
+                  <img
+                    src={card.image}
+                    alt={`Carte ${card.name} — ${card.set}`}
+                    width="245" height="342"
+                    loading="lazy"
+                    class="tcg-card__img"
+                  />
+                  <div class="tcg-card__info">
+                    <span class="tcg-card__set">{card.set}</span>
+                    {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button class="tcg-more-btn" id="tcg-more-btn">
+              Voir les {tcgCards.length - 8} autres cartes ↓
+            </button>
+          </>
+        )}
+      </section>
+    )}
+
     <AdSlot slot="SLOT_POKEMON_BOTTOM" format="auto" />
   </main>
 </Base>
+
+<script>
+  // ── Shiny toggle ─────────────────────────────────────────────
+  const btn = document.getElementById('shiny-toggle');
+  const img = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
+  if (btn && img) {
+    btn.addEventListener('click', () => {
+      const isShiny = btn.getAttribute('aria-pressed') === 'true';
+      img.src = isShiny ? img.dataset.normal! : img.dataset.shiny!;
+      btn.setAttribute('aria-pressed', String(!isShiny));
+      btn.classList.toggle('shiny-btn--active', !isShiny);
+      btn.textContent = isShiny ? '✨ Shiny' : '◾ Normal';
+      // Animation flash
+      img.style.transition = 'opacity 0.15s';
+      img.style.opacity = '0';
+      setTimeout(() => { img.style.opacity = '1'; }, 150);
+    });
+  }
+
+  // ── TCG show more ─────────────────────────────────────────────
+  const moreBtn = document.getElementById('tcg-more-btn');
+  const moreDiv = document.getElementById('tcg-more');
+  if (moreBtn && moreDiv) {
+    moreBtn.addEventListener('click', () => {
+      moreDiv.hidden = false;
+      moreBtn.hidden = true;
+    });
+  }
+</script>
 
 <style>
 .pkm-header {
@@ -232,7 +412,7 @@ const schema = {
 
 .pkm-header__visual {
   display: flex; justify-content: center; align-items: center;
-  background: linear-gradient(135deg, var(--cream) 0%, #e8f0e8 100%);
+  background: linear-gradient(135deg, var(--bg) 0%, #e8f0e8 100%);
   border-radius: var(--radius); padding: 24px;
   border: 1.5px solid var(--border);
 }
@@ -243,10 +423,51 @@ const schema = {
 }
 .pkm-sprite--placeholder {
   width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
-  font-size: 4rem; color: var(--soft); opacity: 0.3;
+  font-size: 4rem; color: var(--text-soft); opacity: 0.3;
 }
 
-.pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--soft); letter-spacing: 0.1em; margin-bottom: 6px; }
+.pkm-meta-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--text-soft); letter-spacing: 0.1em; }
+.pkm-category { font-size: 0.78rem; color: var(--text-soft); }
+.pkm-category::before { content: '·'; margin-right: 8px; }
+.pkm-gen {
+  font-size: 0.72rem; font-weight: 700; color: var(--text-soft);
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 10px;
+}
+.pkm-badge {
+  font-size: 0.72rem; font-weight: 700; border-radius: 999px; padding: 2px 10px;
+}
+.pkm-badge--legendary { background: #fff8e1; color: #b8860b; border: 1px solid #f0d060; }
+.pkm-badge--mythical  { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
+
+/* Shiny toggle */
+.pkm-header__visual { position: relative; }
+.shiny-btn {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: 999px; padding: 5px 14px;
+  font-size: 0.78rem; font-weight: 700; color: var(--text-mid);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.shiny-btn:hover { border-color: var(--red); color: var(--red); }
+.shiny-btn--active {
+  background: linear-gradient(135deg, #fff9c4, #ffe082);
+  border-color: #f0c040; color: #7a5900;
+}
+
+/* Noms internationaux */
+.names-intl {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+}
+.name-intl {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px 10px;
+  font-size: 0.78rem; color: var(--text-mid);
+}
+.name-intl__flag { font-size: 0.9rem; line-height: 1; }
+.name-intl__val { font-weight: 500; }
 .pkm-header__info h1 { margin-bottom: 12px; }
 .pkm-types { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .type-badge {
@@ -254,20 +475,42 @@ const schema = {
   font-size: 0.8rem; font-weight: 700; color: #fff;
   text-transform: uppercase; letter-spacing: 0.06em;
 }
-.pkm-summary { color: var(--mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
+.pkm-desc {
+  font-size: 0.92rem; color: var(--text-mid); line-height: 1.65;
+  border-left: 3px solid var(--red-soft); padding-left: 14px;
+  margin: 0 0 16px; font-style: italic;
+}
+.pkm-summary { color: var(--text-mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
+
+/* Évolutions */
+.pkm-evolutions {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.evo-chip {
+  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+  border: 1.5px solid var(--border); color: var(--text-mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.evo-chip:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.evo-current {
+  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;
+  background: var(--red); color: #fff;
+}
+.stat-fill--capture { background: var(--text-soft); }
 
 /* Stats */
 .pkm-stats { margin-top: 12px; }
 .pkm-stats summary {
-  font-size: 0.85rem; font-weight: 700; color: var(--soft);
+  font-size: 0.85rem; font-weight: 700; color: var(--text-soft);
   cursor: pointer; user-select: none; padding: 8px 0;
 }
 .stats-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .stat-row { display: flex; align-items: center; gap: 10px; }
-.stat-name { width: 70px; font-size: 0.72rem; color: var(--soft); text-transform: capitalize; flex-shrink: 0; }
+.stat-name { width: 70px; font-size: 0.72rem; color: var(--text-soft); text-transform: capitalize; flex-shrink: 0; }
 .stat-bar { flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
 .stat-fill { height: 100%; background: var(--red); border-radius: 999px; transition: width 0.6s ease; }
-.stat-val { width: 28px; font-size: 0.75rem; font-weight: 700; color: var(--dark); text-align: right; }
+.stat-val { width: 36px; font-size: 0.75rem; font-weight: 700; color: var(--text); text-align: right; }
 
 /* Classes */
 .class-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
@@ -278,7 +521,7 @@ const schema = {
   transition: border-color 0.15s;
 }
 .class-stat-item:hover { border-color: var(--red); text-decoration: none; }
-.class-stat-name { font-weight: 600; color: var(--dark); font-size: 0.9rem; }
+.class-stat-name { font-weight: 600; color: var(--text); font-size: 0.9rem; }
 .class-stat-count { font-size: 0.78rem; color: var(--red); font-weight: 700; }
 
 /* Réutilisés */
@@ -288,10 +531,42 @@ const schema = {
 .pkm-link {
   padding: 6px 14px; background: var(--bg2);
   border: 1.5px solid var(--border); border-radius: 999px;
-  font-size: 0.85rem; font-weight: 500; color: var(--mid);
+  font-size: 0.85rem; font-weight: 500; color: var(--text-mid);
   transition: border-color 0.15s, color 0.15s;
 }
 .pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
 .trainers-section { margin: 0 0 40px; }
 .trainers-section h2 { margin-bottom: 4px; }
+
+/* TCG */
+.tcg-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.tcg-header h2 { margin-bottom: 0; }
+.tcg-count { font-size: 0.8rem; color: var(--text-soft); }
+.tcg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 12px;
+}
+.tcg-grid--more { margin-top: 12px; }
+.tcg-card { display: flex; flex-direction: column; gap: 6px; }
+.tcg-card__img {
+  width: 100%; height: auto; border-radius: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tcg-card__img:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(26,26,46,0.15);
+}
+.tcg-card__info { display: flex; flex-direction: column; gap: 2px; }
+.tcg-card__set { font-size: 0.68rem; color: var(--text-soft); line-height: 1.3; }
+.tcg-card__rarity { font-size: 0.65rem; color: var(--red); font-weight: 600; }
+.tcg-more-btn {
+  margin-top: 14px; display: block; width: 100%;
+  padding: 10px; border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm); background: none;
+  font-size: 0.85rem; color: var(--text-soft); cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.tcg-more-btn:hover { border-color: var(--red); color: var(--red); }
 </style>

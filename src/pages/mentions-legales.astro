@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+---
+
+<Base
+  title="Mentions légales | PokéNom"
+  description="Mentions légales du site PokéNom — éditeur, hébergeur, propriété intellectuelle."
+  canonical="https://pokenom.fr/mentions-legales"
+  noindex={true}
+>
+  <main id="main" class="container legal-page">
+    <h1>Mentions légales</h1>
+
+    <section>
+      <h2>Éditeur du site</h2>
+      <p>
+        Le site PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) est un site personnel
+        à but non commercial, édité à titre privé par un particulier.
+      </p>
+      <p>Contact : <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>
+    </section>
+
+    <section>
+      <h2>Hébergement</h2>
+      <p>
+        Ce site est hébergé par <strong>Cloudflare, Inc.</strong><br />
+        101 Townsend St, San Francisco, CA 94107, États-Unis<br />
+        <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        Pokémon et tous les personnages, noms et éléments associés sont des marques déposées
+        de <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> et de
+        <strong>The Pokémon Company</strong>.
+      </p>
+      <p>
+        PokéNom est un site <em>fan-made</em> non officiel, sans affiliation ni approbation
+        de Nintendo ou The Pokémon Company. Aucun contenu protégé n'est reproduit à des fins
+        commerciales.
+      </p>
+      <p>
+        Les données des dresseurs sont issues des jeux officiels Pokémon et compilées
+        manuellement à titre informatif.
+      </p>
+      <p>
+        Les sprites de dresseurs sont fournis par
+        <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>
+        (fan project).
+        Les sprites de Pokémon proviennent du projet
+        <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Limitation de responsabilité</h2>
+      <p>
+        Les informations présentées sur ce site sont fournies à titre indicatif.
+        L'éditeur ne saurait être tenu responsable des erreurs ou omissions dans les données.
+      </p>
+    </section>
+
+    <section>
+      <h2>Cookies et publicité</h2>
+      <p>
+        Ce site utilise des cookies publicitaires via Google AdSense uniquement avec votre
+        consentement explicite. Pour en savoir plus, consultez notre
+        <a href="/confidentialite">politique de confidentialité</a>.
+      </p>
+    </section>
+  </main>
+</Base>
+
+<style>
+.legal-page {
+  max-width: 720px;
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+.legal-page h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 40px;
+}
+.legal-page section {
+  margin-bottom: 36px;
+}
+.legal-page h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.legal-page p {
+  color: var(--text-mid);
+  font-size: 0.93rem;
+  margin-bottom: 8px;
+}
+</style>
