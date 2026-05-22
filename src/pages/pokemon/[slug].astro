@@ -5,6 +5,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
 import { toPokemonSlug } from '../../utils/slug';
+// toPokemonSlug utilisé aussi côté serveur pour les liens d'évolution
 import '../../styles/global.css';
 
 // Charger les métadonnées PokéAPI si disponibles
@@ -51,7 +52,9 @@ const tcgCards = pokemonTcg[slug] ?? [];
 // Sprites
 const spriteUrl      = meta?.sprite_hd ?? meta?.sprite ?? null;
 const spriteShinyUrl = (meta?.sprite_hd_shiny ?? meta?.sprite_shiny ?? null) as string | null;
+const spriteAnimUrl  = (meta?.sprite_anim ?? null) as string | null;
 const hasShiny       = !!spriteShinyUrl;
+const hasAnim        = !!spriteAnimUrl;
 
 // Base
 const types        = (meta?.types ?? []) as string[];
@@ -59,14 +62,35 @@ const stats        = (meta?.stats ?? {}) as Record<string, number>;
 const trainerCount = trainers.length;
 
 // Données espèce
-const descFr      = (meta?.description_fr ?? '') as string;
-const categoryFr  = (meta?.category_fr ?? '') as string;
-const generation  = (meta?.generation ?? '') as string;
-const captureRate = meta?.capture_rate as number | null ?? null;
-const isLegendary = meta?.is_legendary ?? false;
-const isMythical  = meta?.is_mythical ?? false;
-const evolvesFrom = (meta?.evolves_from ?? null) as string | null;
-const evolvesTo   = (meta?.evolves_to ?? []) as string[];
+const descFr         = (meta?.description_fr ?? '') as string;
+const descsByGame    = (meta?.descriptions_fr ?? {}) as Record<string, string>;
+const categoryFr     = (meta?.category_fr ?? '') as string;
+const generation     = (meta?.generation ?? '') as string;
+const captureRate    = meta?.capture_rate as number | null ?? null;
+const isLegendary    = meta?.is_legendary ?? false;
+const isMythical     = meta?.is_mythical ?? false;
+const evolvesFrom    = (meta?.evolves_from ?? null) as string | null;
+const evolvesTo      = (meta?.evolves_to ?? []) as string[];
+const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; is_hidden:boolean}[];
+const genderFr       = meta?.gender_fr ?? null;   // "Asexué" ou number (% femelle)
+const habitatFr      = (meta?.habitat_fr ?? null) as string | null;
+const baseHappiness  = meta?.base_happiness as number | null ?? null;
+const hatchCounter   = meta?.hatch_counter as number | null ?? null;
+const hatchSteps     = hatchCounter !== null ? (hatchCounter + 1) * 255 : null;
+const baseExperience = meta?.base_experience as number | null ?? null;
+const heldItems      = (meta?.held_items ?? []) as {item:string; rarity:number|null}[];
+
+// Résumé biologique
+const hasBio = genderFr !== null || habitatFr || baseHappiness !== null || hatchSteps !== null;
+
+function genderLabel(g: string | number | null): string {
+  if (g === null) return '';
+  if (g === 'Asexué') return '⚪ Asexué';
+  const f = Number(g);
+  if (f === 0)   return '♂ 100 %';
+  if (f === 100) return '♀ 100 %';
+  return `♂ ${100 - f} % / ♀ ${f} %`;
+}
 
 // Noms internationaux
 const namesIntl = (meta?.names_intl ?? {}) as Record<string, string>;
@@ -89,6 +113,37 @@ for (const [frName, d] of Object.entries(pokemonMeta as Record<string, any>)) {
 }
 const evFromFr = evolvesFrom ? slugToFr[evolvesFrom] : null;
 const evToFr   = evolvesTo.map(s => ({ slug: s, fr: slugToFr[s] ?? s }));
+
+// ── Radar chart SVG (6 stats) ─────────────────────────────────
+const STAT_ORDER = ['hp','attack','defense','speed','special-defense','special-attack'];
+const STAT_LABELS: Record<string,string> = {
+  'hp':'PV', 'attack':'Atk', 'defense':'Déf',
+  'special-attack':'Att.Spé', 'special-defense':'Déf.Spé', 'speed':'Vit',
+};
+const RADAR_CX = 120, RADAR_CY = 128, RADAR_R = 84;
+const TEXT_ANCHORS = ['middle','start','start','middle','end','end'];
+
+function rpt(i: number, fraction: number) {
+  const a = (Math.PI * 2 * i / 6) - Math.PI / 2;
+  return [RADAR_CX + fraction * RADAR_R * Math.cos(a), RADAR_CY + fraction * RADAR_R * Math.sin(a)] as [number,number];
+}
+function hexPts(frac: number) {
+  return Array.from({length:6},(_,i)=>rpt(i,frac)).map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+}
+const radarAxes  = Array.from({length:6},(_,i)=>rpt(i,1));
+const radarPoly  = STAT_ORDER.map((s,i)=>rpt(i,(stats[s]??0)/255)).map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+const radarLabels = STAT_ORDER.map((s,i)=>{
+  const lr = RADAR_R * 1.26;
+  const a  = (Math.PI*2*i/6) - Math.PI/2;
+  return {
+    label: STAT_LABELS[s]??s,
+    val:   stats[s]??0,
+    x:     (RADAR_CX + lr*Math.cos(a)).toFixed(1),
+    y:     (RADAR_CY + lr*Math.sin(a)).toFixed(1),
+    anchor: TEXT_ANCHORS[i],
+  };
+});
+const hasStats = STAT_ORDER.some(s => stats[s]);
 
 // Jeux où ce Pokémon apparaît
 const gamesSet = new Set(trainers.map((t: any) => t.game));
@@ -151,6 +206,7 @@ const schema = {
             src={spriteUrl}
             data-normal={spriteUrl}
             data-shiny={spriteShinyUrl ?? ''}
+            data-anim={spriteAnimUrl ?? ''}
             alt={`Illustration officielle de ${pokemonName}`}
             width="220" height="220"
             class="pkm-sprite"
@@ -161,10 +217,12 @@ const schema = {
             <span>?</span>
           </div>
         )}
-        {hasShiny && (
-          <button id="shiny-toggle" class="shiny-btn" aria-pressed="false" title="Voir la version Shiny">
-            ✨ Shiny
-          </button>
+        {(hasShiny || hasAnim) && (
+          <div class="sprite-toggles">
+            <button class="sprite-btn sprite-btn--active" data-mode="normal">Normal</button>
+            {hasShiny && <button class="sprite-btn" data-mode="shiny">✨ Shiny</button>}
+            {hasAnim  && <button class="sprite-btn" data-mode="anim">▶ Animé</button>}
+          </div>
         )}
       </div>
 
@@ -216,357 +274,4 @@ const schema = {
         {(evFromFr || evToFr.length > 0) && (
           <div class="pkm-evolutions">
             {evFromFr && (
-              <a href={`/pokemon/${evolvesFrom}`} class="evo-chip evo-chip--from">
-                ← {evFromFr}
-              </a>
-            )}
-            <span class="evo-current">{pokemonName}</span>
-            {evToFr.map(e => (
-              <a href={`/pokemon/${e.slug}`} class="evo-chip evo-chip--to">
-                {e.fr} →
-              </a>
-            ))}
-          </div>
-        )}
-
-        {(Object.keys(stats).length > 0 || captureRate !== null) && (
-          <details class="pkm-stats">
-            <summary>Statistiques de base</summary>
-            <div class="stats-bars">
-              {Object.entries(stats).map(([stat, val]) => (
-                <div class="stat-row">
-                  <span class="stat-name">{stat.replace('special-','sp.')}</span>
-                  <div class="stat-bar">
-                    <div class="stat-fill" style={`width:${Math.min(100, Math.round((val as number)/255*100))}%`}></div>
-                  </div>
-                  <span class="stat-val">{val as number}</span>
-                </div>
-              ))}
-              {captureRate !== null && (
-                <div class="stat-row">
-                  <span class="stat-name">Capture</span>
-                  <div class="stat-bar">
-                    <div class="stat-fill stat-fill--capture" style={`width:${Math.round(captureRate/255*100)}%`}></div>
-                  </div>
-                  <span class="stat-val">{captureRate}/255</span>
-                </div>
-              )}
-            </div>
-          </details>
-        )}
-      </div>
-    </header>
-
-    <AdSlot slot="SLOT_POKEMON_TOP" format="auto" />
-
-    <!-- Dresseurs -->
-    <section class="trainers-section">
-      <h2>Dresseurs utilisant {pokemonName}</h2>
-      <p style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
-        {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
-        {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
-      </p>
-
-      <div class="cards-grid">
-        {trainers.slice(0, 6).map((t: any) => <TrainerCard trainer={t} />)}
-      </div>
-
-      {trainerCount > 6 && (
-        <>
-          <AdSlot slot="SLOT_POKEMON_MID" format="fluid" layout="in-article" />
-          <div class="cards-grid" style="margin-top:16px">
-            {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
-          </div>
-        </>
-      )}
-    </section>
-
-    <!-- Classes qui l'utilisent -->
-    {topClasses.length > 0 && (
-      <section class="related-section">
-        <h2>Qui utilise {pokemonName} ?</h2>
-        <div class="class-stats">
-          {topClasses.map(([cls, count]) => {
-            const cs = cls.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-            return (
-              <a href={`/classe/${cs}`} class="class-stat-item">
-                <span class="class-stat-name">{cls}</span>
-                <span class="class-stat-count">{count}×</span>
-              </a>
-            );
-          })}
-        </div>
-      </section>
-    )}
-
-    <!-- Maillage jeux -->
-    <section class="related-section">
-      <h2>Dans quels jeux ?</h2>
-      <div class="related-chips">
-        {games.map((g: string) => {
-          const gs = g.replace('Pokémon ','').toLowerCase()
-            .normalize('NFD').replace(/[̀-ͯ]/g,'')
-            .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-          return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
-        })}
-      </div>
-    </section>
-
-    <!-- Cartes TCG -->
-    {tcgCards.length > 0 && (
-      <section class="related-section">
-        <div class="tcg-header">
-          <h2>Cartes Pokémon JCC</h2>
-          <span class="tcg-count">{tcgCards.length} carte{tcgCards.length > 1 ? 's' : ''}</span>
-        </div>
-        <div class="tcg-grid">
-          {tcgCards.slice(0, 8).map(card => (
-            <div class="tcg-card">
-              <img
-                src={card.image}
-                alt={`Carte ${card.name} — ${card.set}`}
-                width="245" height="342"
-                loading="lazy"
-                class="tcg-card__img"
-              />
-              <div class="tcg-card__info">
-                <span class="tcg-card__set">{card.set}</span>
-                {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-        {tcgCards.length > 8 && (
-          <>
-            <div class="tcg-grid tcg-grid--more" id="tcg-more" hidden>
-              {tcgCards.slice(8).map(card => (
-                <div class="tcg-card">
-                  <img
-                    src={card.image}
-                    alt={`Carte ${card.name} — ${card.set}`}
-                    width="245" height="342"
-                    loading="lazy"
-                    class="tcg-card__img"
-                  />
-                  <div class="tcg-card__info">
-                    <span class="tcg-card__set">{card.set}</span>
-                    {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button class="tcg-more-btn" id="tcg-more-btn">
-              Voir les {tcgCards.length - 8} autres cartes ↓
-            </button>
-          </>
-        )}
-      </section>
-    )}
-
-    <AdSlot slot="SLOT_POKEMON_BOTTOM" format="auto" />
-  </main>
-</Base>
-
-<script>
-  // ── Shiny toggle ─────────────────────────────────────────────
-  const btn = document.getElementById('shiny-toggle');
-  const img = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
-  if (btn && img) {
-    btn.addEventListener('click', () => {
-      const isShiny = btn.getAttribute('aria-pressed') === 'true';
-      img.src = isShiny ? img.dataset.normal! : img.dataset.shiny!;
-      btn.setAttribute('aria-pressed', String(!isShiny));
-      btn.classList.toggle('shiny-btn--active', !isShiny);
-      btn.textContent = isShiny ? '✨ Shiny' : '◾ Normal';
-      // Animation flash
-      img.style.transition = 'opacity 0.15s';
-      img.style.opacity = '0';
-      setTimeout(() => { img.style.opacity = '1'; }, 150);
-    });
-  }
-
-  // ── TCG show more ─────────────────────────────────────────────
-  const moreBtn = document.getElementById('tcg-more-btn');
-  const moreDiv = document.getElementById('tcg-more');
-  if (moreBtn && moreDiv) {
-    moreBtn.addEventListener('click', () => {
-      moreDiv.hidden = false;
-      moreBtn.hidden = true;
-    });
-  }
-</script>
-
-<style>
-.pkm-header {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 48px;
-  align-items: start;
-  padding: 36px 0 40px;
-  border-bottom: 1.5px solid var(--border);
-  margin-bottom: 40px;
-}
-@media (max-width: 640px) {
-  .pkm-header { grid-template-columns: 1fr; }
-}
-
-.pkm-header__visual {
-  display: flex; justify-content: center; align-items: center;
-  background: linear-gradient(135deg, var(--bg) 0%, #e8f0e8 100%);
-  border-radius: var(--radius); padding: 24px;
-  border: 1.5px solid var(--border);
-}
-.pkm-sprite {
-  width: 180px; height: 180px; object-fit: contain;
-  image-rendering: pixelated;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
-}
-.pkm-sprite--placeholder {
-  width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
-  font-size: 4rem; color: var(--text-soft); opacity: 0.3;
-}
-
-.pkm-meta-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
-.pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--text-soft); letter-spacing: 0.1em; }
-.pkm-category { font-size: 0.78rem; color: var(--text-soft); }
-.pkm-category::before { content: '·'; margin-right: 8px; }
-.pkm-gen {
-  font-size: 0.72rem; font-weight: 700; color: var(--text-soft);
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 999px; padding: 2px 10px;
-}
-.pkm-badge {
-  font-size: 0.72rem; font-weight: 700; border-radius: 999px; padding: 2px 10px;
-}
-.pkm-badge--legendary { background: #fff8e1; color: #b8860b; border: 1px solid #f0d060; }
-.pkm-badge--mythical  { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
-
-/* Shiny toggle */
-.pkm-header__visual { position: relative; }
-.shiny-btn {
-  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-  background: var(--bg2); border: 1.5px solid var(--border);
-  border-radius: 999px; padding: 5px 14px;
-  font-size: 0.78rem; font-weight: 700; color: var(--text-mid);
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.shiny-btn:hover { border-color: var(--red); color: var(--red); }
-.shiny-btn--active {
-  background: linear-gradient(135deg, #fff9c4, #ffe082);
-  border-color: #f0c040; color: #7a5900;
-}
-
-/* Noms internationaux */
-.names-intl {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
-}
-.name-intl {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 999px; padding: 3px 10px;
-  font-size: 0.78rem; color: var(--text-mid);
-}
-.name-intl__flag { font-size: 0.9rem; line-height: 1; }
-.name-intl__val { font-weight: 500; }
-.pkm-header__info h1 { margin-bottom: 12px; }
-.pkm-types { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.type-badge {
-  padding: 4px 14px; border-radius: 999px;
-  font-size: 0.8rem; font-weight: 700; color: #fff;
-  text-transform: uppercase; letter-spacing: 0.06em;
-}
-.pkm-desc {
-  font-size: 0.92rem; color: var(--text-mid); line-height: 1.65;
-  border-left: 3px solid var(--red-soft); padding-left: 14px;
-  margin: 0 0 16px; font-style: italic;
-}
-.pkm-summary { color: var(--text-mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
-
-/* Évolutions */
-.pkm-evolutions {
-  display: flex; align-items: center; gap: 8px;
-  flex-wrap: wrap; margin-bottom: 16px;
-}
-.evo-chip {
-  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
-  border: 1.5px solid var(--border); color: var(--text-mid);
-  transition: border-color 0.15s, color 0.15s;
-}
-.evo-chip:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
-.evo-current {
-  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;
-  background: var(--red); color: #fff;
-}
-.stat-fill--capture { background: var(--text-soft); }
-
-/* Stats */
-.pkm-stats { margin-top: 12px; }
-.pkm-stats summary {
-  font-size: 0.85rem; font-weight: 700; color: var(--text-soft);
-  cursor: pointer; user-select: none; padding: 8px 0;
-}
-.stats-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.stat-row { display: flex; align-items: center; gap: 10px; }
-.stat-name { width: 70px; font-size: 0.72rem; color: var(--text-soft); text-transform: capitalize; flex-shrink: 0; }
-.stat-bar { flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
-.stat-fill { height: 100%; background: var(--red); border-radius: 999px; transition: width 0.6s ease; }
-.stat-val { width: 36px; font-size: 0.75rem; font-weight: 700; color: var(--text); text-align: right; }
-
-/* Classes */
-.class-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.class-stat-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 16px; background: var(--bg2);
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  transition: border-color 0.15s;
-}
-.class-stat-item:hover { border-color: var(--red); text-decoration: none; }
-.class-stat-name { font-weight: 600; color: var(--text); font-size: 0.9rem; }
-.class-stat-count { font-size: 0.78rem; color: var(--red); font-weight: 700; }
-
-/* Réutilisés */
-.related-section { margin: 40px 0; }
-.related-section h2 { margin-bottom: 12px; }
-.related-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.pkm-link {
-  padding: 6px 14px; background: var(--bg2);
-  border: 1.5px solid var(--border); border-radius: 999px;
-  font-size: 0.85rem; font-weight: 500; color: var(--text-mid);
-  transition: border-color 0.15s, color 0.15s;
-}
-.pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
-.trainers-section { margin: 0 0 40px; }
-.trainers-section h2 { margin-bottom: 4px; }
-
-/* TCG */
-.tcg-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
-.tcg-header h2 { margin-bottom: 0; }
-.tcg-count { font-size: 0.8rem; color: var(--text-soft); }
-.tcg-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-  gap: 12px;
-}
-.tcg-grid--more { margin-top: 12px; }
-.tcg-card { display: flex; flex-direction: column; gap: 6px; }
-.tcg-card__img {
-  width: 100%; height: auto; border-radius: 8px;
-  box-shadow: var(--shadow);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.tcg-card__img:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 6px 20px rgba(26,26,46,0.15);
-}
-.tcg-card__info { display: flex; flex-direction: column; gap: 2px; }
-.tcg-card__set { font-size: 0.68rem; color: var(--text-soft); line-height: 1.3; }
-.tcg-card__rarity { font-size: 0.65rem; color: var(--red); font-weight: 600; }
-.tcg-more-btn {
-  margin-top: 14px; display: block; width: 100%;
-  padding: 10px; border: 1.5px dashed var(--border);
-  border-radius: var(--radius-sm); background: none;
-  font-size: 0.85rem; color: var(--text-soft); cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-.tcg-more-btn:hover { border-color: var(--red); color: var(--red); }
-</style>
+              <a href={`/pokemon/$

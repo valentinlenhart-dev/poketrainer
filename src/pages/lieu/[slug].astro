@@ -35,7 +35,7 @@ const description = `${count} dresseur${count>1?'s':''} sur ${displayPlace} dans
       <h1>{displayPlace}</h1>
       <p class="page-sub">{count} dresseur{count>1?'s':''} · {games.map((g: string) => g.replace('Pokémon ','')).join(', ')}</p>
     </header>
-    <AdSlot slot="SLOT_LIEU_TOP" format="auto" />
+    <AdSlot slot="5466423598" format="auto" />
     <section class="section-block">
       <h2>Dresseurs rencontrés ici</h2>
       <div class="cards-grid" style="margin-top:16px">
@@ -43,14 +43,14 @@ const description = `${count} dresseur${count>1?'s':''} sur ${displayPlace} dans
       </div>
       {count > 6 && (
         <>
-          <AdSlot slot="SLOT_LIEU_MID" format="fluid" layout="in-article" />
+          <AdSlot slot="2840260251" format="fluid" layout="in-article" />
           <div class="cards-grid" style="margin-top:16px">
             {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
           </div>
         </>
       )}
     </section>
-    <AdSlot slot="SLOT_LIEU_BOTTOM" format="auto" />
+    <AdSlot slot="1708205042" format="auto" />
   </main>
 </Base>
 <style>

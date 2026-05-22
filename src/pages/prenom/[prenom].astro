@@ -147,23 +147,38 @@ const schemaList = count > 0 ? {
       </div>
     ) : (
       <>
+        <!-- Filtre par jeu (affiché seulement si plusieurs jeux) -->
+        {gamesUsed.length > 1 && (
+          <div class="game-filter" id="game-filter">
+            <button class="game-filter__btn game-filter__btn--active" data-filter="all">
+              Tous ({count})
+            </button>
+            {gamesUsed.map(g => {
+              const gs = g.replace('Pokémon ','').toLowerCase()
+                .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+              const cnt = trainers.filter(t => t.game === g).length;
+              return (
+                <button class="game-filter__btn" data-filter={gs}>
+                  {g.replace('Pokémon ','')} ({cnt})
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <section aria-label={`${count} dresseur${count>1?'s':''} nommé${count>1?'s':''} ${displayName}`}>
-          <div class="cards-grid">
-            {trainers.slice(0, 3).map(t => (
-              <TrainerCard trainer={t} headingLevel="h2" />
+          <div class="cards-grid" id="trainers-grid">
+            {trainers.map(t => (
+              <div class="trainer-filter-item" data-game={t.game_slug}>
+                <TrainerCard trainer={t} headingLevel="h2" />
+              </div>
             ))}
           </div>
-
+          <p class="filter-empty" id="filter-empty" style="display:none">
+            Aucun dresseur dans ce jeu.
+          </p>
           {count > 3 && (
-            <>
-              <!-- Pub in-article après les 3 premiers -->
-              <AdSlot slot="6404176727" format="fluid" layout="in-article" />
-              <div class="cards-grid" style="margin-top:16px">
-                {trainers.slice(3).map(t => (
-                  <TrainerCard trainer={t} headingLevel="h2" />
-                ))}
-              </div>
-            </>
+            <AdSlot slot="6404176727" format="fluid" layout="in-article" />
           )}
         </section>
 
@@ -234,32 +249,21 @@ const schemaList = count > 0 ? {
   </main>
 </Base>
 
-<style>
-.prenom-header { padding: 36px 0 28px; }
-.prenom-header__badge { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-.prenom-header h1 { margin: 10px 0 12px; }
-.prenom-header__desc { font-size: 1.05rem; color: var(--text-soft); max-width: 560px; }
+<script>
+  const filterBtns  = document.querySelectorAll<HTMLButtonElement>('.game-filter__btn');
+  const items       = document.querySelectorAll<HTMLElement>('.trainer-filter-item');
+  const emptyMsg    = document.getElementById('filter-empty') as HTMLElement | null;
 
-/* Sections */
-.related-section { margin: 48px 0 0; }
-.related-section h2 { margin-bottom: 4px; }
-.related-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.pkm-link {
-  padding: 6px 14px; background: var(--bg2);
-  border: 1.5px solid var(--border); border-radius: 999px;
-  font-size: 0.85rem; font-weight: 500; color: var(--text-mid);
-  transition: border-color 0.15s, color 0.15s;
-}
-.pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter ?? 'all';
 
-.faq-section { margin: 48px 0; padding: 32px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius); }
-.faq-section h2 { margin-bottom: 20px; }
-.faq-list { display: flex; flex-direction: column; gap: 20px; }
-.faq-item dt { font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.faq-item dd { color: var(--text-soft); line-height: 1.65; margin-left: 0; }
+      // Active state
+      filterBtns.forEach(b => b.classList.toggle('game-filter__btn--active', b === btn));
 
-.empty-state { text-align: center; padding: 80px 20px; }
-.empty-state__emoji { font-size: 4rem; display: block; margin-bottom: 20px; }
-.btn-red { display: inline-block; background: var(--red); color: #fff; padding: 12px 24px; border-radius: var(--radius); font-weight: 700; }
-.btn-red:hover { background: var(--red-dark); text-decoration: none; }
-</style>
+      // Show/hide items
+      let visible = 0;
+      items.forEach(item => {
+        const show = filter === 'all' || item.dataset.game === filter;
+        item.style.display = show ? '' : 'none';
+        if (show) visible++;

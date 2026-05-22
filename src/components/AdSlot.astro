@@ -1,9 +1,4 @@
 ---
-// ⚠️ Remplacer PUBLISHER par ton vrai ca-pub-XXXXXXXXXX depuis Google AdSense
-// ⚠️ Remplacer chaque slot string par l'ID numérique du bloc AdSense correspondant
-//    (ex: "1234567890" au lieu de "SLOT_PRENOM_TOP")
-//    Les blocs se créent dans AdSense → Annonces → Par bloc d'annonces
-
 export interface Props {
   slot: string;
   format?: 'auto' | 'fluid' | 'rectangle';
@@ -13,30 +8,24 @@ export interface Props {
 
 const { slot, format = 'auto', layout = '', label = true } = Astro.props;
 const PUBLISHER = 'ca-pub-6295830585093654';
+
+// Si le slot est encore un placeholder, on n'affiche rien
+const isPlaceholder = !slot || slot.startsWith('SLOT_') || slot.includes('XXXX');
 ---
 
-<div class="ad-slot">
-  {label && <span class="ad-slot__label">Publicité</span>}
-  <ins
-    class="adsbygoogle"
-    style="display:block"
-    data-ad-client={PUBLISHER}
-    data-ad-slot={slot}
-    data-ad-format={format}
-    data-ad-layout={layout || undefined}
-    data-full-width-responsive="true"
-  ></ins>
-  <!-- Pas de push() ici : c'est CookieBanner qui charge AdSense et pousse les blocs après consentement -->
-</div>
-
-<style>
-.ad-slot { margin: 24px 0; text-align: center; }
-.ad-slot__label {
-  display: block;
-  font-size: 0.65rem;
-  color: var(--soft, #aaa);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-</style>
+{!isPlaceholder && (
+  <div class="ad-slot">
+    {label && <span class="ad-slot__label">Publicité</span>}
+    <ins
+      class="adsbygoogle"
+      style={layout === 'in-article'
+        ? 'display:block;text-align:center'
+        : 'display:block'}
+      data-ad-client={PUBLISHER}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-ad-layout={layout === 'in-article' ? 'in-article' : undefined}
+      data-full-width-responsive="true"
+    ></ins>
+  </div>
+)}

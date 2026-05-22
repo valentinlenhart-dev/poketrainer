@@ -30,7 +30,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 ---
 
 <!DOCTYPE html>
-<html lang="fr" data-ads-pub={ADSENSE_ID}>
+<html lang="fr" data-ads-pub={ADSENSE_ID} data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -73,6 +73,16 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
   <style is:global>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
   </style>
+
+  <!-- Dark mode : applique le thème avant le premier rendu pour éviter le flash -->
+  <script is:inline>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved ?? (prefersDark ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
 </head>
 <body>
 
@@ -88,8 +98,28 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         <li><a href="/top/legendaires">Légendaires</a></li>
         <li><a href="/top/repandus">Top prénoms</a></li>
       </ul>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Basculer le thème sombre" title="Thème sombre">
+        <span class="theme-toggle__icon">🌙</span>
+      </button>
     </div>
   </nav>
+
+  <script>
+    const btn = document.getElementById('theme-toggle');
+    const icon = btn?.querySelector('.theme-toggle__icon');
+    function applyTheme(theme: string) {
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem('theme', theme);
+      if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    // Init icon based on current theme
+    const current = document.documentElement.dataset.theme ?? 'light';
+    if (icon) icon.textContent = current === 'dark' ? '☀️' : '🌙';
+    btn?.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+    });
+  </script>
 
   <slot />
 
