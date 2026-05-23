@@ -47,7 +47,7 @@ const { slug, pokemonName, trainers } = Astro.props as {
 };
 
 const meta     = pokemonMeta[pokemonName] ?? null;
-const tcgCards = pokemonTcg[slug] ?? [];
+const tcgCards = pokemonTcg[meta?.slug ?? slug] ?? [];
 
 // Sprites
 const spriteUrl      = meta?.sprite_hd ?? meta?.sprite ?? null;
