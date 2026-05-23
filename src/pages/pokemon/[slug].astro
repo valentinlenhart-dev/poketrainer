@@ -157,6 +157,31 @@ for (const t of trainers) {
 const topClasses = Object.entries(classCount)
   .sort((a, b) => b[1] - a[1]).slice(0, 5);
 
+const RARITY_FR: Record<string, string> = {
+  'Common':           'Commune',
+  'Uncommon':         'Peu commune',
+  'Rare':             'Rare',
+  'Rare Holo':        'Rare Holo',
+  'Rare Holo V':      'Rare Holo V',
+  'Rare Holo VMAX':   'Rare Holo VMAX',
+  'Rare Holo VSTAR':  'Rare Holo VSTAR',
+  'Rare Holo GX':     'Rare Holo GX',
+  'Rare Holo EX':     'Rare Holo EX',
+  'Rare Ultra':       'Ultra Rare',
+  'Rare Rainbow':     'Rainbow Rare',
+  'Rare Secret':      'Secrète Rare',
+  'Rare Shiny':       'Chromatique Rare',
+  'Rare Shiny GX':    'Chromatique GX',
+  'Amazing Rare':     'Incroyable Rare',
+  'Promo':            'Promo',
+  'LEGEND':           'Légende',
+  'Illustration Rare':       'Rare Illustrée',
+  'Special Illustration Rare': 'Rare Illustrée Spéciale',
+  'Hyper Rare':       'Hyper Rare',
+  'Double Rare':      'Double Rare',
+  'ACE SPEC Rare':    'ACE SPEC Rare',
+};
+
 const TYPE_COLORS: Record<string, string> = {
   fire:'#f08030', water:'#6890f0', grass:'#78c850', electric:'#f8d030',
   ice:'#98d8d8', fighting:'#c03028', poison:'#a040a0', ground:'#e0c068',
@@ -438,15 +463,15 @@ const schema = {
               <img
                 src={card.image}
                 data-hires={card.image.replace(/\.png$/, '_hires.png')}
-                data-caption={card.name + ' — ' + card.set + (card.rarity ? ' · ' + card.rarity : '')}
-                alt={`Carte ${card.name} — ${card.set}`}
+                data-caption={pokemonName + ' — ' + card.set + (card.rarity ? ' · ' + (RARITY_FR[card.rarity] ?? card.rarity) : '')}
+                alt={`Carte ${pokemonName} — ${card.set}`}
                 width="245" height="342"
                 loading="lazy"
                 class="tcg-card__img"
               />
               <div class="tcg-card__info">
                 <span class="tcg-card__set">{card.set}</span>
-                {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+                {card.rarity && <span class="tcg-card__rarity">{RARITY_FR[card.rarity] ?? card.rarity}</span>}
                 {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
               </div>
             </div>
@@ -468,7 +493,7 @@ const schema = {
                   />
                   <div class="tcg-card__info">
                     <span class="tcg-card__set">{card.set}</span>
-                    {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+                    {card.rarity && <span class="tcg-card__rarity">{RARITY_FR[card.rarity] ?? card.rarity}</span>}
                     {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
                   </div>
                 </div>
