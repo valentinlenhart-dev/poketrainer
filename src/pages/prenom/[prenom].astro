@@ -267,3 +267,9 @@ const schemaList = count > 0 ? {
         const show = filter === 'all' || item.dataset.game === filter;
         item.style.display = show ? '' : 'none';
         if (show) visible++;
+      });
+
+      if (emptyMsg) emptyMsg.style.display = visible === 0 ? '' : 'none';
+    });
+  });
+</script>

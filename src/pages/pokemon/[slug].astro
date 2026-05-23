@@ -274,4 +274,569 @@ const schema = {
         {(evFromFr || evToFr.length > 0) && (
           <div class="pkm-evolutions">
             {evFromFr && (
-              <a href={`/pokemon/$
+              <a href={`/pokemon/${toPokemonSlug(evFromFr)}`} class="evo-chip evo-chip--from">
+                ← {evFromFr}
+              </a>
+            )}
+            <span class="evo-current">{pokemonName}</span>
+            {evToFr.map(e => (
+              <a href={`/pokemon/${toPokemonSlug(e.fr)}`} class="evo-chip evo-chip--to">
+                {e.fr} →
+              </a>
+            ))}
+          </div>
+        )}
+
+        {hasStats && (
+          <div class="radar-wrap">
+            <svg viewBox="0 0 240 260" class="stat-radar" aria-label="Radar des statistiques">
+              {[0.25, 0.5, 0.75, 1].map(f => (
+                <polygon points={hexPts(f)} class={`radar-grid${f===1?' radar-grid--outer':''}`} />
+              ))}
+              {radarAxes.map(([x,y]) => (
+                <line x1={RADAR_CX} y1={RADAR_CY} x2={x} y2={y} class="radar-axis" />
+              ))}
+              <polygon points={radarPoly} class="radar-fill" />
+              {radarLabels.map(l => (
+                <>
+                  <text x={l.x} y={l.y} class="radar-lbl" text-anchor={l.anchor}>{l.label}</text>
+                  <text x={l.x} y={String(Number(l.y)+12)} class="radar-val" text-anchor={l.anchor}>{l.val}</text>
+                </>
+              ))}
+            </svg>
+            {captureRate !== null && (
+              <p class="radar-capture">Taux de capture : <strong>{captureRate}/255</strong></p>
+            )}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <AdSlot slot="4657802019" format="auto" />
+
+    <!-- Infos biologiques -->
+    {hasBio && (
+      <section class="bio-section">
+        <h2>Informations</h2>
+        <dl class="bio-grid">
+          {genderFr !== null && (
+            <><dt>Genre</dt><dd>{genderLabel(genderFr)}</dd></>
+          )}
+          {habitatFr && (
+            <><dt>Habitat</dt><dd>{habitatFr}</dd></>
+          )}
+          {baseHappiness !== null && (
+            <><dt>Bonheur de base</dt><dd>{baseHappiness}/255</dd></>
+          )}
+          {hatchSteps !== null && (
+            <><dt>Éclosion</dt><dd>~{hatchSteps.toLocaleString('fr-FR')} pas</dd></>
+          )}
+          {baseExperience !== null && (
+            <><dt>Exp. de base</dt><dd>{baseExperience} XP</dd></>
+          )}
+          {heldItems.length > 0 && (
+            <><dt>Objet tenu</dt><dd>{heldItems.map(h => h.item.replace(/-/g,' ')).join(', ')}</dd></>
+          )}
+        </dl>
+      </section>
+    )}
+
+    <!-- Talents -->
+    {abilities.length > 0 && (
+      <section class="abilities-section">
+        <h2>Talents</h2>
+        <div class="abilities-list">
+          {abilities.map(ab => (
+            <div class={`ability-card${ab.is_hidden ? ' ability-card--hidden' : ''}`}>
+              <div class="ability-card__header">
+                <span class="ability-card__name">{ab.name_fr}</span>
+                {ab.is_hidden && <span class="ability-card__badge">Talent caché</span>}
+              </div>
+              {ab.desc_fr && <p class="ability-card__desc">{ab.desc_fr}</p>}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Descriptions Pokédex par jeu -->
+    {Object.keys(descsByGame).length > 1 && (
+      <section class="pokedex-section">
+        <h2>Entrées Pokédex</h2>
+        <details class="pokedex-accordion">
+          <summary>Voir toutes les descriptions ({Object.keys(descsByGame).length} jeux)</summary>
+          <dl class="pokedex-list">
+            {Object.entries(descsByGame).map(([game, desc]) => (
+              <><dt>{game}</dt><dd>{desc}</dd></>
+            ))}
+          </dl>
+        </details>
+      </section>
+    )}
+
+    <!-- Dresseurs -->
+    <section class="trainers-section">
+      <h2>Dresseurs utilisant {pokemonName}</h2>
+      <p style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
+        {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
+        {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
+      </p>
+      <div class="cards-grid">
+        {trainers.slice(0, 6).map((t: any) => <TrainerCard trainer={t} />)}
+      </div>
+      {trainerCount > 6 && (
+        <>
+          <AdSlot slot="7092393665" format="fluid" layout="in-article" />
+          <div class="cards-grid" style="margin-top:16px">
+            {trainers.slice(6).map((t: any) => <TrainerCard trainer={t} />)}
+          </div>
+        </>
+      )}
+    </section>
+
+    <!-- Classes qui l'utilisent -->
+    {topClasses.length > 0 && (
+      <section class="related-section">
+        <h2>Qui utilise {pokemonName} ?</h2>
+        <div class="class-stats">
+          {topClasses.map(([cls, count]) => {
+            const cs = cls.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+            return (
+              <a href={`/classe/${cs}`} class="class-stat-item">
+                <span class="class-stat-name">{cls}</span>
+                <span class="class-stat-count">{count}×</span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- Dans quels jeux -->
+    <section class="related-section">
+      <h2>Dans quels jeux ?</h2>
+      <div class="related-chips">
+        {games.map((g: string) => {
+          const gs = g.replace('Pokémon ','').toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g,'')
+            .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+          return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
+        })}
+      </div>
+    </section>
+
+    <!-- Cartes TCG -->
+    {tcgCards.length > 0 && (
+      <section class="related-section">
+        <div class="tcg-header">
+          <h2>Cartes Pokémon JCC</h2>
+          <span class="tcg-count">{tcgCards.length} carte{tcgCards.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="tcg-grid">
+          {tcgCards.slice(0, 8).map(card => (
+            <div class="tcg-card">
+              <img
+                src={card.image}
+                data-hires={card.image.replace(/\.png$/, '_hires.png')}
+                data-caption={card.name + ' — ' + card.set + (card.rarity ? ' · ' + card.rarity : '')}
+                alt={`Carte ${card.name} — ${card.set}`}
+                width="245" height="342"
+                loading="lazy"
+                class="tcg-card__img"
+              />
+              <div class="tcg-card__info">
+                <span class="tcg-card__set">{card.set}</span>
+                {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+                {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+        {tcgCards.length > 8 && (
+          <>
+            <div class="tcg-grid tcg-grid--more" id="tcg-more" style="display:none">
+              {tcgCards.slice(8).map(card => (
+                <div class="tcg-card">
+                  <img
+                    src={card.image}
+                    data-hires={card.image.replace(/\.png$/, '_hires.png')}
+                    data-caption={card.name + ' — ' + card.set + (card.rarity ? ' · ' + card.rarity : '')}
+                    alt={`Carte ${card.name} — ${card.set}`}
+                    width="245" height="342"
+                    loading="lazy"
+                    class="tcg-card__img"
+                  />
+                  <div class="tcg-card__info">
+                    <span class="tcg-card__set">{card.set}</span>
+                    {card.rarity && <span class="tcg-card__rarity">{card.rarity}</span>}
+                    {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button class="tcg-more-btn" id="tcg-more-btn">
+              Voir les {tcgCards.length - 8} autres cartes ↓
+            </button>
+          </>
+        )}
+      </section>
+    )}
+
+    <AdSlot slot="6779505269" format="auto" />
+  </main>
+
+  <!-- Modal zoom carte TCG -->
+  <div id="tcg-modal" class="tcg-modal" aria-modal="true" role="dialog" aria-label="Carte agrandie" style="display:none">
+    <div class="tcg-modal__backdrop"></div>
+    <div class="tcg-modal__content">
+      <button class="tcg-modal__close" aria-label="Fermer">✕</button>
+      <img id="tcg-modal-img" src="" alt="Carte Pokémon" class="tcg-modal__img" />
+      <p id="tcg-modal-caption" class="tcg-modal__caption"></p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // ── Sprite toggles (Normal / Shiny / Animé) ───────────────────
+  const img  = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
+  const btns = document.querySelectorAll<HTMLButtonElement>('.sprite-btn');
+
+  const sources: Record<string, string> = {
+    normal: img?.dataset.normal ?? '',
+    shiny:  img?.dataset.shiny  ?? '',
+    anim:   img?.dataset.anim   ?? '',
+  };
+
+  function switchSprite(mode: string) {
+    if (!img || !sources[mode]) return;
+    img.style.opacity = '0';
+    setTimeout(() => {
+      img.src = sources[mode];
+      img.style.imageRendering = mode === 'anim' ? 'auto' : 'pixelated';
+      img.style.opacity = '1';
+    }, 120);
+    btns.forEach(b => b.classList.toggle('sprite-btn--active', b.dataset.mode === mode));
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => switchSprite(btn.dataset.mode!));
+  });
+
+  // ── TCG show more ─────────────────────────────────────────────
+  const moreBtn = document.getElementById('tcg-more-btn');
+  const moreDiv = document.getElementById('tcg-more');
+  moreBtn?.addEventListener('click', () => {
+    if (moreDiv) (moreDiv as HTMLElement).style.display = 'grid';
+    moreBtn.style.display = 'none';
+  });
+
+  // ── TCG card zoom modal ────────────────────────────────────────
+  const modal        = document.getElementById('tcg-modal') as HTMLElement | null;
+  const modalImg     = document.getElementById('tcg-modal-img') as HTMLImageElement | null;
+  const modalCaption = document.getElementById('tcg-modal-caption') as HTMLElement | null;
+  const modalClose   = modal?.querySelector('.tcg-modal__close') as HTMLElement | null;
+  const modalBackdrop = modal?.querySelector('.tcg-modal__backdrop') as HTMLElement | null;
+
+  function openModal(hires: string, caption: string) {
+    if (!modal || !modalImg) return;
+    modalImg.src = hires;
+    if (modalCaption) modalCaption.textContent = caption;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    if (modalImg) modalImg.src = '';
+  }
+
+  document.querySelectorAll<HTMLImageElement>('.tcg-card__img').forEach(img => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => {
+      const hires   = img.dataset.hires   ?? img.src;
+      const caption = img.dataset.caption ?? img.alt;
+      openModal(hires, caption);
+    });
+  });
+
+  modalClose?.addEventListener('click', closeModal);
+  modalBackdrop?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+<style>
+.pkm-header {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  align-items: start;
+  padding: 36px 0 40px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 40px;
+}
+@media (max-width: 640px) {
+  .pkm-header { grid-template-columns: 1fr; }
+}
+.pkm-header__visual {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  background: linear-gradient(135deg, var(--bg) 0%, #e8f0e8 100%);
+  border-radius: var(--radius); padding: 24px;
+  border: 1.5px solid var(--border);
+}
+.pkm-sprite {
+  width: 180px; height: 180px; object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
+  transition: opacity 0.12s;
+}
+.pkm-sprite--placeholder {
+  width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; color: var(--text-soft); opacity: 0.3;
+}
+.pkm-meta-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--text-soft); letter-spacing: 0.1em; }
+.pkm-category { font-size: 0.78rem; color: var(--text-soft); }
+.pkm-category::before { content: '·'; margin-right: 8px; }
+.pkm-gen {
+  font-size: 0.72rem; font-weight: 700; color: var(--text-soft);
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 10px;
+}
+.pkm-badge {
+  font-size: 0.72rem; font-weight: 700; border-radius: 999px; padding: 2px 10px;
+}
+.pkm-badge--legendary { background: #fff8e1; color: #b8860b; border: 1px solid #f0d060; }
+.pkm-badge--mythical  { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
+
+/* Sprite toggles */
+.sprite-toggles {
+  margin-top: 12px;
+  display: flex; gap: 4px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: 999px; padding: 3px;
+}
+.sprite-btn {
+  border: none; background: none; border-radius: 999px;
+  padding: 4px 12px; font-size: 0.74rem; font-weight: 700;
+  color: var(--text-soft); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.sprite-btn:hover { color: var(--text); }
+.sprite-btn--active { background: var(--red); color: #fff; }
+
+/* Noms internationaux */
+.names-intl { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.name-intl {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px 10px;
+  font-size: 0.78rem; color: var(--text-mid);
+}
+.name-intl__flag { font-size: 0.9rem; line-height: 1; }
+.name-intl__val { font-weight: 500; }
+.pkm-header__info h1 { margin-bottom: 12px; }
+.pkm-types { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.type-badge {
+  padding: 4px 14px; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.pkm-desc {
+  font-size: 0.92rem; color: var(--text-mid); line-height: 1.65;
+  border-left: 3px solid var(--red-soft); padding-left: 14px;
+  margin: 0 0 16px; font-style: italic;
+}
+.pkm-summary { color: var(--text-mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
+
+/* Évolutions */
+.pkm-evolutions {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.evo-chip {
+  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+  border: 1.5px solid var(--border); color: var(--text-mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.evo-chip:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.evo-current {
+  padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;
+  background: var(--red); color: #fff;
+}
+
+/* Radar chart */
+.radar-wrap { margin-top: 16px; display: flex; flex-direction: column; align-items: center; }
+.stat-radar { width: 100%; max-width: 240px; }
+.radar-grid { fill: none; stroke: var(--border); stroke-width: 1; }
+.radar-axis { stroke: var(--border); stroke-width: 0.8; }
+.radar-fill {
+  fill: var(--red); fill-opacity: 0.18;
+  stroke: var(--red); stroke-width: 1.5; stroke-linejoin: round;
+}
+.radar-lbl {
+  font-size: 9px; font-weight: 700; fill: var(--text-soft);
+  font-family: inherit; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.radar-val { font-size: 10px; font-weight: 700; fill: var(--text); font-family: inherit; }
+.radar-capture { font-size: 0.78rem; color: var(--text-soft); margin: 4px 0 0; }
+.radar-capture strong { color: var(--text); }
+
+/* Classes */
+.class-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.class-stat-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+}
+.class-stat-item:hover { border-color: var(--red); text-decoration: none; }
+.class-stat-name { font-weight: 600; color: var(--text); font-size: 0.9rem; }
+.class-stat-count { font-size: 0.78rem; color: var(--red); font-weight: 700; }
+
+/* Réutilisés */
+.related-section { margin: 40px 0; }
+.related-section h2 { margin-bottom: 12px; }
+.related-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pkm-link {
+  padding: 6px 14px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: 999px;
+  font-size: 0.85rem; font-weight: 500; color: var(--text-mid);
+  transition: border-color 0.15s, color 0.15s;
+}
+.pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.trainers-section { margin: 0 0 40px; }
+.trainers-section h2 { margin-bottom: 4px; }
+
+/* Bio */
+.bio-section { margin: 40px 0; }
+.bio-section h2 { margin-bottom: 16px; }
+.bio-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0; border: 1.5px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; background: var(--bg2);
+}
+.bio-grid dt {
+  font-size: 0.75rem; font-weight: 700; color: var(--text-soft);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 10px 16px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.bio-grid dd {
+  font-size: 0.88rem; color: var(--text); font-weight: 500;
+  padding: 10px 16px; border-bottom: 1px solid var(--border); margin: 0;
+}
+
+/* Talents */
+.abilities-section { margin: 40px 0; }
+.abilities-section h2 { margin-bottom: 16px; }
+.abilities-list { display: flex; flex-direction: column; gap: 10px; }
+.ability-card {
+  padding: 16px 20px; background: var(--bg2);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+}
+.ability-card--hidden { border-style: dashed; }
+.ability-card__header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.ability-card__name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.ability-card__badge {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-soft);
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 9px;
+}
+.ability-card__desc { font-size: 0.85rem; color: var(--text-mid); line-height: 1.6; margin: 0; }
+
+/* Pokédex par jeu */
+.pokedex-section { margin: 40px 0; }
+.pokedex-section h2 { margin-bottom: 12px; }
+.pokedex-accordion {
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+}
+.pokedex-accordion summary {
+  padding: 12px 18px; font-size: 0.88rem; font-weight: 600;
+  color: var(--text-mid); cursor: pointer; background: var(--bg);
+  list-style: none; user-select: none;
+}
+.pokedex-accordion summary::-webkit-details-marker { display: none; }
+.pokedex-accordion summary::after { content: ' ↓'; }
+.pokedex-accordion[open] summary::after { content: ' ↑'; }
+.pokedex-list { display: grid; grid-template-columns: auto 1fr; gap: 0; }
+.pokedex-list dt {
+  font-size: 0.75rem; font-weight: 700; color: var(--text-soft);
+  padding: 10px 16px; background: var(--bg);
+  border-top: 1px solid var(--border); white-space: nowrap;
+}
+.pokedex-list dd {
+  font-size: 0.84rem; color: var(--text-mid); line-height: 1.6;
+  padding: 10px 16px; border-top: 1px solid var(--border); margin: 0;
+}
+
+/* TCG */
+.tcg-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.tcg-header h2 { margin-bottom: 0; }
+.tcg-count { font-size: 0.8rem; color: var(--text-soft); }
+.tcg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 12px;
+}
+.tcg-grid--more { margin-top: 12px; }
+.tcg-card { display: flex; flex-direction: column; gap: 6px; }
+.tcg-card__img {
+  width: 100%; height: auto; border-radius: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tcg-card__img:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(26,26,46,0.15);
+}
+.tcg-card__info { display: flex; flex-direction: column; gap: 2px; }
+.tcg-card__set { font-size: 0.68rem; color: var(--text-soft); line-height: 1.3; }
+.tcg-card__rarity { font-size: 0.65rem; color: var(--red); font-weight: 600; }
+.tcg-card__artist { font-size: 0.62rem; color: var(--text-soft); line-height: 1.3; }
+.tcg-more-btn {
+  margin-top: 14px; display: block; width: 100%;
+  padding: 10px; border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm); background: none;
+  font-size: 0.85rem; color: var(--text-soft); cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.tcg-more-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* TCG zoom modal */
+.tcg-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+}
+.tcg-modal__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+}
+.tcg-modal__content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 16px; max-width: 340px; width: 90%;
+}
+.tcg-modal__close {
+  position: absolute; top: -8px; right: -8px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg2); border: 1.5px solid var(--border);
+  color: var(--text); font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s; z-index: 2;
+}
+.tcg-modal__close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.tcg-modal__img {
+  width: 100%; height: auto; border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  animation: modal-pop 0.18s ease;
+}
+@keyframes modal-pop {
+  from { transform: scale(0.88); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.tcg-modal__caption {
+  font-size: 0.78rem; color: rgba(255,255,255,0.75); text-align: center;
+  margin: 0; line-height: 1.4;
+}
+</style>
