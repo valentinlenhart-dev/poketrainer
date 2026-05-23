@@ -187,4 +187,178 @@ const schema = {
         <h2>Explorer</h2>
         <div class="related-links">
           <a href={`/prenom/${t.name_slug}`} class="related-link">
-            👤 Tous le
+            👤 Tous les dresseurs nommés {t.name}
+          </a>
+          <a href={`/jeu/${t.game_slug}`} class="related-link">
+            🎮 Tous les dresseurs de {gameName}
+          </a>
+          {t.place && (
+            <a href={`/lieu/${t.place_slug}`} class="related-link">
+              📍 Dresseurs au même endroit
+            </a>
+          )}
+          <a href="/" class="related-link">
+            🏠 Accueil PokéNom
+          </a>
+        </div>
+      </aside>
+
+      <!-- Dresseurs proches -->
+      {nearby.length > 0 && (
+        <section class="nearby-section">
+          <h2>Dresseurs similaires</h2>
+          <div class="cards-grid">
+            {nearby.map((n: any) => (
+              <TrainerCard trainer={n} />
+            ))}
+          </div>
+        </section>
+      )}
+
+    </article>
+  </main>
+</Base>
+
+<style>
+.trainer-page { padding: 32px 0 64px; }
+
+.trainer-page__header {
+  margin-bottom: 32px;
+}
+.trainer-page__class-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.trainer-page__class-sprite {
+  width: 56px; height: 56px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.trainer-page__class {
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 4px;
+}
+.trainer-page__name {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800; line-height: 1.1;
+  color: var(--text);
+}
+.trainer-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+.meta-item__icon { flex-shrink: 0; }
+.meta-item a { color: var(--text-mid); }
+.meta-item a:hover { color: var(--red); }
+
+/* Équipe */
+.team-section { margin: 36px 0; }
+.team-section h2 { margin-bottom: 16px; }
+.team-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.team-pkm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.team-pkm:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.team-pkm__visual {
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.team-pkm__sprite { image-rendering: pixelated; }
+.team-pkm__ball { font-size: 1.6rem; }
+.team-pkm__info {
+  display: flex; flex-direction: column; gap: 3px;
+  min-width: 0;
+}
+.team-pkm__name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.team-pkm__en   { font-size: 0.72rem; color: var(--text-soft); }
+.team-pkm__types { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.team-type-badge {
+  font-size: 0.68rem; font-weight: 600;
+  color: #fff; padding: 1px 7px;
+  border-radius: 999px;
+}
+.team-pkm__arrow {
+  margin-left: auto;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Lore */
+.trainer-page__lore {
+  margin: 36px 0;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.trainer-page__lore h2 { margin-bottom: 14px; }
+.trainer-page__lore p + p { margin-top: 10px; }
+
+/* Liens connexes */
+.trainer-page__related { margin: 36px 0; }
+.trainer-page__related h2 { margin-bottom: 14px; }
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.related-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.related-link:hover {
+  border-color: var(--red);
+  color: var(--red);
+  text-decoration: none;
+}
+
+/* Dresseurs proches */
+.nearby-section { margin: 36px 0; }
+.nearby-section h2 { margin-bottom: 16px; }
+
+@media (max-width: 640px) {
+  .team-list { grid-template-columns: 1fr; }
+  .trainer-page__class-row { gap: 10px; }
+}
+</style>
