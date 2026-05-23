@@ -98,6 +98,21 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         <li><a href="/top/legendaires" data-i18n-ui="nav.legendaries">Légendaires</a></li>
         <li><a href="/top/repandus" data-i18n-ui="nav.top-names">Top prénoms</a></li>
       </ul>
+      <!-- Sélecteur de langue -->
+      <div class="lang-picker" id="lang-picker">
+        <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false" title="Changer la langue">
+          <span id="lang-current">FR</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <ul class="lang-dropdown" id="lang-dropdown" role="listbox" aria-label="Langue">
+          <li role="option" data-lang="fr">🇫🇷 FR</li>
+          <li role="option" data-lang="en">🇬🇧 EN</li>
+          <li role="option" data-lang="de">🇩🇪 DE</li>
+          <li role="option" data-lang="es">🇪🇸 ES</li>
+          <li role="option" data-lang="ja">🇯🇵 JA</li>
+        </ul>
+      </div>
+
       <button class="theme-toggle" id="theme-toggle" aria-label="Basculer le thème sombre" title="Thème sombre">
         <span class="theme-toggle__icon">🌙</span>
       </button>
@@ -128,8 +143,13 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 
     const SUPPORTED = ['fr','en','de','es','ja'] as const;
     type Lang = typeof SUPPORTED[number];
+    const LANG_LABELS: Record<Lang, string> = { fr:'FR', en:'EN', de:'DE', es:'ES', ja:'JA' };
 
     function detectLang(): Lang {
+      // 1. Choix manuel mémorisé
+      const saved = localStorage.getItem('pokenom_lang') as Lang | null;
+      if (saved && SUPPORTED.includes(saved)) return saved;
+      // 2. Langue du navigateur
       for (const l of (navigator.languages ?? [navigator.language])) {
         const short = l.split('-')[0].toLowerCase() as Lang;
         if (SUPPORTED.includes(short)) return short;
@@ -137,18 +157,26 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
       return 'fr';
     }
 
-    const lang = detectLang();
+    function applyLang(lang: Lang) {
+      (window as any).__pokenom_lang = lang;
+      (window as any).__pokenom_T    = T;
 
-    // Expose globalement pour les scripts de pages spécifiques
-    (window as any).__pokenom_lang = lang;
-    (window as any).__pokenom_T    = T;
+      // Mettre à jour le label du picker
+      const cur = document.getElementById('lang-current');
+      if (cur) cur.textContent = LANG_LABELS[lang];
 
-    if (lang !== 'fr') {
+      // Marquer l'option active
+      document.querySelectorAll<HTMLElement>('#lang-dropdown [data-lang]').forEach(el => {
+        el.setAttribute('aria-selected', el.dataset.lang === lang ? 'true' : 'false');
+        el.classList.toggle('lang-option--active', el.dataset.lang === lang);
+      });
+
+      if (lang === 'fr') return; // FR est la langue native, pas de substitution
+
       const ui = T[lang] as Record<string, string>;
       document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
         const key = el.dataset.i18nUi!;
         if (ui[key]) {
-          // Pour aria-label sur la nav
           if (el.tagName === 'NAV' && key === 'nav.aria') {
             el.setAttribute('aria-label', ui[key]);
           } else {
@@ -157,7 +185,6 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         }
       });
 
-      // Noms de jeux (data-game-fr sur certains éléments)
       const games = T['games'] as Record<string, Record<string, string>>;
       document.querySelectorAll<HTMLElement>('[data-game-fr]').forEach(el => {
         const fr = el.dataset.gameFr!;
@@ -165,6 +192,38 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         if (translated) el.textContent = translated.replace('Pokémon ', '');
       });
     }
+
+    // Init
+    const lang = detectLang();
+    applyLang(lang);
+
+    // ── Picker logic ──────────────────────────────────────────────
+    const pickerEl  = document.getElementById('lang-picker')!;
+    const btnEl     = document.getElementById('lang-btn')!;
+    const dropEl    = document.getElementById('lang-dropdown')!;
+
+    function toggleDropdown(open: boolean) {
+      dropEl.classList.toggle('lang-dropdown--open', open);
+      btnEl.setAttribute('aria-expanded', String(open));
+    }
+
+    btnEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(dropEl.classList.contains('lang-dropdown--open') ? false : true);
+    });
+
+    dropEl.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest<HTMLElement>('[data-lang]');
+      if (!target) return;
+      const chosen = target.dataset.lang as Lang;
+      localStorage.setItem('pokenom_lang', chosen);
+      toggleDropdown(false);
+      // Recharge la page pour ré-appliquer toutes les traductions (y compris React islands)
+      location.reload();
+    });
+
+    document.addEventListener('click', () => toggleDropdown(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleDropdown(false); });
   </script>
 
   <slot />
@@ -202,5 +261,56 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 </html>
 
 <style is:global>
-/* Import styles globaux */
+/* ── Lang picker ─────────────────────────────────────── */
+.lang-picker {
+  position: relative;
+}
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--font);
+  color: var(--text-mid);
+  background: var(--surface, var(--bg2));
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+  letter-spacing: .04em;
+}
+.lang-btn:hover { border-color: var(--border-focus); color: var(--text); }
+.lang-btn svg { opacity: .6; transition: transform .2s; }
+.lang-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  list-style: none;
+  min-width: 110px;
+  z-index: 200;
+  overflow: hidden;
+}
+.lang-dropdown--open { display: block; }
+.lang-dropdown li {
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-mid);
+  transition: background .1s, color .1s;
+  white-space: nowrap;
+}
+.lang-dropdown li:hover,
+.lang-option--active {
+  background: var(--red-soft, rgba(220,38,38,.07));
+  color: var(--red) !important;
+}
 </style>
