@@ -28,7 +28,17 @@
     "rarity-label":      "Rareté",
     "item-held":         "Objet tenu",
     "see-more":          "Voir plus",
-    "see-less":          "Voir moins"
+    "see-less":          "Voir moins",
+    "gender":            "Genre",
+    "habitat":           "Habitat",
+    "base-happiness":    "Bonheur de base",
+    "hatch-steps":       "Éclosion",
+    "base-exp":          "Exp. de base",
+    "capture-rate":      "Taux de capture",
+    "which-games":       "Dans quels jeux ?",
+    "who-uses":          "Qui utilise",
+    "legendary-badge":   "Légendaire",
+    "mythical-badge":    "Mythique"
   },
   "en": {
     "nav.search":        "Search",
@@ -59,7 +69,17 @@
     "rarity-label":      "Rarity",
     "item-held":         "Held item",
     "see-more":          "See more",
-    "see-less":          "See less"
+    "see-less":          "See less",
+    "gender":            "Gender",
+    "habitat":           "Habitat",
+    "base-happiness":    "Base happiness",
+    "hatch-steps":       "Hatch time",
+    "base-exp":          "Base exp.",
+    "capture-rate":      "Catch rate",
+    "which-games":       "In which games?",
+    "who-uses":          "Who uses",
+    "legendary-badge":   "Legendary",
+    "mythical-badge":    "Mythical"
   },
   "de": {
     "nav.search":        "Suche",
@@ -90,7 +110,17 @@
     "rarity-label":      "Seltenheit",
     "item-held":         "Gehaltenes Item",
     "see-more":          "Mehr anzeigen",
-    "see-less":          "Weniger anzeigen"
+    "see-less":          "Weniger anzeigen",
+    "gender":            "Geschlecht",
+    "habitat":           "Lebensraum",
+    "base-happiness":    "Grundfreundschaft",
+    "hatch-steps":       "Schritte bis Schlupf",
+    "base-exp":          "Basis-EP",
+    "capture-rate":      "Fangrate",
+    "which-games":       "In welchen Spielen?",
+    "who-uses":          "Wer benutzt",
+    "legendary-badge":   "Legendär",
+    "mythical-badge":    "Mysteriös"
   },
   "es": {
     "nav.search":        "Buscar",
@@ -121,7 +151,17 @@
     "rarity-label":      "Rareza",
     "item-held":         "Objeto equipado",
     "see-more":          "Ver más",
-    "see-less":          "Ver menos"
+    "see-less":          "Ver menos",
+    "gender":            "Género",
+    "habitat":           "Hábitat",
+    "base-happiness":    "Felicidad base",
+    "hatch-steps":       "Pasos de eclosión",
+    "base-exp":          "Exp. base",
+    "capture-rate":      "Tasa de captura",
+    "which-games":       "¿En qué juegos?",
+    "who-uses":          "Quién usa",
+    "legendary-badge":   "Legendario",
+    "mythical-badge":    "Mítico"
   },
   "ja": {
     "nav.search":        "検索",
@@ -152,7 +192,17 @@
     "rarity-label":      "レア度",
     "item-held":         "持ち物",
     "see-more":          "もっと見る",
-    "see-less":          "閉じる"
+    "see-less":          "閉じる",
+    "gender":            "性別",
+    "habitat":           "生息地",
+    "base-happiness":    "基本なつき度",
+    "hatch-steps":       "孵化歩数",
+    "base-exp":          "基本経験値",
+    "capture-rate":      "捕捉率",
+    "which-games":       "どのゲームに？",
+    "who-uses":          "誰が使う",
+    "legendary-badge":   "伝説",
+    "mythical-badge":    "幻"
   },
   "games": {
     "Pokémon Or et Argent": {

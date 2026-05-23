@@ -306,8 +306,8 @@ const schema = {
           {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
           {categoryFr && <p class="pkm-category" data-i18n="pkm-category">{categoryFr}</p>}
           {generation && <p class="pkm-gen">{generation}</p>}
-          {isLegendary && <p class="pkm-badge pkm-badge--legendary">⭐ Légendaire</p>}
-          {isMythical  && <p class="pkm-badge pkm-badge--mythical">✨ Mythique</p>}
+          {isLegendary && <p class="pkm-badge pkm-badge--legendary">⭐ <span data-i18n-ui="legendary-badge">Légendaire</span></p>}
+          {isMythical  && <p class="pkm-badge pkm-badge--mythical">✨ <span data-i18n-ui="mythical-badge">Mythique</span></p>}
         </div>
         <h1 data-i18n="pkm-name">{pokemonName}</h1>
 
@@ -382,7 +382,7 @@ const schema = {
             </svg>
             {captureRate !== null && (
               <p class="radar-capture">
-                Taux de capture : <strong>{captureRate}</strong>
+                <span data-i18n-ui="capture-rate">Taux de capture</span> : <strong>{captureRate}</strong>
                 <span class="radar-capture__hint">
                   {captureRate >= 200 ? ' · très facile' : captureRate >= 100 ? ' · facile' : captureRate >= 45 ? ' · normal' : captureRate >= 10 ? ' · difficile' : ' · très difficile'}
                 </span>
@@ -398,22 +398,22 @@ const schema = {
     <!-- Infos biologiques -->
     {hasBio && (
       <section class="bio-section">
-        <h2>Informations</h2>
+        <h2 data-i18n-ui="bio">Informations</h2>
         <dl class="bio-grid">
           {genderFr !== null && (
-            <><dt>Genre</dt><dd>{genderLabel(genderFr)}</dd></>
+            <><dt data-i18n-ui="gender">Genre</dt><dd>{genderLabel(genderFr)}</dd></>
           )}
           {habitatFr && (
-            <><dt>Habitat</dt><dd>{habitatFr}</dd></>
+            <><dt data-i18n-ui="habitat">Habitat</dt><dd>{habitatFr}</dd></>
           )}
           {baseHappiness !== null && (
-            <><dt>Bonheur de base</dt><dd>{baseHappiness}/255</dd></>
+            <><dt data-i18n-ui="base-happiness">Bonheur de base</dt><dd>{baseHappiness}/255</dd></>
           )}
           {hatchSteps !== null && (
-            <><dt>Éclosion</dt><dd>~{hatchSteps.toLocaleString('fr-FR')} pas</dd></>
+            <><dt data-i18n-ui="hatch-steps">Éclosion</dt><dd>~{hatchSteps.toLocaleString('fr-FR')} pas</dd></>
           )}
           {baseExperience !== null && (
-            <><dt>Exp. de base</dt><dd>{baseExperience} XP</dd></>
+            <><dt data-i18n-ui="base-exp">Exp. de base</dt><dd>{baseExperience} XP</dd></>
           )}
           {heldItems.length > 0 && (
             <><dt data-i18n-ui="item-held">Objet tenu</dt><dd id="pkm-held-items">{heldItems.map(h => (itemsI18n[h.item]?.fr ?? h.item.replace(/-/g,' '))).join(', ')}</dd></>
@@ -454,7 +454,7 @@ const schema = {
 
     <!-- Dresseurs -->
     <section class="trainers-section">
-      <h2>Dresseurs utilisant {pokemonName}</h2>
+      <h2><span data-i18n-ui="trainers-using">Dresseurs utilisant</span> <span data-i18n="pkm-name">{pokemonName}</span></h2>
       <p style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
         {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
         {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
@@ -475,7 +475,7 @@ const schema = {
     <!-- Classes qui l'utilisent -->
     {topClasses.length > 0 && (
       <section class="related-section">
-        <h2>Qui utilise {pokemonName} ?</h2>
+        <h2><span data-i18n-ui="who-uses">Qui utilise</span> <span data-i18n="pkm-name">{pokemonName}</span> ?</h2>
         <div class="class-stats">
           {topClasses.map(([cls, count]) => {
             const cs = cls.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
@@ -492,7 +492,7 @@ const schema = {
 
     <!-- Dans quels jeux -->
     <section class="related-section">
-      <h2>Dans quels jeux ?</h2>
+      <h2 data-i18n-ui="which-games">Dans quels jeux ?</h2>
       <div class="related-chips">
         {games.map((g: string) => {
           const gs = g.replace('Pokémon ','').toLowerCase()
@@ -671,16 +671,53 @@ const schema = {
 
   // Labels UI par langue
   const UI_I18N: Record<string, Record<string, string>> = {
-    fr: { 'abilities': 'Talents', 'hidden-ability': 'Talent caché', 'pokedex-entries': 'Entrées Pokédex' },
-    en: { 'abilities': 'Abilities', 'hidden-ability': 'Hidden ability', 'pokedex-entries': 'Pokédex Entries' },
-    de: { 'abilities': 'Fähigkeiten', 'hidden-ability': 'Versteckte Fähigkeit', 'pokedex-entries': 'Pokédex-Einträge' },
-    es: { 'abilities': 'Habilidades', 'hidden-ability': 'Habilidad oculta', 'pokedex-entries': 'Entradas de la Pokédex' },
-    ja: { 'abilities': '特性', 'hidden-ability': '隠れ特性', 'pokedex-entries': '図鑑の説明' },
+    fr: {
+      'abilities': 'Talents', 'hidden-ability': 'Talent caché', 'pokedex-entries': 'Entrées Pokédex',
+      'bio': 'Informations', 'gender': 'Genre', 'habitat': 'Habitat',
+      'base-happiness': 'Bonheur de base', 'hatch-steps': 'Éclosion', 'base-exp': 'Exp. de base',
+      'capture-rate': 'Taux de capture', 'which-games': 'Dans quels jeux ?',
+      'trainers-using': 'Dresseurs utilisant', 'who-uses': 'Qui utilise',
+      'legendary-badge': 'Légendaire', 'mythical-badge': 'Mythique',
+    },
+    en: {
+      'abilities': 'Abilities', 'hidden-ability': 'Hidden ability', 'pokedex-entries': 'Pokédex Entries',
+      'bio': 'Info', 'gender': 'Gender', 'habitat': 'Habitat',
+      'base-happiness': 'Base happiness', 'hatch-steps': 'Hatch time', 'base-exp': 'Base exp.',
+      'capture-rate': 'Catch rate', 'which-games': 'In which games?',
+      'trainers-using': 'Trainers using', 'who-uses': 'Who uses',
+      'legendary-badge': 'Legendary', 'mythical-badge': 'Mythical',
+    },
+    de: {
+      'abilities': 'Fähigkeiten', 'hidden-ability': 'Versteckte Fähigkeit', 'pokedex-entries': 'Pokédex-Einträge',
+      'bio': 'Informationen', 'gender': 'Geschlecht', 'habitat': 'Lebensraum',
+      'base-happiness': 'Grundfreundschaft', 'hatch-steps': 'Schritte bis Schlupf', 'base-exp': 'Basis-EP',
+      'capture-rate': 'Fangrate', 'which-games': 'In welchen Spielen?',
+      'trainers-using': 'Trainer, die nutzen', 'who-uses': 'Wer benutzt',
+      'legendary-badge': 'Legendär', 'mythical-badge': 'Mysteriös',
+    },
+    es: {
+      'abilities': 'Habilidades', 'hidden-ability': 'Habilidad oculta', 'pokedex-entries': 'Entradas de la Pokédex',
+      'bio': 'Información', 'gender': 'Género', 'habitat': 'Hábitat',
+      'base-happiness': 'Felicidad base', 'hatch-steps': 'Pasos de eclosión', 'base-exp': 'Exp. base',
+      'capture-rate': 'Tasa de captura', 'which-games': '¿En qué juegos?',
+      'trainers-using': 'Entrenadores que usan', 'who-uses': 'Quién usa',
+      'legendary-badge': 'Legendario', 'mythical-badge': 'Mítico',
+    },
+    ja: {
+      'abilities': '特性', 'hidden-ability': '隠れ特性', 'pokedex-entries': '図鑑の説明',
+      'bio': '情報', 'gender': '性別', 'habitat': '生息地',
+      'base-happiness': '基本なつき度', 'hatch-steps': '孵化歩数', 'base-exp': '基本経験値',
+      'capture-rate': '捕捉率', 'which-games': 'どのゲームに？',
+      'trainers-using': '使用トレーナー', 'who-uses': '誰が使う',
+      'legendary-badge': '伝説', 'mythical-badge': '幻',
+    },
   };
 
-  // Détecte la meilleure langue disponible depuis navigator.languages
+  // Détecte la meilleure langue disponible (localStorage > navigator.languages > fr)
   function detectLang(): string {
     const supported = ['fr', 'en', 'de', 'es', 'ja'];
+    const saved = localStorage.getItem('pokenom_lang');
+    if (saved && supported.includes(saved)) return saved;
     for (const l of navigator.languages ?? [navigator.language]) {
       const short = l.split('-')[0].toLowerCase();
       if (supported.includes(short)) return short;
