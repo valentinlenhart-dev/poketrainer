@@ -1,0 +1,597 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { toPokemonSlug } from '../../utils/slug';
+import '../../styles/global.css';
+
+// ── Données items-meta.json (optionnel — lance fetch-items.py pour l'obtenir) ──
+let itemsMeta: Record<string, any> = {};
+try {
+  const mod = await import('../../data/items-meta.json');
+  itemsMeta = mod.default as Record<string, any>;
+} catch { /* fichier optionnel */ }
+
+// ── items-i18n.json (toujours présent) ──
+let itemsI18n: Record<string, Record<string, string>> = {};
+try {
+  const mod = await import('../../data/items-i18n.json');
+  itemsI18n = mod.default as Record<string, Record<string, string>>;
+} catch { /* fichier optionnel */ }
+
+// ── pokemon-meta.json (pour les sprites des porteurs) ──
+let pokemonMeta: Record<string, any> = {};
+try {
+  const mod = await import('../../data/pokemon-meta.json');
+  pokemonMeta = mod.default as Record<string, any>;
+} catch { /* fichier optionnel */ }
+
+export async function getStaticPaths() {
+  // Charge les deux sources de slugs
+  let metaSlugs: Set<string> = new Set();
+  let i18nSlugs: Set<string> = new Set();
+
+  try {
+    const mod = await import('../../data/items-meta.json');
+    metaSlugs = new Set(Object.keys(mod.default as Record<string, any>));
+  } catch {}
+
+  try {
+    const mod = await import('../../data/items-i18n.json');
+    i18nSlugs = new Set(Object.keys(mod.default as Record<string, any>));
+  } catch {}
+
+  const allSlugs = new Set([...metaSlugs, ...i18nSlugs]);
+
+  return [...allSlugs].map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params as { slug: string };
+
+// ── Données de l'objet ──
+const meta = itemsMeta[slug] ?? null;
+const i18n  = itemsI18n[slug]  ?? null;
+
+// Nom (fr en priorité, sinon slug humanisé)
+const nameFr = meta?.names?.fr ?? i18n?.fr ?? slug.replace(/-/g, ' ');
+const namesI18nData = meta?.names ?? (i18n ? { fr: i18n.fr, en: i18n.en, de: i18n.de, es: i18n.es, ja: i18n.ja } : null);
+
+// Sprite
+const spriteUrl = (meta?.sprite ?? null) as string | null;
+
+// Infos générales
+const cost        = meta?.cost     as number | null ?? null;
+const category    = (meta?.category ?? '') as string;
+const attributes  = (meta?.attributes ?? []) as string[];
+const effectEn    = (meta?.effect_en      ?? '') as string;
+const effectLongEn = (meta?.effect_long_en ?? '') as string;
+const flingPower  = meta?.fling_power  as number | null ?? null;
+const flingEffect = (meta?.fling_effect_en ?? null) as string | null;
+const generations = (meta?.generations ?? []) as string[];
+const heldBy      = (meta?.held_by ?? []) as { slug: string; rarity: number }[];
+
+// Descriptions par langue/jeu (flavors)
+const flavors = (meta?.flavors ?? {}) as Record<string, Record<string, string>>;
+
+// Catégorie lisible
+const CATEGORY_FR: Record<string, string> = {
+  'held-items':               'Objet tenu',
+  'choice':                   'Choix',
+  'bad-held-items':           'Objet tenu négatif',
+  'type-enhancement':         'Boost de type',
+  'plates':                   'Plaques',
+  'memories':                 'Mémoires',
+  'jewels':                   'Joyaux',
+  'mega-stones':              'Méga-Gemmes',
+  'z-crystals':               'Z-Cristaux',
+  'berries':                  'Baies',
+  'in-a-pinch-berries':       'Baies de secours',
+  'picky-healing-berries':    'Baies de soin',
+  'type-protection-berries':  'Baies de protection',
+  'effort-drop':              "Réducteur d'EV",
+  'species-specific':         "Spécifique à l'espèce",
+  'loot':                     'Butin',
+  'collectibles':             'Objet à vendre',
+  'medicine':                 'Médecine',
+  'baked-goods':              'Pâtisseries',
+  'all-mail':                 'Courrier',
+  'stat-boosts':              'Boost de statistique',
+  'scarves':                  'Écharpes',
+  'flutes':                   'Flûtes',
+  'other':                    'Autre',
+};
+const categoryLabel = CATEGORY_FR[category] ?? category.replace(/-/g, ' ');
+
+// Générations lisibles (I, II, III...)
+const GEN_LABEL: Record<string, string> = {
+  i:'I', ii:'II', iii:'III', iv:'IV', v:'V', vi:'VI', vii:'VII', viii:'VIII', ix:'IX',
+};
+
+// Map slug anglais Pokémon → nom français
+const slugToFrPokemon: Record<string, string> = {};
+for (const [frName, d] of Object.entries(pokemonMeta as Record<string, any>)) {
+  if (d?.slug) slugToFrPokemon[d.slug] = frName;
+}
+
+// Sprite Pokémon helper
+const SPRITE_BASE_PKM = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
+
+// Données i18n à injecter pour le client JS
+const itemI18nPayload = {
+  names:        namesI18nData ?? { fr: nameFr, en: nameFr, de: nameFr, es: nameFr, ja: nameFr },
+  flavors:      flavors,
+  effect_en:    effectEn,
+  effect_long_en: effectLongEn,
+};
+
+// SEO
+const title       = `${nameFr} — Objet Pokémon | PokéNom`;
+const description = effectEn
+  ? `${nameFr} : ${effectEn} ${cost !== null ? `Prix : ${cost}₽.` : ''}`
+  : `Tout savoir sur l'objet ${nameFr} dans les jeux Pokémon.`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Thing",
+  "name": nameFr,
+  "description": description,
+  "url": `https://pokenom.fr/objet/${slug}`,
+  ...(spriteUrl ? { "image": spriteUrl } : {}),
+};
+---
+
+<!-- Données i18n injectées pour le switch JS côté client -->
+<div id="item-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify(itemI18nPayload)} />
+
+<Base
+  title={title}
+  description={description}
+  canonical={`https://pokenom.fr/objet/${slug}`}
+  ogImage={spriteUrl ?? '/og-default.png'}
+  schema={schema}
+>
+  <main id="main" class="container">
+    <Breadcrumb crumbs={[
+      { label: 'Accueil', href: '/' },
+      { label: 'Objets', href: '/' },
+      { label: nameFr },
+    ]} />
+
+    <!-- ── En-tête ── -->
+    <header class="item-header">
+      <div class="item-header__visual">
+        {spriteUrl ? (
+          <img
+            src={spriteUrl}
+            alt={`Sprite de ${nameFr}`}
+            class="item-sprite"
+            width="96" height="96"
+            loading="eager"
+          />
+        ) : (
+          <div class="item-sprite item-sprite--placeholder" aria-hidden="true">?</div>
+        )}
+      </div>
+
+      <div class="item-header__info">
+        {categoryLabel && <p class="item-category-badge">{categoryLabel}</p>}
+        <h1 id="item-name">{nameFr}</h1>
+
+        <dl class="item-quick-facts">
+          {cost !== null && cost > 0 && (
+            <><dt data-i18n-ui="item-price">Prix</dt><dd class="item-price">{cost.toLocaleString('fr-FR')} ₽</dd></>
+          )}
+          {flingPower !== null && (
+            <><dt data-i18n-ui="item-fling">Lancer</dt><dd>{flingPower} {flingEffect ? `— ${flingEffect}` : ''}</dd></>
+          )}
+          {generations.length > 0 && (
+            <><dt data-i18n-ui="item-generations">Disponible dans</dt>
+            <dd>{generations.map(g => GEN_LABEL[g] ?? g.toUpperCase()).join(', ')}</dd></>
+          )}
+        </dl>
+      </div>
+    </header>
+
+    <AdSlot slot="5466423598" format="auto" />
+
+    <!-- ── Effet ── -->
+    {(effectEn || effectLongEn) && (
+      <section class="item-section">
+        <h2 data-i18n-ui="item-effect">Effet</h2>
+        <div class="item-effect-box">
+          <p id="item-effect-short" class="item-effect-short">{effectEn}</p>
+          {effectLongEn && effectLongEn !== effectEn && (
+            <details>
+              <summary>Détail complet</summary>
+              <p id="item-effect-long" class="item-effect-long">{effectLongEn}</p>
+            </details>
+          )}
+        </div>
+      </section>
+    )}
+    {!effectEn && !effectLongEn && meta && (
+      <section class="item-section">
+        <h2 data-i18n-ui="item-effect">Effet</h2>
+        <p class="item-soft" data-i18n-ui="item-no-effect">Aucun effet renseigné.</p>
+      </section>
+    )}
+
+    <!-- ── Descriptions par jeu ── -->
+    {Object.keys(flavors).some(lang => Object.keys(flavors[lang] ?? {}).length > 0) && (
+      <section class="item-section">
+        <h2 data-i18n-ui="item-descriptions">Descriptions par jeu</h2>
+        <div id="item-flavors-container">
+          {/* Rendu FR par défaut — remplacé par JS selon langue */}
+          {Object.entries(flavors.fr ?? {}).length > 0 ? (
+            <dl class="item-flavors-list" id="item-flavors-list">
+              {Object.entries(flavors.fr ?? {}).map(([game, text]) => (
+                <div class="flavor-entry">
+                  <dt class="flavor-game">{game}</dt>
+                  <dd class="flavor-text">{text}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <dl class="item-flavors-list" id="item-flavors-list">
+              {Object.entries(Object.values(flavors).find(l => Object.keys(l).length > 0) ?? {}).map(([game, text]) => (
+                <div class="flavor-entry">
+                  <dt class="flavor-game">{game}</dt>
+                  <dd class="flavor-text">{text as string}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      </section>
+    )}
+
+    <!-- ── Pokémon porteurs ── -->
+    <section class="item-section">
+      <h2 data-i18n-ui="item-held-by">Porté par des Pokémon</h2>
+      {heldBy.length === 0 ? (
+        <p class="item-soft" data-i18n-ui="item-no-held">Aucun Pokémon sauvage ne porte cet objet.</p>
+      ) : (
+        <div class="held-by-grid">
+          {heldBy.map(h => {
+            const frName = slugToFrPokemon[h.slug] ?? h.slug.replace(/-/g, ' ');
+            const pkmSlug = toPokemonSlug(frName);
+            const pkmData = pokemonMeta[frName] as { sprite?: string; id?: number } | undefined;
+            const sprite  = pkmData?.sprite ?? `${SPRITE_BASE_PKM}/${pkmData?.id ?? ''}.png`;
+            return (
+              <a href={`/pokemon/${pkmSlug}`} class="held-by-card" title={`${frName} (${h.rarity}%)`}>
+                {pkmData?.id ? (
+                  <img
+                    src={sprite}
+                    alt={frName}
+                    width="56" height="56"
+                    loading="lazy"
+                    onerror="this.style.opacity='0.3'"
+                  />
+                ) : (
+                  <div class="held-by-card__no-sprite">?</div>
+                )}
+                <span class="held-by-card__name">{frName}</span>
+                {h.rarity > 0 && <span class="held-by-card__rarity">{h.rarity}%</span>}
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </section>
+
+    {heldBy.length > 3 && <AdSlot slot="2840260251" format="fluid" layout="in-article" />}
+
+    <!-- ── Attributs techniques ── -->
+    {attributes.length > 0 && (
+      <section class="item-section item-section--compact">
+        <h2>Attributs</h2>
+        <div class="item-tags">
+          {attributes.map(attr => (
+            <span class="item-tag">{attr.replace(/-/g, ' ')}</span>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <AdSlot slot="1708205042" format="auto" />
+  </main>
+</Base>
+
+<script>
+  // ── Lecture des données i18n injectées ──────────────────────────
+  const raw = document.getElementById('item-i18n-data')?.textContent ?? '{}';
+  let data: {
+    names: Record<string, string>;
+    flavors: Record<string, Record<string, string>>;
+    effect_en: string;
+    effect_long_en: string;
+  };
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    data = { names: {}, flavors: {}, effect_en: '', effect_long_en: '' };
+  }
+
+  // ── Détection de langue ────────────────────────────────────────
+  function detectLang(): string {
+    const supported = ['fr', 'en', 'de', 'es', 'ja'];
+    const saved = localStorage.getItem('pokenom_lang');
+    if (saved && supported.includes(saved)) return saved;
+    for (const l of (navigator.languages ?? [navigator.language])) {
+      const short = l.split('-')[0].toLowerCase();
+      if (supported.includes(short)) return short;
+    }
+    return 'fr';
+  }
+
+  // ── Application de la langue ───────────────────────────────────
+  function applyItemLang(lang: string) {
+    // Nom de l'objet
+    const nameEl = document.getElementById('item-name');
+    if (nameEl && data.names[lang]) {
+      nameEl.textContent = data.names[lang];
+    }
+
+    // Descriptions par jeu
+    const flavorsList = document.getElementById('item-flavors-list');
+    if (flavorsList) {
+      const langFlavors = data.flavors?.[lang] ?? data.flavors?.['fr'] ?? data.flavors?.['en'] ?? {};
+      const entries = Object.entries(langFlavors);
+      if (entries.length > 0) {
+        flavorsList.innerHTML = entries.map(([game, text]) =>
+          `<div class="flavor-entry"><dt class="flavor-game">${game}</dt><dd class="flavor-text">${text}</dd></div>`
+        ).join('');
+      }
+    }
+
+    // Effet (uniquement EN disponible depuis PokéAPI)
+    // On garde l'anglais sauf si la langue est FR (on garde vide = pas traduit)
+    // Note : si un jour les effets sont traduits, on pourra switcher ici
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  const lang = detectLang();
+  applyItemLang(lang);
+
+  // Écoute les changements de langue depuis Base.astro
+  document.addEventListener('pokenom-lang-change', (e: Event) => {
+    applyItemLang((e as CustomEvent<string>).detail);
+  });
+</script>
+
+<style>
+/* ── Header ───────────────────────────────────────────────────── */
+.item-header {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 36px 0 28px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 32px;
+}
+.item-header__visual {
+  flex-shrink: 0;
+}
+.item-sprite {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+}
+.item-sprite--placeholder {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-soft);
+}
+.item-header__info {
+  flex: 1;
+  min-width: 0;
+}
+.item-category-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.item-header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 900;
+  margin: 0 0 12px;
+  line-height: 1.1;
+}
+
+/* ── Quick facts ──────────────────────────────────────────────── */
+.item-quick-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  font-size: 0.88rem;
+  margin: 0;
+}
+.item-quick-facts dt {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+.item-quick-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+.item-price {
+  color: var(--red);
+}
+
+/* ── Sections ─────────────────────────────────────────────────── */
+.item-section {
+  margin: 36px 0;
+}
+.item-section h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--border);
+}
+.item-section--compact h2 {
+  margin-bottom: 12px;
+}
+.item-soft {
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+/* ── Effet ────────────────────────────────────────────────────── */
+.item-effect-box {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+.item-effect-short {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+.item-effect-box details {
+  margin-top: 12px;
+}
+.item-effect-box summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+.item-effect-long {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin: 10px 0 0;
+}
+
+/* ── Flavors ──────────────────────────────────────────────────── */
+.item-flavors-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+.flavor-entry {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) 1fr;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+.flavor-entry:last-child {
+  border-bottom: none;
+}
+.flavor-game {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-soft);
+}
+.flavor-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ── Held by grid ─────────────────────────────────────────────── */
+.held-by-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.held-by-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.1s;
+  min-width: 80px;
+}
+.held-by-card:hover {
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+.held-by-card img {
+  image-rendering: pixelated;
+}
+.held-by-card__no-sprite {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-soft);
+  font-size: 1.5rem;
+}
+.held-by-card__name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.held-by-card__rarity {
+  font-size: 0.7rem;
+  color: var(--text-soft);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 1px 6px;
+}
+
+/* ── Tags ─────────────────────────────────────────────────────── */
+.item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.item-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  color: var(--text-soft);
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .item-header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 0 20px;
+  }
+  .flavor-entry {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .flavor-game {
+    font-size: 0.72rem;
+  }
+}
+</style>

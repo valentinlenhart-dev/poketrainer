@@ -74,30 +74,36 @@ const trainerCount = trainers.length;
 const descFr         = (meta?.description_fr ?? '') as string;
 const descsByGame    = (meta?.descriptions_fr ?? {}) as Record<string, string>;
 const categoryFr     = (meta?.category_fr ?? '') as string;
-const categoryI18n   = { fr: categoryFr, en: meta?.category_en ?? categoryFr, de: meta?.category_de ?? categoryFr, es: meta?.category_es ?? categoryFr, ja: meta?.category_ja ?? categoryFr } as Record<string,string>;
+const categoryI18n   = { fr: categoryFr, en: meta?.category_en ?? categoryFr, de: meta?.category_de ?? categoryFr, es: meta?.category_es ?? categoryFr, ja: meta?.category_ja ?? categoryFr, it: meta?.category_it ?? categoryFr, ko: meta?.category_ko ?? categoryFr, 'zh-Hans': meta?.category_zh ?? categoryFr } as Record<string,string>;
 const generation     = (meta?.generation ?? '') as string;
 const captureRate    = meta?.capture_rate as number | null ?? null;
 const isLegendary    = meta?.is_legendary ?? false;
 const isMythical     = meta?.is_mythical ?? false;
 const evolvesFrom    = (meta?.evolves_from ?? null) as string | null;
 const evolvesTo      = (meta?.evolves_to ?? []) as string[];
-const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; name_en?:string; desc_en?:string; name_de?:string; desc_de?:string; name_es?:string; desc_es?:string; name_ja?:string; desc_ja?:string; is_hidden:boolean}[];
+const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; name_en?:string; desc_en?:string; name_de?:string; desc_de?:string; name_es?:string; desc_es?:string; name_ja?:string; desc_ja?:string; name_it?:string; desc_it?:string; name_ko?:string; desc_ko?:string; 'name_zh-Hans'?:string; 'desc_zh-Hans'?:string; is_hidden:boolean}[];
 
 // i18n — descriptions + noms par langue (injectés en JSON pour le switch JS)
 const descriptionsI18n = {
-  fr: meta?.descriptions_fr ?? {},
-  en: meta?.descriptions_en ?? {},
-  de: meta?.descriptions_de ?? {},
-  es: meta?.descriptions_es ?? {},
-  ja: meta?.descriptions_ja ?? {},
+  fr:         meta?.descriptions_fr ?? {},
+  en:         meta?.descriptions_en ?? {},
+  de:         meta?.descriptions_de ?? {},
+  es:         meta?.descriptions_es ?? {},
+  ja:         meta?.descriptions_ja ?? {},
+  it:         meta?.descriptions_it ?? {},
+  ko:         meta?.descriptions_ko ?? {},
+  'zh-Hans':  meta?.descriptions_zh ?? {},
 } as Record<string, Record<string, string>>;
 
 const namesI18n = {
-  fr: pokemonName,
-  en: (meta?.names_intl as any)?.en  ?? pokemonName,
-  de: (meta?.names_intl as any)?.de  ?? pokemonName,
-  es: (meta?.names_intl as any)?.es  ?? pokemonName,
-  ja: (meta?.names_intl as any)?.ja  ?? pokemonName,
+  fr:         pokemonName,
+  en:         (meta?.names_intl as any)?.en        ?? pokemonName,
+  de:         (meta?.names_intl as any)?.de        ?? pokemonName,
+  es:         (meta?.names_intl as any)?.es        ?? pokemonName,
+  ja:         (meta?.names_intl as any)?.ja        ?? pokemonName,
+  it:         (meta?.names_intl as any)?.it        ?? pokemonName,
+  ko:         (meta?.names_intl as any)?.ko        ?? pokemonName,
+  'zh-Hans':  (meta?.names_intl as any)?.['zh-Hans'] ?? pokemonName,
 } as Record<string, string>;
 const genderFr       = meta?.gender_fr ?? null;   // "Asexué" ou number (% femelle)
 const habitatFr      = (meta?.habitat_fr ?? null) as string | null;
@@ -246,8 +252,8 @@ const schema = {
   descriptions: descriptionsI18n,
   abilities:    abilities.map(ab => ({
     is_hidden: ab.is_hidden,
-    names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr },
-    descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr },
+    names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr, it: ab.name_it??ab.name_fr, ko: ab.name_ko??ab.name_fr, 'zh-Hans': (ab as any)['name_zh-Hans']??ab.name_fr },
+    descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr, it: ab.desc_it??ab.desc_fr, ko: ab.desc_ko??ab.desc_fr, 'zh-Hans': (ab as any)['desc_zh-Hans']??ab.desc_fr },
   })),
 })} />
 
@@ -426,7 +432,17 @@ const schema = {
             <><dt data-i18n-ui="base-exp">Exp. de base</dt><dd>{baseExperience} XP</dd></>
           )}
           {heldItems.length > 0 && (
-            <><dt data-i18n-ui="item-held">Objet tenu</dt><dd id="pkm-held-items">{heldItems.map(h => (itemsI18n[h.item]?.fr ?? h.item.replace(/-/g,' '))).join(', ')}</dd></>
+            <><dt data-i18n-ui="item-held">Objet tenu</dt>
+            <dd id="pkm-held-items">
+              {heldItems.map((h, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <a href={`/objet/${h.item}`} class="item-link" data-item-slug={h.item}>
+                    {itemsI18n[h.item]?.fr ?? h.item.replace(/-/g,' ')}
+                  </a>
+                </>
+              ))}
+            </dd></>
           )}
         </dl>
       </section>
@@ -681,6 +697,9 @@ const schema = {
     de: { fire:'Feuer', water:'Wasser', grass:'Pflanze', electric:'Elektro', ice:'Eis', fighting:'Kampf', poison:'Gift', ground:'Boden', flying:'Flug', psychic:'Psycho', bug:'Käfer', rock:'Gestein', ghost:'Geist', dragon:'Drache', dark:'Unlicht', steel:'Stahl', fairy:'Fee', normal:'Normal' },
     es: { fire:'Fuego', water:'Agua', grass:'Planta', electric:'Eléctrico', ice:'Hielo', fighting:'Lucha', poison:'Veneno', ground:'Tierra', flying:'Volador', psychic:'Psíquico', bug:'Bicho', rock:'Roca', ghost:'Fantasma', dragon:'Dragón', dark:'Siniestro', steel:'Acero', fairy:'Hada', normal:'Normal' },
     ja: { fire:'ほのお', water:'みず', grass:'くさ', electric:'でんき', ice:'こおり', fighting:'かくとう', poison:'どく', ground:'じめん', flying:'ひこう', psychic:'エスパー', bug:'むし', rock:'いわ', ghost:'ゴースト', dragon:'ドラゴン', dark:'あく', steel:'はがね', fairy:'フェアリー', normal:'ノーマル' },
+    it: { fire:'Fuoco', water:'Acqua', grass:'Erba', electric:'Elettro', ice:'Ghiaccio', fighting:'Lotta', poison:'Veleno', ground:'Terra', flying:'Volante', psychic:'Psico', bug:'Coleottero', rock:'Roccia', ghost:'Spettro', dragon:'Drago', dark:'Buio', steel:'Acciaio', fairy:'Folletto', normal:'Normale' },
+    ko: { fire:'불꽃', water:'물', grass:'풀', electric:'전기', ice:'얼음', fighting:'격투', poison:'독', ground:'땅', flying:'비행', psychic:'에스퍼', bug:'벌레', rock:'바위', ghost:'고스트', dragon:'드래곤', dark:'악', steel:'강철', fairy:'페어리', normal:'노말' },
+    'zh-Hans': { fire:'火', water:'水', grass:'草', electric:'电', ice:'冰', fighting:'格斗', poison:'毒', ground:'地面', flying:'飞行', psychic:'超能力', bug:'虫', rock:'岩石', ghost:'幽灵', dragon:'龙', dark:'恶', steel:'钢', fairy:'妖精', normal:'一般' },
   };
 
   // Labels UI par langue
@@ -725,14 +744,40 @@ const schema = {
       'trainers-using': '使用トレーナー', 'who-uses': '誰が使う',
       'legendary-badge': '伝説', 'mythical-badge': '幻',
     },
+    it: {
+      'abilities': 'Abilità', 'hidden-ability': 'Abilità nascosta', 'pokedex-entries': 'Voci del Pokédex',
+      'bio': 'Informazioni', 'gender': 'Genere', 'habitat': 'Habitat',
+      'base-happiness': 'Felicità base', 'hatch-steps': 'Passi per la schiusa', 'base-exp': 'Esp. base',
+      'capture-rate': 'Tasso di cattura', 'which-games': 'In quali giochi?',
+      'trainers-using': 'Allenatori che usano', 'who-uses': 'Chi usa',
+      'legendary-badge': 'Leggendario', 'mythical-badge': 'Mitico',
+    },
+    ko: {
+      'abilities': '특성', 'hidden-ability': '숨겨진 특성', 'pokedex-entries': '포켓몬 도감 설명',
+      'bio': '정보', 'gender': '성별', 'habitat': '서식지',
+      'base-happiness': '기본 친밀도', 'hatch-steps': '부화 걸음 수', 'base-exp': '기본 경험치',
+      'capture-rate': '포획률', 'which-games': '어떤 게임에?',
+      'trainers-using': '사용 트레이너', 'who-uses': '누가 사용',
+      'legendary-badge': '전설', 'mythical-badge': '환상',
+    },
+    'zh-Hans': {
+      'abilities': '特性', 'hidden-ability': '隐藏特性', 'pokedex-entries': '图鉴说明',
+      'bio': '信息', 'gender': '性别', 'habitat': '栖息地',
+      'base-happiness': '基础亲密度', 'hatch-steps': '孵化步数', 'base-exp': '基础经验值',
+      'capture-rate': '捕获率', 'which-games': '在哪些游戏中？',
+      'trainers-using': '使用该宝可梦的训练家', 'who-uses': '谁在使用',
+      'legendary-badge': '传说', 'mythical-badge': '幻之',
+    },
   };
 
   // Détecte la meilleure langue disponible (localStorage > navigator.languages > fr)
   function detectLang(): string {
-    const supported = ['fr', 'en', 'de', 'es', 'ja'];
+    const supported = ['fr', 'en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans'];
     const saved = localStorage.getItem('pokenom_lang');
     if (saved && supported.includes(saved)) return saved;
     for (const l of navigator.languages ?? [navigator.language]) {
+      // Gère zh-Hans / zh-CN / zh-SG → zh-Hans
+      if (l.startsWith('zh-Hans') || l === 'zh-CN' || l === 'zh-SG') return 'zh-Hans';
       const short = l.split('-')[0].toLowerCase();
       if (supported.includes(short)) return short;
     }
@@ -779,14 +824,13 @@ const schema = {
       if (allDescs[game]) dd.textContent = allDescs[game];
     });
 
-    // Objets tenus
-    const heldEl = document.getElementById('pkm-held-items');
-    if (heldEl && Object.keys(data.items).length > 0) {
-      const translated = Object.entries(data.items)
-        .map(([, names]) => names[lang] ?? names['fr'])
-        .join(', ');
-      if (translated) heldEl.textContent = translated;
-    }
+    // Objets tenus — on traduit le texte de chaque lien <a data-item-slug>
+    const heldLinks = document.querySelectorAll<HTMLAnchorElement>('#pkm-held-items a[data-item-slug]');
+    heldLinks.forEach(link => {
+      const itemSlug = link.dataset.itemSlug!;
+      const names = data.items[itemSlug];
+      if (names) link.textContent = names[lang] ?? names['fr'] ?? link.textContent;
+    });
 
     // Labels UI
     document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
@@ -948,6 +992,8 @@ const schema = {
   transition: border-color 0.15s, color 0.15s;
 }
 .pkm-link:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+.item-link { color: var(--red); font-weight: 500; text-decoration: none; }
+.item-link:hover { text-decoration: underline; }
 .trainers-section { margin: 0 0 40px; }
 .trainers-section h2 { margin-bottom: 4px; }
 

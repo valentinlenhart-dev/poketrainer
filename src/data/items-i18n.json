@@ -1,452 +1,4 @@
 {
-  "absorb-bulb": {
-    "fr": "Bulbe",
-    "en": "Absorb Bulb",
-    "de": "Knolle",
-    "es": "Tubérculo",
-    "ja": "きゅうこん"
-  },
-  "aspear-berry": {
-    "fr": "Baie Willia",
-    "en": "Aspear Berry",
-    "de": "Wilbirbeere",
-    "es": "Baya Perasi",
-    "ja": "ナナシのみ"
-  },
-  "balm-mushroom": {
-    "fr": "Champi Suave",
-    "en": "Balm Mushroom",
-    "de": "Duftpilz",
-    "es": "Seta Aroma",
-    "ja": "かおるキノコ"
-  },
-  "big-mushroom": {
-    "fr": "Gros Champi",
-    "en": "Big Mushroom",
-    "de": "Riesenpilz",
-    "es": "Seta Grande",
-    "ja": "おおきなキノコ"
-  },
-  "big-pearl": {
-    "fr": "Grande Perle",
-    "en": "Big Pearl",
-    "de": "Riesenperle",
-    "es": "Perla Grande",
-    "ja": "おおきなしんじゅ"
-  },
-  "black-glasses": {
-    "fr": "Lunettes Noires",
-    "en": "Black Glasses",
-    "de": "Schattenbrille",
-    "es": "Gafas de Sol",
-    "ja": "くろいメガネ"
-  },
-  "black-sludge": {
-    "fr": "Boue Noire",
-    "en": "Black Sludge",
-    "de": "Giftschleim",
-    "es": "Lodo Negro",
-    "ja": "くろいヘドロ"
-  },
-  "blue-shard": {
-    "fr": "Tesson Bleu",
-    "en": "Blue Shard",
-    "de": "Indigostück",
-    "es": "Parte Azul",
-    "ja": "あおいかけら"
-  },
-  "bright-powder": {
-    "fr": "Poudre Claire",
-    "en": "Bright Powder",
-    "de": "Blendpuder",
-    "es": "Polvo Brillo",
-    "ja": "ひかりのこな"
-  },
-  "cell-battery": {
-    "fr": "Pile",
-    "en": "Cell Battery",
-    "de": "Akku",
-    "es": "Pila",
-    "ja": "じゅうでんち"
-  },
-  "charcoal": {
-    "fr": "Charbon",
-    "en": "Charcoal",
-    "de": "Holzkohle",
-    "es": "Carbón",
-    "ja": "もくたん"
-  },
-  "cheri-berry": {
-    "fr": "Baie Ceriz",
-    "en": "Cheri Berry",
-    "de": "Amrenabeere",
-    "es": "Baya Zreza",
-    "ja": "クラボのみ"
-  },
-  "chesto-berry": {
-    "fr": "Baie Maron",
-    "en": "Chesto Berry",
-    "de": "Maronbeere",
-    "es": "Baya Atania",
-    "ja": "カゴのみ"
-  },
-  "deep-sea-tooth": {
-    "fr": "Dent Océan",
-    "en": "Deep Sea Tooth",
-    "de": "Abysszahn",
-    "es": "Diente Marino",
-    "ja": "しんかいのキバ"
-  },
-  "dragon-fang": {
-    "fr": "Croc Dragon",
-    "en": "Dragon Fang",
-    "de": "Drachenzahn",
-    "es": "Colmillo Dragón",
-    "ja": "りゅうのキバ"
-  },
-  "dragon-scale": {
-    "fr": "Écaille Draco",
-    "en": "Dragon Scale",
-    "de": "Drachenhaut",
-    "es": "Escama Dragón",
-    "ja": "りゅうのウロコ"
-  },
-  "everstone": {
-    "fr": "Pierre Stase",
-    "en": "Everstone",
-    "de": "Ewigstein",
-    "es": "Piedra Eterna",
-    "ja": "かわらずのいし"
-  },
-  "flame-orb": {
-    "fr": "Orbe Flamme",
-    "en": "Flame Orb",
-    "de": "Heiß-Orb",
-    "es": "Llamasfera",
-    "ja": "かえんだま"
-  },
-  "grassy-seed": {
-    "fr": "Graine Herbe",
-    "en": "Grassy Seed",
-    "de": "Gras-Samen",
-    "es": "Semilla Hierba",
-    "ja": "グラスシード"
-  },
-  "grip-claw": {
-    "fr": "Accro Griffe",
-    "en": "Grip Claw",
-    "de": "Griffklaue",
-    "es": "Garra Garfio",
-    "ja": "ねばりのかぎづめ"
-  },
-  "haban-berry": {
-    "fr": "Baie Fraigo",
-    "en": "Haban Berry",
-    "de": "Terirobeere",
-    "es": "Baya Anjiro",
-    "ja": "ハバンのみ"
-  },
-  "hard-stone": {
-    "fr": "Pierre Dure",
-    "en": "Hard Stone",
-    "de": "Granitstein",
-    "es": "Piedra Dura",
-    "ja": "かたいいし"
-  },
-  "honey": {
-    "fr": "Miel",
-    "en": "Honey",
-    "de": "Honig",
-    "es": "Miel",
-    "ja": "あまいミツ"
-  },
-  "kebia-berry": {
-    "fr": "Baie Kébia",
-    "en": "Kebia Berry",
-    "de": "Grarzbeere",
-    "es": "Baya Kebia",
-    "ja": "ビアーのみ"
-  },
-  "kings-rock": {
-    "fr": "Roche Royale",
-    "en": "King’s Rock",
-    "de": "King-Stein",
-    "es": "Roca del Rey",
-    "ja": "おうじゃのしるし"
-  },
-  "lagging-tail": {
-    "fr": "Ralentiqueue",
-    "en": "Lagging Tail",
-    "de": "Schwerschweif",
-    "es": "Cola Plúmbea",
-    "ja": "こうこうのしっぽ"
-  },
-  "leppa-berry": {
-    "fr": "Baie Mepo",
-    "en": "Leppa Berry",
-    "de": "Jonagobeere",
-    "es": "Baya Zanama",
-    "ja": "ヒメリのみ"
-  },
-  "life-orb": {
-    "fr": "Orbe Vie",
-    "en": "Life Orb",
-    "de": "Leben-Orb",
-    "es": "Vidasfera",
-    "ja": "いのちのたま"
-  },
-  "light-clay": {
-    "fr": "Lumargile",
-    "en": "Light Clay",
-    "de": "Lichtlehm",
-    "es": "Refleluz",
-    "ja": "ひかりのねんど"
-  },
-  "lucky-egg": {
-    "fr": "Œuf Chance",
-    "en": "Lucky Egg",
-    "de": "Glücks-Ei",
-    "es": "Huevo Suerte",
-    "ja": "しあわせタマゴ"
-  },
-  "lum-berry": {
-    "fr": "Baie Prine",
-    "en": "Lum Berry",
-    "de": "Prunusbeere",
-    "es": "Baya Ziuela",
-    "ja": "ラムのみ"
-  },
-  "luminous-moss": {
-    "fr": "Lichen Lumineux",
-    "en": "Luminous Moss",
-    "de": "Leuchtmoos",
-    "es": "Musgo Brillante",
-    "ja": "ひかりごけ"
-  },
-  "mental-herb": {
-    "fr": "Herbe Mental",
-    "en": "Mental Herb",
-    "de": "Mentalkraut",
-    "es": "Hierba Mental",
-    "ja": "メンタルハーブ"
-  },
-  "metal-coat": {
-    "fr": "Peau Métal",
-    "en": "Metal Coat",
-    "de": "Metallmantel",
-    "es": "Revest. Metálico",
-    "ja": "メタルコート"
-  },
-  "metronome": {
-    "fr": "Métronome",
-    "en": "Metronome",
-    "de": "Metronom",
-    "es": "Metrónomo",
-    "ja": "メトロノーム"
-  },
-  "miracle-seed": {
-    "fr": "Graine Miracle",
-    "en": "Miracle Seed",
-    "de": "Wundersaat",
-    "es": "Semilla Milagro",
-    "ja": "きせきのタネ"
-  },
-  "mystic-water": {
-    "fr": "Eau Mystique",
-    "en": "Mystic Water",
-    "de": "Zauberwasser",
-    "es": "Agua Mística",
-    "ja": "しんぴのしずく"
-  },
-  "never-melt-ice": {
-    "fr": "Glace Éternelle",
-    "en": "Never-Melt Ice",
-    "de": "Ewiges Eis",
-    "es": "Antiderretir",
-    "ja": "とけないこおり"
-  },
-  "occa-berry": {
-    "fr": "Baie Chocco",
-    "en": "Occa Berry",
-    "de": "Koakobeere",
-    "es": "Baya Caoca",
-    "ja": "オッカのみ"
-  },
-  "oran-berry": {
-    "fr": "Baie Oran",
-    "en": "Oran Berry",
-    "de": "Sinelbeere",
-    "es": "Baya Aranja",
-    "ja": "オレンのみ"
-  },
-  "passho-berry": {
-    "fr": "Baie Pocpoc",
-    "en": "Passho Berry",
-    "de": "Foepasbeere",
-    "es": "Baya Pasio",
-    "ja": "イトケのみ"
-  },
-  "payapa-berry": {
-    "fr": "Baie Yapap",
-    "en": "Payapa Berry",
-    "de": "Pyapabeere",
-    "es": "Baya Payapa",
-    "ja": "ウタンのみ"
-  },
-  "pearl": {
-    "fr": "Perle",
-    "en": "Pearl",
-    "de": "Perle",
-    "es": "Perla",
-    "ja": "しんじゅ"
-  },
-  "pecha-berry": {
-    "fr": "Baie Pêcha",
-    "en": "Pecha Berry",
-    "de": "Pirsifbeere",
-    "es": "Baya Meloc",
-    "ja": "モモンのみ"
-  },
-  "persim-berry": {
-    "fr": "Baie Kika",
-    "en": "Persim Berry",
-    "de": "Persimbeere",
-    "es": "Baya Caquic",
-    "ja": "キーのみ"
-  },
-  "poison-barb": {
-    "fr": "Pic Venin",
-    "en": "Poison Barb",
-    "de": "Giftstich",
-    "es": "Flecha Venenosa",
-    "ja": "どくバリ"
-  },
-  "pretty-wing": {
-    "fr": "Jolie Plume",
-    "en": "Pretty Feather",
-    "de": "Prachtfeder",
-    "es": "Pluma Bella",
-    "ja": "きれいなハネ"
-  },
-  "quick-claw": {
-    "fr": "Vive Griffe",
-    "en": "Quick Claw",
-    "de": "Flinkklaue",
-    "es": "Garra Rápida",
-    "ja": "せんせいのツメ"
-  },
-  "rare-bone": {
-    "fr": "Os Rare",
-    "en": "Rare Bone",
-    "de": "Steinknochen",
-    "es": "Hueso Raro",
-    "ja": "きちょうなホネ"
-  },
-  "rawst-berry": {
-    "fr": "Baie Fraive",
-    "en": "Rawst Berry",
-    "de": "Fragiabeere",
-    "es": "Baya Safre",
-    "ja": "チーゴのみ"
-  },
-  "razor-fang": {
-    "fr": "Croc Rasoir",
-    "en": "Razor Fang",
-    "de": "Scharfzahn",
-    "es": "Colmillo Agudo",
-    "ja": "するどいキバ"
-  },
-  "red-shard": {
-    "fr": "Tesson Rouge",
-    "en": "Red Shard",
-    "de": "Purpurstück",
-    "es": "Parte Roja",
-    "ja": "あかいかけら"
-  },
-  "rindo-berry": {
-    "fr": "Baie Ratam",
-    "en": "Rindo Berry",
-    "de": "Grindobeere",
-    "es": "Baya Tamar",
-    "ja": "リンドのみ"
-  },
-  "sharp-beak": {
-    "fr": "Bec Pointu",
-    "en": "Sharp Beak",
-    "de": "Spitzer Schnabel",
-    "es": "Pico Afilado",
-    "ja": "するどいくちばし"
-  },
-  "shed-shell": {
-    "fr": "Carapace Mue",
-    "en": "Shed Shell",
-    "de": "Wechselhülle",
-    "es": "Muda Concha",
-    "ja": "きれいなぬけがら"
-  },
-  "shuca-berry": {
-    "fr": "Baie Jouca",
-    "en": "Shuca Berry",
-    "de": "Schukebeere",
-    "es": "Baya Acardo",
-    "ja": "シュカのみ"
-  },
-  "silver-powder": {
-    "fr": "Poudre Argentée",
-    "en": "Silver Powder",
-    "de": "Silberstaub",
-    "es": "Polvo Plata",
-    "ja": "ぎんのこな"
-  },
-  "sitrus-berry": {
-    "fr": "Baie Sitrus",
-    "en": "Sitrus Berry",
-    "de": "Tsitrubeere",
-    "es": "Baya Zidra",
-    "ja": "オボンのみ"
-  },
-  "soft-sand": {
-    "fr": "Sable Doux",
-    "en": "Soft Sand",
-    "de": "Pudersand",
-    "es": "Arena Fina",
-    "ja": "やわらかいすな"
-  },
-  "spell-tag": {
-    "fr": "Rune Sort",
-    "en": "Spell Tag",
-    "de": "Bannsticker",
-    "es": "Hechizo",
-    "ja": "のろいのおふだ"
-  },
-  "stick": {
-    "fr": "Poireau",
-    "en": "Leek",
-    "de": "Lauchstange",
-    "es": "Puerro",
-    "ja": "ながねぎ"
-  },
-  "sticky-barb": {
-    "fr": "Piquants",
-    "en": "Sticky Barb",
-    "de": "Klettdorn",
-    "es": "Toxiestrella",
-    "ja": "くっつきバリ"
-  },
-  "tiny-mushroom": {
-    "fr": "Petit Champi",
-    "en": "Tiny Mushroom",
-    "de": "Minipilz",
-    "es": "Miniseta",
-    "ja": "ちいさなキノコ"
-  },
-  "twisted-spoon": {
-    "fr": "Cuillère Tordue",
-    "en": "Twisted Spoon",
-    "de": "Krummlöffel",
-    "es": "Cuchara Torcida",
-    "ja": "まがったスプーン"
-  },
   "ability-shield": {
     "fr": "Garde-Talent",
     "en": "Ability Shield",
@@ -467,6 +19,20 @@
     "de": "Rexblisarnit",
     "es": "Abomasnowita",
     "ja": "ユキノオナイト"
+  },
+  "absolite": {
+    "fr": "Absolite",
+    "en": "Absolite",
+    "de": "Absolnit",
+    "es": "Absolita",
+    "ja": "アブソルナイト"
+  },
+  "absorb-bulb": {
+    "fr": "Bulbe",
+    "en": "Absorb Bulb",
+    "de": "Knolle",
+    "es": "Tubérculo",
+    "ja": "きゅうこん"
   },
   "adamant-orb": {
     "fr": "Orbe Adamant",
@@ -545,6 +111,13 @@
     "es": "Duralium",
     "ja": "ヨロイこうせき"
   },
+  "aspear-berry": {
+    "fr": "Baie Willia",
+    "en": "Aspear Berry",
+    "de": "Wilbirbeere",
+    "es": "Baya Perasi",
+    "ja": "ナナシのみ"
+  },
   "assault-vest": {
     "fr": "Veste de Combat",
     "en": "Assault Vest",
@@ -558,6 +131,20 @@
     "de": "Ohrdochnit",
     "es": "Audinita",
     "ja": "タブンネナイト"
+  },
+  "babiri-berry": {
+    "fr": "Baie Babiri",
+    "en": "Babiri Berry",
+    "de": "Babiribeere",
+    "es": "Baya Baribá",
+    "ja": "リリバのみ"
+  },
+  "balm-mushroom": {
+    "fr": "Champi Suave",
+    "en": "Balm Mushroom",
+    "de": "Duftpilz",
+    "es": "Seta Aroma",
+    "ja": "かおるキノコ"
   },
   "banettite": {
     "fr": "Branettite",
@@ -587,6 +174,13 @@
     "es": "Beedrillita",
     "ja": "スピアナイト"
   },
+  "berry-juice": {
+    "fr": "Jus de Baie",
+    "en": "Berry Juice",
+    "de": "Beerensaft",
+    "es": "Zumo de Baya",
+    "ja": "きのみジュース"
+  },
   "big-bamboo-shoot": {
     "fr": "Gros Bambou",
     "en": "Big Bamboo Shoot",
@@ -594,12 +188,26 @@
     "es": "Big Bamboo Shoot",
     "ja": "おおきなタケノコ"
   },
+  "big-mushroom": {
+    "fr": "Gros Champi",
+    "en": "Big Mushroom",
+    "de": "Riesenpilz",
+    "es": "Seta Grande",
+    "ja": "おおきなキノコ"
+  },
   "big-nugget": {
     "fr": "Maxi Pépite",
     "en": "Big Nugget",
     "de": "Riesennugget",
     "es": "Maxipepita",
     "ja": "でかいきんのたま"
+  },
+  "big-pearl": {
+    "fr": "Grande Perle",
+    "en": "Big Pearl",
+    "de": "Riesenperle",
+    "es": "Perla Grande",
+    "ja": "おおきなしんじゅ"
   },
   "big-root": {
     "fr": "Grosse Racine",
@@ -621,6 +229,20 @@
     "de": "Schwarzgurt",
     "es": "Cinturón Negro",
     "ja": "くろおび"
+  },
+  "black-glasses": {
+    "fr": "Lunettes Noires",
+    "en": "Black Glasses",
+    "de": "Schattenbrille",
+    "es": "Gafas de Sol",
+    "ja": "くろいメガネ"
+  },
+  "black-sludge": {
+    "fr": "Boue Noire",
+    "en": "Black Sludge",
+    "de": "Giftschleim",
+    "es": "Lodo Negro",
+    "ja": "くろいヘドロ"
   },
   "blank-plate": {
     "fr": "Plaque Renouveau",
@@ -663,6 +285,13 @@
     "de": "Blauer Schal",
     "es": "Pañuelo Azul",
     "ja": "あおいバンダナ"
+  },
+  "blue-shard": {
+    "fr": "Tesson Bleu",
+    "en": "Blue Shard",
+    "de": "Indigostück",
+    "es": "Parte Azul",
+    "ja": "あおいかけら"
   },
   "blunder-policy": {
     "fr": "Assurance Échec",
@@ -727,6 +356,13 @@
     "es": "Carta Puente V",
     "ja": "ブリッジメールＶ"
   },
+  "bright-powder": {
+    "fr": "Poudre Claire",
+    "en": "Bright Powder",
+    "de": "Blendpuder",
+    "es": "Polvo Brillo",
+    "ja": "ひかりのこな"
+  },
   "bubble-mail": {
     "fr": "Lettre Mer",
     "en": "Bubble Mail",
@@ -769,12 +405,26 @@
     "es": "Cameruptita",
     "ja": "バクーダナイト"
   },
+  "cell-battery": {
+    "fr": "Pile",
+    "en": "Cell Battery",
+    "de": "Akku",
+    "es": "Pila",
+    "ja": "じゅうでんち"
+  },
   "chalky-stone": {
     "fr": "Craie",
     "en": "Chalky Stone",
     "de": "Kreidestein",
     "es": "Tiza",
     "ja": "チョークいし"
+  },
+  "charcoal": {
+    "fr": "Charbon",
+    "en": "Charcoal",
+    "de": "Holzkohle",
+    "es": "Carbón",
+    "ja": "もくたん"
   },
   "charizardite-x": {
     "fr": "Dracaufite X",
@@ -789,6 +439,34 @@
     "de": "Gluraknit Y",
     "es": "Charizardita Y",
     "ja": "リザードナイトＹ"
+  },
+  "charti-berry": {
+    "fr": "Baie Charti",
+    "en": "Charti Berry",
+    "de": "Chiaribeere",
+    "es": "Baya Alcho",
+    "ja": "ヨロギのみ"
+  },
+  "cheri-berry": {
+    "fr": "Baie Ceriz",
+    "en": "Cheri Berry",
+    "de": "Amrenabeere",
+    "es": "Baya Zreza",
+    "ja": "クラボのみ"
+  },
+  "chesto-berry": {
+    "fr": "Baie Maron",
+    "en": "Chesto Berry",
+    "de": "Maronbeere",
+    "es": "Baya Atania",
+    "ja": "カゴのみ"
+  },
+  "chilan-berry": {
+    "fr": "Baie Zalis",
+    "en": "Chilan Berry",
+    "de": "Latchibeere",
+    "es": "Baya Chilan",
+    "ja": "ホズのみ"
   },
   "chill-drive": {
     "fr": "Module Cryo",
@@ -818,12 +496,40 @@
     "es": "Gafas Elección",
     "ja": "こだわりメガネ"
   },
+  "chople-berry": {
+    "fr": "Baie Pomroz",
+    "en": "Chople Berry",
+    "de": "Rospelbeere",
+    "es": "Baya Pomaro",
+    "ja": "ヨプのみ"
+  },
+  "cleanse-tag": {
+    "fr": "Rune Purifiante",
+    "en": "Cleanse Tag",
+    "de": "Schutzband",
+    "es": "Amuleto",
+    "ja": "きよめのおふだ"
+  },
   "clear-amulet": {
     "fr": "Talisman Sain",
     "en": "Clear Amulet",
     "de": "Clear Amulet",
     "es": "Clear Amulet",
     "ja": "クリアチャーム"
+  },
+  "coba-berry": {
+    "fr": "Baie Cobaba",
+    "en": "Coba Berry",
+    "de": "Kobabeere",
+    "es": "Baya Kouba",
+    "ja": "バコウのみ"
+  },
+  "colbur-berry": {
+    "fr": "Baie Lampou",
+    "en": "Colbur Berry",
+    "de": "Burleobeere",
+    "es": "Baya Dillo",
+    "ja": "ナモのみ"
   },
   "comet-shard": {
     "fr": "Morceau Comète",
@@ -888,6 +594,13 @@
     "es": "Escama Marina",
     "ja": "しんかいのウロコ"
   },
+  "deep-sea-tooth": {
+    "fr": "Dent Océan",
+    "en": "Deep Sea Tooth",
+    "de": "Abysszahn",
+    "es": "Diente Marino",
+    "ja": "しんかいのキバ"
+  },
   "destiny-knot": {
     "fr": "Nœud Destin",
     "en": "Destiny Knot",
@@ -944,6 +657,13 @@
     "es": "Tabla Draco",
     "ja": "りゅうのプレート"
   },
+  "dragon-fang": {
+    "fr": "Croc Dragon",
+    "en": "Dragon Fang",
+    "de": "Drachenzahn",
+    "es": "Colmillo Dragón",
+    "ja": "りゅうのキバ"
+  },
   "dragon-gem": {
     "fr": "Joyau Dragon",
     "en": "Dragon Gem",
@@ -957,6 +677,13 @@
     "de": "Drachen-Disc",
     "es": "Disco Dragón",
     "ja": "ドラゴンメモリ"
+  },
+  "dragon-scale": {
+    "fr": "Écaille Draco",
+    "en": "Dragon Scale",
+    "de": "Drachenhaut",
+    "es": "Escama Dragón",
+    "ja": "りゅうのウロコ"
   },
   "dragonium-z--held": {
     "fr": "Dracozélite",
@@ -1014,6 +741,13 @@
     "es": "Mochila Escape",
     "ja": "だっしゅつパック"
   },
+  "electirizer": {
+    "fr": "Électriseur",
+    "en": "Electirizer",
+    "de": "Stromisierer",
+    "es": "Electrizador",
+    "ja": "エレキブースター"
+  },
   "electric-gem": {
     "fr": "Joyau Électrik",
     "en": "Electric Gem",
@@ -1048,6 +782,13 @@
     "de": "Enigmabeere",
     "es": "Baya Enigma",
     "ja": "ナゾのみ"
+  },
+  "everstone": {
+    "fr": "Pierre Stase",
+    "en": "Everstone",
+    "de": "Ewigstein",
+    "es": "Piedra Eterna",
+    "ja": "かわらずのいし"
   },
   "eviolite": {
     "fr": "Évoluroc",
@@ -1160,6 +901,13 @@
     "de": "Feuerbrief",
     "es": "Carta Fuego",
     "ja": "Flame Mail"
+  },
+  "flame-orb": {
+    "fr": "Orbe Flamme",
+    "en": "Flame Orb",
+    "de": "Heiß-Orb",
+    "es": "Llamasfera",
+    "ja": "かえんだま"
   },
   "flame-plate": {
     "fr": "Plaque Flamme",
@@ -1343,6 +1091,13 @@
     "es": "Fitostal Z",
     "ja": "クサＺ"
   },
+  "grassy-seed": {
+    "fr": "Graine Herbe",
+    "en": "Grassy Seed",
+    "de": "Gras-Samen",
+    "es": "Semilla Hierba",
+    "ja": "グラスシード"
+  },
   "green-scarf": {
     "fr": "Foulard Vert",
     "en": "Green Scarf",
@@ -1370,6 +1125,13 @@
     "de": "Labrusbeere",
     "es": "Baya Uvav",
     "ja": "ウブのみ"
+  },
+  "grip-claw": {
+    "fr": "Accro Griffe",
+    "en": "Grip Claw",
+    "de": "Griffklaue",
+    "es": "Garra Garfio",
+    "ja": "ねばりのかぎづめ"
   },
   "griseous-orb": {
     "fr": "Orbe Platiné",
@@ -1413,12 +1175,26 @@
     "es": "Gyaradosita",
     "ja": "ギャラドスナイト"
   },
+  "haban-berry": {
+    "fr": "Baie Fraigo",
+    "en": "Haban Berry",
+    "de": "Terirobeere",
+    "es": "Baya Anjiro",
+    "ja": "ハバンのみ"
+  },
   "harbor-mail": {
     "fr": "Lettre Port",
     "en": "Harbor Mail",
     "de": "Hafenbrief",
     "es": "Carta Puerto",
     "ja": "Harbor Mail"
+  },
+  "hard-stone": {
+    "fr": "Pierre Dure",
+    "en": "Hard Stone",
+    "de": "Granitstein",
+    "es": "Piedra Dura",
+    "ja": "かたいいし"
   },
   "heart-mail": {
     "fr": "Lettre Coeur",
@@ -1469,6 +1245,13 @@
     "es": "Baya Meluce",
     "ja": "ロメのみ"
   },
+  "honey": {
+    "fr": "Miel",
+    "en": "Honey",
+    "de": "Honig",
+    "es": "Miel",
+    "ja": "あまいミツ"
+  },
   "houndoominite": {
     "fr": "Démolossite",
     "en": "Houndoominite",
@@ -1496,13 +1279,6 @@
     "de": "Frosttafel",
     "es": "Tabla Helada",
     "ja": "つららのプレート"
-  },
-  "absolite": {
-    "fr": "Absolite",
-    "en": "Absolite",
-    "de": "Absolnit",
-    "es": "Absolita",
-    "ja": "アブソルナイト"
   },
   "icium-z--held": {
     "fr": "Cryozélite",
@@ -1581,6 +1357,20 @@
     "es": "Kangaskhanita",
     "ja": "ガルーラナイト"
   },
+  "kasib-berry": {
+    "fr": "Baie Sédra",
+    "en": "Kasib Berry",
+    "de": "Zitarzbeere",
+    "es": "Baya Drasi",
+    "ja": "カシブのみ"
+  },
+  "kebia-berry": {
+    "fr": "Baie Kébia",
+    "en": "Kebia Berry",
+    "de": "Grarzbeere",
+    "es": "Baya Kebia",
+    "ja": "ビアーのみ"
+  },
   "kee-berry": {
     "fr": "Baie Éka",
     "en": "Kee Berry",
@@ -1594,6 +1384,20 @@
     "de": "Setangbeere",
     "es": "Baya Algama",
     "ja": "ネコブのみ"
+  },
+  "kings-rock": {
+    "fr": "Roche Royale",
+    "en": "King’s Rock",
+    "de": "King-Stein",
+    "es": "Roca del Rey",
+    "ja": "おうじゃのしるし"
+  },
+  "lagging-tail": {
+    "fr": "Ralentiqueue",
+    "en": "Lagging Tail",
+    "de": "Schwerschweif",
+    "es": "Cola Plúmbea",
+    "ja": "こうこうのしっぽ"
   },
   "latiasite": {
     "fr": "Latiasite",
@@ -1644,12 +1448,33 @@
     "es": "Legend Plate",
     "ja": "レジェンドプレート"
   },
+  "leppa-berry": {
+    "fr": "Baie Mepo",
+    "en": "Leppa Berry",
+    "de": "Jonagobeere",
+    "es": "Baya Zanama",
+    "ja": "ヒメリのみ"
+  },
+  "life-orb": {
+    "fr": "Orbe Vie",
+    "en": "Life Orb",
+    "de": "Leben-Orb",
+    "es": "Vidasfera",
+    "ja": "いのちのたま"
+  },
   "light-ball": {
     "fr": "Balle Lumière",
     "en": "Light Ball",
     "de": "Kugelblitz",
     "es": "Bola Luminosa",
     "ja": "でんきだま"
+  },
+  "light-clay": {
+    "fr": "Lumargile",
+    "en": "Light Clay",
+    "de": "Lichtlehm",
+    "es": "Refleluz",
+    "ja": "ひかりのねんど"
   },
   "like-mail": {
     "fr": "Lettre Avis",
@@ -1686,6 +1511,13 @@
     "es": "Lucarita",
     "ja": "ルカリオナイト"
   },
+  "lucky-egg": {
+    "fr": "Œuf Chance",
+    "en": "Lucky Egg",
+    "de": "Glücks-Ei",
+    "es": "Huevo Suerte",
+    "ja": "しあわせタマゴ"
+  },
   "lucky-punch": {
     "fr": "Poing Chance",
     "en": "Lucky Punch",
@@ -1693,12 +1525,33 @@
     "es": "Puño Suerte",
     "ja": "ラッキーパンチ"
   },
+  "lum-berry": {
+    "fr": "Baie Prine",
+    "en": "Lum Berry",
+    "de": "Prunusbeere",
+    "es": "Baya Ziuela",
+    "ja": "ラムのみ"
+  },
+  "luminous-moss": {
+    "fr": "Lichen Lumineux",
+    "en": "Luminous Moss",
+    "de": "Leuchtmoos",
+    "es": "Musgo Brillante",
+    "ja": "ひかりごけ"
+  },
   "lustrous-orb": {
     "fr": "Orbe Perlé",
     "en": "Lustrous Orb",
     "de": "Weiß-Orb",
     "es": "Lustresfera",
     "ja": "しらたま"
+  },
+  "magmarizer": {
+    "fr": "Magmariseur",
+    "en": "Magmarizer",
+    "de": "Magmaisierer",
+    "es": "Magmatizador",
+    "ja": "マグマブースター"
   },
   "magnet": {
     "fr": "Aimant",
@@ -1749,6 +1602,13 @@
     "es": "Maxiseta",
     "ja": "ダイキノコ"
   },
+  "max-revive": {
+    "fr": "Rappel Max",
+    "en": "Max Revive",
+    "de": "Top-Beleber",
+    "es": "Revivir Máximo",
+    "ja": "げんきのかたまり"
+  },
   "meadow-plate": {
     "fr": "Plaque Herbe",
     "en": "Meadow Plate",
@@ -1770,6 +1630,13 @@
     "es": "Medichamita",
     "ja": "チャーレムナイト"
   },
+  "mental-herb": {
+    "fr": "Herbe Mental",
+    "en": "Mental Herb",
+    "de": "Mentalkraut",
+    "es": "Hierba Mental",
+    "ja": "メンタルハーブ"
+  },
   "metagrossite": {
     "fr": "Métalossite",
     "en": "Metagrossite",
@@ -1777,12 +1644,26 @@
     "es": "Metagrossita",
     "ja": "メタグロスナイト"
   },
+  "metal-coat": {
+    "fr": "Peau Métal",
+    "en": "Metal Coat",
+    "de": "Metallmantel",
+    "es": "Revest. Metálico",
+    "ja": "メタルコート"
+  },
   "metal-powder": {
     "fr": "Poudre Métal",
     "en": "Metal Powder",
     "de": "Metallstaub",
     "es": "Polvo Metálico",
     "ja": "メタルパウダー"
+  },
+  "metronome": {
+    "fr": "Métronome",
+    "en": "Metronome",
+    "de": "Metronom",
+    "es": "Metrónomo",
+    "ja": "メトロノーム"
   },
   "mewnium-z--held": {
     "fr": "Mewzélite",
@@ -1812,6 +1693,13 @@
     "es": "Tabla Mental",
     "ja": "ふしぎのプレート"
   },
+  "miracle-seed": {
+    "fr": "Graine Miracle",
+    "en": "Miracle Seed",
+    "de": "Wundersaat",
+    "es": "Semilla Milagro",
+    "ja": "きせきのタネ"
+  },
   "mirror-herb": {
     "fr": "Feuille Copieuse",
     "en": "Mirror Herb",
@@ -1826,6 +1714,20 @@
     "es": "Semilla Bruma",
     "ja": "ミストシード"
   },
+  "moomoo-milk": {
+    "fr": "Lait Meumeu",
+    "en": "Moomoo Milk",
+    "de": "Kuhmuh-Milch",
+    "es": "Leche Mu-mu",
+    "ja": "モーモーミルク"
+  },
+  "moon-stone": {
+    "fr": "Pierre Lune",
+    "en": "Moon Stone",
+    "de": "Mondstein",
+    "es": "Piedra Lunar",
+    "ja": "つきのいし"
+  },
   "mosaic-mail": {
     "fr": "Lettremosaïk",
     "en": "Mosaic Mail",
@@ -1839,6 +1741,20 @@
     "de": "Muskelband",
     "es": "Cinta Fuerte",
     "ja": "ちからのハチマキ"
+  },
+  "mystic-water": {
+    "fr": "Eau Mystique",
+    "en": "Mystic Water",
+    "de": "Zauberwasser",
+    "es": "Agua Mística",
+    "ja": "しんぴのしずく"
+  },
+  "never-melt-ice": {
+    "fr": "Glace Éternelle",
+    "en": "Never-Melt Ice",
+    "de": "Ewiges Eis",
+    "es": "Antiderretir",
+    "ja": "とけないこおり"
   },
   "normal-gem": {
     "fr": "Joyau Normal",
@@ -1861,12 +1777,26 @@
     "es": "Pepita",
     "ja": "きんのたま"
   },
+  "occa-berry": {
+    "fr": "Baie Chocco",
+    "en": "Occa Berry",
+    "de": "Koakobeere",
+    "es": "Baya Caoca",
+    "ja": "オッカのみ"
+  },
   "odd-incense": {
     "fr": "Encens Bizarre",
     "en": "Odd Incense",
     "de": "Schrägrauch",
     "es": "Incienso Raro",
     "ja": "あやしいおこう"
+  },
+  "oran-berry": {
+    "fr": "Baie Oran",
+    "en": "Oran Berry",
+    "de": "Sinelbeere",
+    "es": "Baya Aranja",
+    "ja": "オレンのみ"
   },
   "orange-mail": {
     "fr": "Lettre Oranj",
@@ -1875,6 +1805,13 @@
     "es": "Car. Naranja",
     "ja": "Orange Mail"
   },
+  "oval-stone": {
+    "fr": "Pierre Ovale",
+    "en": "Oval Stone",
+    "de": "Ovaler Stein",
+    "es": "Piedra Oval",
+    "ja": "まんまるいし"
+  },
   "pass-orb": {
     "fr": "Offrisphère",
     "en": "Pass Orb",
@@ -1882,12 +1819,47 @@
     "es": "Regalosfera",
     "ja": "デルダマ"
   },
+  "passho-berry": {
+    "fr": "Baie Pocpoc",
+    "en": "Passho Berry",
+    "de": "Foepasbeere",
+    "es": "Baya Pasio",
+    "ja": "イトケのみ"
+  },
+  "payapa-berry": {
+    "fr": "Baie Yapap",
+    "en": "Payapa Berry",
+    "de": "Pyapabeere",
+    "es": "Baya Payapa",
+    "ja": "ウタンのみ"
+  },
+  "pearl": {
+    "fr": "Perle",
+    "en": "Pearl",
+    "de": "Perle",
+    "es": "Perla",
+    "ja": "しんじゅ"
+  },
   "pearl-string": {
     "fr": "Perle Triple",
     "en": "Pearl String",
     "de": "Triperle",
     "es": "Sarta Perlas",
     "ja": "おだんごしんじゅ"
+  },
+  "pecha-berry": {
+    "fr": "Baie Pêcha",
+    "en": "Pecha Berry",
+    "de": "Pirsifbeere",
+    "es": "Baya Meloc",
+    "ja": "モモンのみ"
+  },
+  "persim-berry": {
+    "fr": "Baie Kika",
+    "en": "Persim Berry",
+    "de": "Persimbeere",
+    "es": "Baya Caquic",
+    "ja": "キーのみ"
   },
   "pidgeotite": {
     "fr": "Roucarnagite",
@@ -1938,6 +1910,13 @@
     "es": "Tabla Duende",
     "ja": "せいれいプレート"
   },
+  "poison-barb": {
+    "fr": "Pic Venin",
+    "en": "Poison Barb",
+    "de": "Giftstich",
+    "es": "Flecha Venenosa",
+    "ja": "どくバリ"
+  },
   "poison-gem": {
     "fr": "Joyau Poison",
     "en": "Poison Gem",
@@ -1973,12 +1952,26 @@
     "es": "Baya Grana",
     "ja": "ザロクのみ"
   },
+  "potion": {
+    "fr": "Potion",
+    "en": "Potion",
+    "de": "Trank",
+    "es": "Poción",
+    "ja": "キズぐすり"
+  },
   "power-herb": {
     "fr": "Herbe Pouvoir",
     "en": "Power Herb",
     "de": "Energiekraut",
     "es": "Hierba Única",
     "ja": "パワフルハーブ"
+  },
+  "pretty-wing": {
+    "fr": "Jolie Plume",
+    "en": "Pretty Feather",
+    "de": "Prachtfeder",
+    "es": "Pluma Bella",
+    "ja": "きれいなハネ"
   },
   "primarium-z--held": {
     "fr": "Oratozélite",
@@ -2043,6 +2036,13 @@
     "es": "Baya Ispero",
     "ja": "タポルのみ"
   },
+  "quick-claw": {
+    "fr": "Vive Griffe",
+    "en": "Quick Claw",
+    "de": "Flinkklaue",
+    "es": "Garra Rápida",
+    "ja": "せんせいのツメ"
+  },
   "quick-powder": {
     "fr": "Poudre Vite",
     "en": "Quick Powder",
@@ -2050,12 +2050,33 @@
     "es": "Polvo Veloz",
     "ja": "スピードパウダー"
   },
+  "rare-bone": {
+    "fr": "Os Rare",
+    "en": "Rare Bone",
+    "de": "Steinknochen",
+    "es": "Hueso Raro",
+    "ja": "きちょうなホネ"
+  },
+  "rawst-berry": {
+    "fr": "Baie Fraive",
+    "en": "Rawst Berry",
+    "de": "Fragiabeere",
+    "es": "Baya Safre",
+    "ja": "チーゴのみ"
+  },
   "razor-claw": {
     "fr": "Griffe Rasoir",
     "en": "Razor Claw",
     "de": "Scharfklaue",
     "es": "Garra Afilada",
     "ja": "するどいツメ"
+  },
+  "razor-fang": {
+    "fr": "Croc Rasoir",
+    "en": "Razor Fang",
+    "de": "Scharfzahn",
+    "es": "Colmillo Agudo",
+    "ja": "するどいキバ"
   },
   "red-card": {
     "fr": "Carton Rouge",
@@ -2084,6 +2105,13 @@
     "de": "Roter Schal",
     "es": "Pañuelo Rojo",
     "ja": "あかいバンダナ"
+  },
+  "red-shard": {
+    "fr": "Tesson Rouge",
+    "en": "Red Shard",
+    "de": "Purpurstück",
+    "es": "Parte Roja",
+    "ja": "あかいかけら"
   },
   "relic-band": {
     "fr": "Vieux Bijou",
@@ -2154,6 +2182,20 @@
     "de": "Retrobrief",
     "es": "Carta Retro.",
     "ja": "Retro Mail"
+  },
+  "revive": {
+    "fr": "Rappel",
+    "en": "Revive",
+    "de": "Beleber",
+    "es": "Revivir",
+    "ja": "げんきのかけら"
+  },
+  "rindo-berry": {
+    "fr": "Baie Ratam",
+    "en": "Rindo Berry",
+    "de": "Grindobeere",
+    "es": "Baya Tamar",
+    "ja": "リンドのみ"
   },
   "ring-target": {
     "fr": "Point de Mire",
@@ -2295,12 +2337,26 @@
     "es": "Carta Sombra",
     "ja": "Shadow Mail"
   },
+  "sharp-beak": {
+    "fr": "Bec Pointu",
+    "en": "Sharp Beak",
+    "de": "Spitzer Schnabel",
+    "es": "Pico Afilado",
+    "ja": "するどいくちばし"
+  },
   "sharpedonite": {
     "fr": "Sharpedite",
     "en": "Sharpedonite",
     "de": "Tohaidonit",
     "es": "Sharpedonita",
     "ja": "サメハダナイト"
+  },
+  "shed-shell": {
+    "fr": "Carapace Mue",
+    "en": "Shed Shell",
+    "de": "Wechselhülle",
+    "es": "Muda Concha",
+    "ja": "きれいなぬけがら"
   },
   "shell-bell": {
     "fr": "Grelot Coque",
@@ -2330,6 +2386,13 @@
     "es": "FulgoROM",
     "ja": "イナズマカセット"
   },
+  "shuca-berry": {
+    "fr": "Baie Jouca",
+    "en": "Shuca Berry",
+    "de": "Schukebeere",
+    "es": "Baya Acardo",
+    "ja": "シュカのみ"
+  },
   "silk-scarf": {
     "fr": "Mouchoir Soie",
     "en": "Silk Scarf",
@@ -2343,6 +2406,20 @@
     "de": "Silberblatt",
     "es": "Hoja de Plata",
     "ja": "ぎんのはっぱ"
+  },
+  "silver-powder": {
+    "fr": "Poudre Argentée",
+    "en": "Silver Powder",
+    "de": "Silberstaub",
+    "es": "Polvo Plata",
+    "ja": "ぎんのこな"
+  },
+  "sitrus-berry": {
+    "fr": "Baie Sitrus",
+    "en": "Sitrus Berry",
+    "de": "Tsitrubeere",
+    "es": "Baya Zidra",
+    "ja": "オボンのみ"
   },
   "sky-plate": {
     "fr": "Plaque Ciel",
@@ -2400,6 +2477,13 @@
     "es": "Bola de Nieve",
     "ja": "ゆきだま"
   },
+  "soft-sand": {
+    "fr": "Sable Doux",
+    "en": "Soft Sand",
+    "de": "Pudersand",
+    "es": "Arena Fina",
+    "ja": "やわらかいすな"
+  },
   "soul-dew": {
     "fr": "Rosée Âme",
     "en": "Soul Dew",
@@ -2413,6 +2497,13 @@
     "de": "Sternbrief",
     "es": "Car. Sideral",
     "ja": "Space Mail"
+  },
+  "spell-tag": {
+    "fr": "Rune Sort",
+    "en": "Spell Tag",
+    "de": "Bannsticker",
+    "es": "Hechizo",
+    "ja": "のろいのおふだ"
   },
   "splash-plate": {
     "fr": "Plaque Hydro",
@@ -2477,6 +2568,20 @@
     "es": "Steelixita",
     "ja": "ハガネールナイト"
   },
+  "stick": {
+    "fr": "Poireau",
+    "en": "Leek",
+    "de": "Lauchstange",
+    "es": "Puerro",
+    "ja": "ながねぎ"
+  },
+  "sticky-barb": {
+    "fr": "Piquants",
+    "en": "Sticky Barb",
+    "de": "Klettdorn",
+    "es": "Toxiestrella",
+    "ja": "くっつきバリ"
+  },
   "stone-plate": {
     "fr": "Plaque Roc",
     "en": "Stone Plate",
@@ -2498,6 +2603,13 @@
     "es": "Muelle Estirado",
     "ja": "のびたバネ"
   },
+  "sun-stone": {
+    "fr": "Pierre Soleil",
+    "en": "Sun Stone",
+    "de": "Sonnenstein",
+    "es": "Piedra Solar",
+    "ja": "たいようのいし"
+  },
   "swampertite": {
     "fr": "Laggronite",
     "en": "Swampertite",
@@ -2511,6 +2623,13 @@
     "de": "Tamotbeere",
     "es": "Baya Tamate",
     "ja": "マトマのみ"
+  },
+  "tanga-berry": {
+    "fr": "Baie Panga",
+    "en": "Tanga Berry",
+    "de": "Tanigabeere",
+    "es": "Baya Yecana",
+    "ja": "タンガのみ"
   },
   "tapunium-z--held": {
     "fr": "Tokozélite",
@@ -2554,6 +2673,13 @@
     "es": "Tiny Bamboo Shoot",
     "ja": "ちいさなタケノコ"
   },
+  "tiny-mushroom": {
+    "fr": "Petit Champi",
+    "en": "Tiny Mushroom",
+    "de": "Minipilz",
+    "es": "Miniseta",
+    "ja": "ちいさなキノコ"
+  },
   "toxic-orb": {
     "fr": "Orbe Toxique",
     "en": "Toxic Orb",
@@ -2589,12 +2715,26 @@
     "es": "Carta Mina",
     "ja": "Tunnel Mail"
   },
+  "twisted-spoon": {
+    "fr": "Cuillère Tordue",
+    "en": "Twisted Spoon",
+    "de": "Krummlöffel",
+    "es": "Cuchara Torcida",
+    "ja": "まがったスプーン"
+  },
   "tyranitarite": {
     "fr": "Tyranocivite",
     "en": "Tyranitarite",
     "de": "Despotarnit",
     "es": "Tyranitarita",
     "ja": "バンギラスナイト"
+  },
+  "up-grade": {
+    "fr": "Améliorator",
+    "en": "Upgrade",
+    "de": "Up-Grade",
+    "es": "Mejora",
+    "ja": "アップグレード"
   },
   "utility-umbrella": {
     "fr": "Parapluie Solide",
@@ -2609,6 +2749,13 @@
     "de": "Bisaflornit",
     "es": "Venusaurita",
     "ja": "フシギバナイト"
+  },
+  "wacan-berry": {
+    "fr": "Baie Parma",
+    "en": "Wacan Berry",
+    "de": "Kerzalbeere",
+    "es": "Baya Gualot",
+    "ja": "ソクノのみ"
   },
   "water-gem": {
     "fr": "Joyau Eau",
@@ -2862,6 +3009,13 @@
     "es": "Velocidad X 6",
     "ja": "スピーダー６"
   },
+  "yache-berry": {
+    "fr": "Baie Nanone",
+    "en": "Yache Berry",
+    "de": "Kiroyabeere",
+    "es": "Baya Rimoya",
+    "ja": "ヤチェのみ"
+  },
   "yellow-flute": {
     "fr": "Flûte Jaune",
     "en": "Yellow Flute",
@@ -2903,159 +3057,5 @@
     "de": "Zoomlinse",
     "es": "Telescopio",
     "ja": "フォーカスレンズ"
-  },
-  "babiri-berry": {
-    "fr": "Baie Babiri",
-    "en": "Babiri Berry",
-    "de": "Babiribeere",
-    "es": "Baya Baribá",
-    "ja": "リリバのみ"
-  },
-  "berry-juice": {
-    "fr": "Jus de Baie",
-    "en": "Berry Juice",
-    "de": "Beerensaft",
-    "es": "Zumo de Baya",
-    "ja": "きのみジュース"
-  },
-  "charti-berry": {
-    "fr": "Baie Charti",
-    "en": "Charti Berry",
-    "de": "Chiaribeere",
-    "es": "Baya Alcho",
-    "ja": "ヨロギのみ"
-  },
-  "chilan-berry": {
-    "fr": "Baie Zalis",
-    "en": "Chilan Berry",
-    "de": "Latchibeere",
-    "es": "Baya Chilan",
-    "ja": "ホズのみ"
-  },
-  "chople-berry": {
-    "fr": "Baie Pomroz",
-    "en": "Chople Berry",
-    "de": "Rospelbeere",
-    "es": "Baya Pomaro",
-    "ja": "ヨプのみ"
-  },
-  "cleanse-tag": {
-    "fr": "Rune Purifiante",
-    "en": "Cleanse Tag",
-    "de": "Schutzband",
-    "es": "Amuleto",
-    "ja": "きよめのおふだ"
-  },
-  "coba-berry": {
-    "fr": "Baie Cobaba",
-    "en": "Coba Berry",
-    "de": "Kobabeere",
-    "es": "Baya Kouba",
-    "ja": "バコウのみ"
-  },
-  "colbur-berry": {
-    "fr": "Baie Lampou",
-    "en": "Colbur Berry",
-    "de": "Burleobeere",
-    "es": "Baya Dillo",
-    "ja": "ナモのみ"
-  },
-  "electirizer": {
-    "fr": "Électriseur",
-    "en": "Electirizer",
-    "de": "Stromisierer",
-    "es": "Electrizador",
-    "ja": "エレキブースター"
-  },
-  "kasib-berry": {
-    "fr": "Baie Sédra",
-    "en": "Kasib Berry",
-    "de": "Zitarzbeere",
-    "es": "Baya Drasi",
-    "ja": "カシブのみ"
-  },
-  "magmarizer": {
-    "fr": "Magmariseur",
-    "en": "Magmarizer",
-    "de": "Magmaisierer",
-    "es": "Magmatizador",
-    "ja": "マグマブースター"
-  },
-  "max-revive": {
-    "fr": "Rappel Max",
-    "en": "Max Revive",
-    "de": "Top-Beleber",
-    "es": "Revivir Máximo",
-    "ja": "げんきのかたまり"
-  },
-  "moomoo-milk": {
-    "fr": "Lait Meumeu",
-    "en": "Moomoo Milk",
-    "de": "Kuhmuh-Milch",
-    "es": "Leche Mu-mu",
-    "ja": "モーモーミルク"
-  },
-  "moon-stone": {
-    "fr": "Pierre Lune",
-    "en": "Moon Stone",
-    "de": "Mondstein",
-    "es": "Piedra Lunar",
-    "ja": "つきのいし"
-  },
-  "oval-stone": {
-    "fr": "Pierre Ovale",
-    "en": "Oval Stone",
-    "de": "Ovaler Stein",
-    "es": "Piedra Oval",
-    "ja": "まんまるいし"
-  },
-  "potion": {
-    "fr": "Potion",
-    "en": "Potion",
-    "de": "Trank",
-    "es": "Poción",
-    "ja": "キズぐすり"
-  },
-  "revive": {
-    "fr": "Rappel",
-    "en": "Revive",
-    "de": "Beleber",
-    "es": "Revivir",
-    "ja": "げんきのかけら"
-  },
-  "sun-stone": {
-    "fr": "Pierre Soleil",
-    "en": "Sun Stone",
-    "de": "Sonnenstein",
-    "es": "Piedra Solar",
-    "ja": "たいようのいし"
-  },
-  "tanga-berry": {
-    "fr": "Baie Panga",
-    "en": "Tanga Berry",
-    "de": "Tanigabeere",
-    "es": "Baya Yecana",
-    "ja": "タンガのみ"
-  },
-  "up-grade": {
-    "fr": "Améliorator",
-    "en": "Upgrade",
-    "de": "Up-Grade",
-    "es": "Mejora",
-    "ja": "アップグレード"
-  },
-  "wacan-berry": {
-    "fr": "Baie Parma",
-    "en": "Wacan Berry",
-    "de": "Kerzalbeere",
-    "es": "Baya Gualot",
-    "ja": "ソクノのみ"
-  },
-  "yache-berry": {
-    "fr": "Baie Nanone",
-    "en": "Yache Berry",
-    "de": "Kiroyabeere",
-    "es": "Baya Rimoya",
-    "ja": "ヤチェのみ"
   }
 }
