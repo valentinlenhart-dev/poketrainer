@@ -4,24 +4,24 @@ fetch-pokemon-species.py — Enrichit pokemon-meta.json avec les données d'esp�
 
 Données ajoutées :
   description_fr      — dernière description Pokédex en français
-  descriptions_fr     — dict {jeu: description} pour tous les jeux (FR)
+  descriptions_fr/en/de/es/ja  — dict {jeu_fr: description} par langue
   category_fr         — "Pokémon Souris", "Pokémon Feu"...
   generation          — "Génération I"...
   capture_rate        — 0-255
   is_legendary        — booléen
   is_mythical         — booléen
-  gender_rate         — -1 (asexué) à 8 (toujours ♀), en % femelle ou "Asexué"
+  gender_fr           — % femelle ou "Asexué"
   habitat_fr          — "Grotte", "Forêt", "Mer"... (null si inconnu)
   base_happiness      — bonheur de base (0-255)
   hatch_counter       — cycles d'éclosion (~255 pas chacun)
   evolves_from        — slug anglais du pré-évolution (null si aucun)
   evolves_to          — liste de slugs anglais des évolutions directes
-  abilities           — liste de {name_fr, desc_fr, is_hidden}
+  abilities           — liste de {name_fr/en/de/es/ja, desc_fr/en/de/es/ja, is_hidden}
 
 Lance : python fetch-pokemon-species.py
 Durée estimée : ~18 minutes (886 Pokémon × 2 appels + cache talents)
 """
-import json, time, sys
+import json, os, time, sys
 from pathlib import Path
 
 try:
@@ -33,6 +33,10 @@ except ImportError:
 API   = "https://pokeapi.co/api/v2"
 DEST  = Path(__file__).parent / "src" / "data" / "pokemon-meta.json"
 DELAY = 0.3
+
+# ── Langues cibles ───────────────────────────────────────────────
+LANGS_DESC = ["fr", "en", "de", "es", "ja"]   # langues pour descriptions + capacités
+LANGS_INTL = {"en", "de", "es", "it", "ja", "ja-Hrkt", "ko", "zh-Hans", "zh-Hant"}
 
 # ── Traductions ───────────────────────────────────────────────────
 GEN_FR = {
@@ -124,30 +128,36 @@ def get_evolves_to(chain_data, slug):
 # ── Cache talents ─────────────────────────────────────────────────
 ability_cache = {}
 
-def get_ability_fr(slug):
+def get_ability_i18n(slug):
+    """Retourne {name_fr, desc_fr, name_en, desc_en, name_de, desc_de, name_es, desc_es, name_ja, desc_ja}"""
     if slug in ability_cache:
         return ability_cache[slug]
+    result = {}
+    for lang in LANGS_DESC:
+        result[f"name_{lang}"] = slug
+        result[f"desc_{lang}"] = ""
     try:
         r = requests.get(f"{API}/ability/{slug}", timeout=10)
         if r.status_code != 200:
-            ability_cache[slug] = {"name_fr": slug, "desc_fr": ""}
-            return ability_cache[slug]
+            ability_cache[slug] = result
+            return result
         d = r.json()
-        name_fr = next(
-            (n["name"] for n in d.get("names", []) if n["language"]["name"] == "fr"),
-            slug
-        )
-        desc_fr = ""
+        # Noms par langue
+        for n in d.get("names", []):
+            lang = n["language"]["name"]
+            if lang in LANGS_DESC:
+                result[f"name_{lang}"] = n["name"]
+        # Descriptions par langue (on prend la plus récente pour chaque langue)
         for entry in reversed(d.get("flavor_text_entries", [])):
-            if entry["language"]["name"] == "fr":
-                desc_fr = entry["flavor_text"].replace("\n", " ").replace("\f", " ").strip()
-                break
-        ability_cache[slug] = {"name_fr": name_fr, "desc_fr": desc_fr}
+            lang = entry["language"]["name"]
+            if lang in LANGS_DESC and not result[f"desc_{lang}"]:
+                result[f"desc_{lang}"] = entry["flavor_text"].replace("\n", " ").replace("\f", " ").strip()
+        ability_cache[slug] = result
         time.sleep(0.2)
-        return ability_cache[slug]
+        return result
     except:
-        ability_cache[slug] = {"name_fr": slug, "desc_fr": ""}
-        return ability_cache[slug]
+        ability_cache[slug] = result
+        return result
 
 def gender_label(rate):
     """Convertit gender_rate PokeAPI en % femelle lisible."""
@@ -163,8 +173,8 @@ errors = []
 print(f"🔍 Enrichissement de {total} Pokémon...\n")
 
 for i, (name_fr, data) in enumerate(meta.items(), 1):
-    # Saute si déjà enrichi (vérifie le nouveau champ descriptions_fr)
-    if data.get("descriptions_fr"):
+    # Saute si déjà enrichi avec toutes les langues
+    if data.get("descriptions_fr") and data.get("descriptions_en"):
         ok += 1
         print(f"  [{i:3d}/{total}] ⏭  {name_fr} (déjà enrichi)")
         continue
@@ -194,33 +204,52 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
             time.sleep(0.2)
         s = r.json()
 
-        # Toutes les descriptions FR par jeu
-        descriptions_fr = {}
-        desc_fr_last = ""
+        # Descriptions par jeu pour chaque langue
+        # On indexe par le label de jeu en français (cohérence avec l'existant)
+        # On collecte d'abord les versions FR pour établir le mapping version→label FR
+        version_to_label_fr = {}
         for ft in s.get("flavor_text_entries", []):
             if ft["language"]["name"] == "fr":
                 version = ft["version"]["name"]
-                text = ft["flavor_text"].replace("\n", " ").replace("\f", " ").strip()
-                version_label = VERSION_FR.get(version, version)
-                descriptions_fr[version_label] = text
-                desc_fr_last = text  # la dernière sera la plus récente
+                version_to_label_fr[version] = VERSION_FR.get(version, version)
+
+        # Puis on collecte toutes les langues en utilisant ce mapping
+        descriptions_by_lang = {lang: {} for lang in LANGS_DESC}
+        desc_fr_last = ""
+        for ft in s.get("flavor_text_entries", []):
+            lang = ft["language"]["name"]
+            if lang not in LANGS_DESC:
+                continue
+            version = ft["version"]["name"]
+            text = ft["flavor_text"].replace("\n", " ").replace("\f", " ").strip()
+            # Clé = label FR du jeu (ou slug si pas de traduction FR connue)
+            label = version_to_label_fr.get(version, VERSION_FR.get(version, version))
+            descriptions_by_lang[lang][label] = text
+            if lang == "fr":
+                desc_fr_last = text
+
+        descriptions_fr = descriptions_by_lang["fr"]
+        descriptions_en = descriptions_by_lang["en"]
+        descriptions_de = descriptions_by_lang["de"]
+        descriptions_es = descriptions_by_lang["es"]
+        descriptions_ja = descriptions_by_lang["ja"]
 
         # Noms dans d'autres langues (SEO + fun)
-        LANGS = {"en", "de", "es", "it", "ja", "ja-Hrkt", "ko", "zh-Hans", "zh-Hant"}
         names_intl = {}
         for n in s.get("names", []):
             lang = n["language"]["name"]
-            if lang in LANGS:
+            if lang in LANGS_INTL:
                 names_intl[lang] = n["name"]
         # Alias pratique : nom anglais = nom le plus utile pour le SEO
         name_en = names_intl.get("en", "")
 
-        # Catégorie FR
-        category_fr = ""
+        # Catégories par langue
+        categories: dict = {}
         for g in s.get("genera", []):
-            if g["language"]["name"] == "fr":
-                category_fr = g["genus"]
-                break
+            lang = g["language"]["name"]
+            if lang in LANGS_DESC:
+                categories[lang] = g["genus"]
+        category_fr = categories.get("fr", "")
 
         # Génération
         generation = GEN_FR.get(s.get("generation", {}).get("name", ""), "")
@@ -268,12 +297,8 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
                 for a in pdata.get("abilities", []):
                     ab_slug   = a["ability"]["name"]
                     is_hidden = a.get("is_hidden", False)
-                    ab_info   = get_ability_fr(ab_slug)
-                    abilities.append({
-                        "name_fr":   ab_info["name_fr"],
-                        "desc_fr":   ab_info["desc_fr"],
-                        "is_hidden": is_hidden,
-                    })
+                    ab_info   = get_ability_i18n(ab_slug)
+                    abilities.append({**ab_info, "is_hidden": is_hidden})
         except:
             pass
 
@@ -282,7 +307,15 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
         data["names_intl"]      = names_intl
         data["description_fr"]  = desc_fr_last
         data["descriptions_fr"] = descriptions_fr
+        data["descriptions_en"] = descriptions_en
+        data["descriptions_de"] = descriptions_de
+        data["descriptions_es"] = descriptions_es
+        data["descriptions_ja"] = descriptions_ja
         data["category_fr"]     = category_fr
+        data["category_en"]     = categories.get("en", category_fr)
+        data["category_de"]     = categories.get("de", category_fr)
+        data["category_es"]     = categories.get("es", category_fr)
+        data["category_ja"]     = categories.get("ja", category_fr)
         data["generation"]      = generation
         data["capture_rate"]    = capture_rate
         data["is_legendary"]    = is_legendary
@@ -307,13 +340,21 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
 
     # Sauvegarde intermédiaire toutes les 50 entrées
     if i % 50 == 0:
-        with open(DEST, "w", encoding="utf-8") as f:
-            json.dump(meta, f, ensure_ascii=False, separators=(",", ":"))
+        _tmp = DEST.with_suffix(".tmp")
+        with open(_tmp, "w", encoding="utf-8") as f:
+            json.dump(meta, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(_tmp, DEST)
         print(f"\n  💾 Sauvegarde intermédiaire ({i}/{total})\n")
 
-# ── Sauvegarde finale ─────────────────────────────────────────────
-with open(DEST, "w", encoding="utf-8") as f:
-    json.dump(meta, f, ensure_ascii=False, separators=(",", ":"))
+# ── Sauvegarde finale atomique (évite la corruption du JSON) ──────
+_tmp = DEST.with_suffix(".tmp")
+with open(_tmp, "w", encoding="utf-8") as f:
+    json.dump(meta, f, ensure_ascii=False, indent=2)
+    f.flush()
+    os.fsync(f.fileno())
+os.replace(_tmp, DEST)
 
 print(f"\n{'='*55}")
 print(f"✅ {ok}/{total} Pokémon enrichis")

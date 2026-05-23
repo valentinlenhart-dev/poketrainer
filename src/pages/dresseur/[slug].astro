@@ -100,7 +100,7 @@ const schema = {
         <div class="trainer-page__meta">
           <div class="meta-item">
             <span class="meta-item__icon">🎮</span>
-            <a href={`/jeu/${t.game_slug}`}>{gameName}</a>
+            <a href={`/jeu/${t.game_slug}`} data-game-fr={t.game}>{gameName}</a>
           </div>
           {placeText && (
             <div class="meta-item">

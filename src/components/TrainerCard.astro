@@ -47,7 +47,7 @@ const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
       </div>
     </div>
     <div class="trainer-card__meta">
-      <span>🎮 {t.game.replace('Pokémon ', '')}</span>
+      <span data-game-fr={t.game}>🎮 {t.game.replace('Pokémon ', '')}</span>
       {t.place && <span>📍 {t.place.replace(/-/g, ' ')}</span>}
       <span class={`rarity rarity--${t.rarity_key}`} style="font-size:0.72rem;padding:3px 10px">
         {t.rarity_emoji} {t.rarity_label}

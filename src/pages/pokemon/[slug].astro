@@ -15,6 +15,13 @@ try {
   pokemonMeta = mod.default as Record<string, any>;
 } catch { /* fichier optionnel — lance fetch-pokemon.py pour l'obtenir */ }
 
+// Objets tenus traduits (optionnel — lance fetch-items.py)
+let itemsI18n: Record<string, Record<string, string>> = {};
+try {
+  const mod = await import('../../data/items-i18n.json');
+  itemsI18n = mod.default as Record<string, Record<string, string>>;
+} catch { /* fichier optionnel */ }
+
 // Cartes TCG (optionnel — lance fetch-tcg.py)
 let pokemonTcg: Record<string, any[]> = {};
 try {
@@ -65,13 +72,31 @@ const trainerCount = trainers.length;
 const descFr         = (meta?.description_fr ?? '') as string;
 const descsByGame    = (meta?.descriptions_fr ?? {}) as Record<string, string>;
 const categoryFr     = (meta?.category_fr ?? '') as string;
+const categoryI18n   = { fr: categoryFr, en: meta?.category_en ?? categoryFr, de: meta?.category_de ?? categoryFr, es: meta?.category_es ?? categoryFr, ja: meta?.category_ja ?? categoryFr } as Record<string,string>;
 const generation     = (meta?.generation ?? '') as string;
 const captureRate    = meta?.capture_rate as number | null ?? null;
 const isLegendary    = meta?.is_legendary ?? false;
 const isMythical     = meta?.is_mythical ?? false;
 const evolvesFrom    = (meta?.evolves_from ?? null) as string | null;
 const evolvesTo      = (meta?.evolves_to ?? []) as string[];
-const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; is_hidden:boolean}[];
+const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; name_en?:string; desc_en?:string; name_de?:string; desc_de?:string; name_es?:string; desc_es?:string; name_ja?:string; desc_ja?:string; is_hidden:boolean}[];
+
+// i18n — descriptions + noms par langue (injectés en JSON pour le switch JS)
+const descriptionsI18n = {
+  fr: meta?.descriptions_fr ?? {},
+  en: meta?.descriptions_en ?? {},
+  de: meta?.descriptions_de ?? {},
+  es: meta?.descriptions_es ?? {},
+  ja: meta?.descriptions_ja ?? {},
+} as Record<string, Record<string, string>>;
+
+const namesI18n = {
+  fr: pokemonName,
+  en: (meta?.names_intl as any)?.en  ?? pokemonName,
+  de: (meta?.names_intl as any)?.de  ?? pokemonName,
+  es: (meta?.names_intl as any)?.es  ?? pokemonName,
+  ja: (meta?.names_intl as any)?.ja  ?? pokemonName,
+} as Record<string, string>;
 const genderFr       = meta?.gender_fr ?? null;   // "Asexué" ou number (% femelle)
 const habitatFr      = (meta?.habitat_fr ?? null) as string | null;
 const baseHappiness  = meta?.base_happiness as number | null ?? null;
@@ -209,6 +234,19 @@ const schema = {
 };
 ---
 
+<!-- Données i18n injectées pour le switch JS côté client -->
+<script type="application/json" id="pkm-i18n-data" set:text={JSON.stringify({
+  names:        namesI18n,
+  categories:   categoryI18n,
+  items:        Object.fromEntries(heldItems.map(h => [h.item, itemsI18n[h.item] ?? { fr: h.item, en: h.item, de: h.item, es: h.item, ja: h.item }])),
+  descriptions: descriptionsI18n,
+  abilities:    abilities.map(ab => ({
+    is_hidden: ab.is_hidden,
+    names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr },
+    descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr },
+  })),
+})} />
+
 <Base
   title={title}
   description={description}
@@ -225,41 +263,53 @@ const schema = {
 
     <header class="pkm-header">
       <div class="pkm-header__visual">
-        {spriteUrl ? (
-          <img
-            id="pkm-sprite-img"
-            src={spriteUrl}
-            data-normal={spriteUrl}
-            data-shiny={spriteShinyUrl ?? ''}
-            data-anim={spriteAnimUrl ?? ''}
-            alt={`Illustration officielle de ${pokemonName}`}
-            width="220" height="220"
-            class="pkm-sprite"
-            loading="eager"
-          />
-        ) : (
-          <div class="pkm-sprite pkm-sprite--placeholder" aria-hidden="true">
-            <span>?</span>
+        <div class="sprite-pair">
+          {/* Sprite normal (ou animé via toggle) */}
+          <div class="sprite-slot">
+            {spriteUrl ? (
+              <img
+                id="pkm-sprite-img"
+                src={spriteUrl}
+                data-normal={spriteUrl}
+                data-anim={spriteAnimUrl ?? ''}
+                alt={`Illustration officielle de ${pokemonName}`}
+                width="120" height="120"
+                class="pkm-sprite"
+                loading="eager"
+              />
+            ) : (
+              <div class="pkm-sprite pkm-sprite--placeholder" aria-hidden="true"><span>?</span></div>
+            )}
+            <span class="sprite-label">Normal{hasAnim ? ' / Animé' : ''}</span>
+            {hasAnim && (
+              <button class="sprite-btn-anim" id="sprite-anim-btn" data-mode="normal" title="Basculer animé">▶</button>
+            )}
           </div>
-        )}
-        {(hasShiny || hasAnim) && (
-          <div class="sprite-toggles">
-            <button class="sprite-btn sprite-btn--active" data-mode="normal">Normal</button>
-            {hasShiny && <button class="sprite-btn" data-mode="shiny">✨ Shiny</button>}
-            {hasAnim  && <button class="sprite-btn" data-mode="anim">▶ Animé</button>}
-          </div>
-        )}
+          {/* Sprite shiny */}
+          {hasShiny && (
+            <div class="sprite-slot">
+              <img
+                src={spriteShinyUrl!}
+                alt={`Forme Shiny de ${pokemonName}`}
+                width="120" height="120"
+                class="pkm-sprite"
+                loading="lazy"
+              />
+              <span class="sprite-label">✨ Shiny</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div class="pkm-header__info">
         <div class="pkm-meta-row">
           {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
-          {categoryFr && <p class="pkm-category">{categoryFr}</p>}
+          {categoryFr && <p class="pkm-category" data-i18n="pkm-category">{categoryFr}</p>}
           {generation && <p class="pkm-gen">{generation}</p>}
           {isLegendary && <p class="pkm-badge pkm-badge--legendary">⭐ Légendaire</p>}
           {isMythical  && <p class="pkm-badge pkm-badge--mythical">✨ Mythique</p>}
         </div>
-        <h1>{pokemonName}</h1>
+        <h1 data-i18n="pkm-name">{pokemonName}</h1>
 
         {/* Noms internationaux */}
         {namesDisplay.length > 0 && (
@@ -278,6 +328,7 @@ const schema = {
             {types.map((type: string) => (
               <span
                 class="type-badge"
+                data-type={type}
                 style={`background:${TYPE_COLORS[type] ?? '#888'}`}
               >
                 {TYPE_FR[type] ?? type}
@@ -286,7 +337,7 @@ const schema = {
           </div>
         )}
 
-        {descFr && <blockquote class="pkm-desc">{descFr}</blockquote>}
+        {descFr && <blockquote class="pkm-desc" data-i18n="pkm-desc">{descFr}</blockquote>}
 
         <p class="pkm-summary">
           <strong>{trainerCount} dresseur{trainerCount > 1 ? 's' : ''}</strong>
@@ -330,7 +381,12 @@ const schema = {
               ))}
             </svg>
             {captureRate !== null && (
-              <p class="radar-capture">Taux de capture : <strong>{captureRate}/255</strong></p>
+              <p class="radar-capture">
+                Taux de capture : <strong>{captureRate}</strong>
+                <span class="radar-capture__hint">
+                  {captureRate >= 200 ? ' · très facile' : captureRate >= 100 ? ' · facile' : captureRate >= 45 ? ' · normal' : captureRate >= 10 ? ' · difficile' : ' · très difficile'}
+                </span>
+              </p>
             )}
           </div>
         )}
@@ -360,7 +416,7 @@ const schema = {
             <><dt>Exp. de base</dt><dd>{baseExperience} XP</dd></>
           )}
           {heldItems.length > 0 && (
-            <><dt>Objet tenu</dt><dd>{heldItems.map(h => h.item.replace(/-/g,' ')).join(', ')}</dd></>
+            <><dt data-i18n-ui="item-held">Objet tenu</dt><dd id="pkm-held-items">{heldItems.map(h => (itemsI18n[h.item]?.fr ?? h.item.replace(/-/g,' '))).join(', ')}</dd></>
           )}
         </dl>
       </section>
@@ -369,15 +425,15 @@ const schema = {
     <!-- Talents -->
     {abilities.length > 0 && (
       <section class="abilities-section">
-        <h2>Talents</h2>
+        <h2 data-i18n-ui="abilities">Talents</h2>
         <div class="abilities-list">
-          {abilities.map(ab => (
-            <div class={`ability-card${ab.is_hidden ? ' ability-card--hidden' : ''}`}>
+          {abilities.map((ab, idx) => (
+            <div class={`ability-card${ab.is_hidden ? ' ability-card--hidden' : ''}`} data-ability-idx={idx}>
               <div class="ability-card__header">
-                <span class="ability-card__name">{ab.name_fr}</span>
-                {ab.is_hidden && <span class="ability-card__badge">Talent caché</span>}
+                <span class="ability-card__name" data-i18n={`ability-name-${idx}`}>{ab.name_fr}</span>
+                {ab.is_hidden && <span class="ability-card__badge" data-i18n-ui="hidden-ability">Talent caché</span>}
               </div>
-              {ab.desc_fr && <p class="ability-card__desc">{ab.desc_fr}</p>}
+              {ab.desc_fr && <p class="ability-card__desc" data-i18n={`ability-desc-${idx}`}>{ab.desc_fr}</p>}
             </div>
           ))}
         </div>
@@ -385,17 +441,14 @@ const schema = {
     )}
 
     <!-- Descriptions Pokédex par jeu -->
-    {Object.keys(descsByGame).length > 1 && (
+    {Object.keys(descsByGame).length > 0 && (
       <section class="pokedex-section">
-        <h2>Entrées Pokédex</h2>
-        <details class="pokedex-accordion">
-          <summary>Voir toutes les descriptions ({Object.keys(descsByGame).length} jeux)</summary>
-          <dl class="pokedex-list">
-            {Object.entries(descsByGame).map(([game, desc]) => (
-              <><dt>{game}</dt><dd>{desc}</dd></>
-            ))}
-          </dl>
-        </details>
+        <h2 data-i18n-ui="pokedex-entries">Entrées Pokédex</h2>
+        <dl class="pokedex-list" id="pokedex-list">
+          {Object.entries(descsByGame).map(([game, desc]) => (
+            <><dt>{game}</dt><dd data-game={game} data-i18n="pokedex-desc">{desc}</dd></>
+          ))}
+        </dl>
       </section>
     )}
 
@@ -522,30 +575,34 @@ const schema = {
 </Base>
 
 <script>
-  // ── Sprite toggles (Normal / Shiny / Animé) ───────────────────
-  const img  = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
-  const btns = document.querySelectorAll<HTMLButtonElement>('.sprite-btn');
+  // ── Toggle Animé ─────────────────────────────────────────────
+  const img     = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
+  const animBtn = document.getElementById('sprite-anim-btn') as HTMLButtonElement | null;
 
-  const sources: Record<string, string> = {
-    normal: img?.dataset.normal ?? '',
-    shiny:  img?.dataset.shiny  ?? '',
-    anim:   img?.dataset.anim   ?? '',
-  };
-
-  function switchSprite(mode: string) {
-    if (!img || !sources[mode]) return;
-    img.style.opacity = '0';
-    setTimeout(() => {
-      img.src = sources[mode];
-      img.style.imageRendering = mode === 'anim' ? 'auto' : 'pixelated';
-      img.style.opacity = '1';
-    }, 120);
-    btns.forEach(b => b.classList.toggle('sprite-btn--active', b.dataset.mode === mode));
+  if (img && animBtn) {
+    const normalSrc = img.dataset.normal ?? '';
+    const animSrc   = img.dataset.anim   ?? '';
+    animBtn.addEventListener('click', () => {
+      const isAnim = animBtn.dataset.mode === 'anim';
+      img.style.opacity = '0';
+      setTimeout(() => {
+        if (isAnim) {
+          img.src = normalSrc;
+          img.style.imageRendering = 'pixelated';
+          animBtn.dataset.mode = 'normal';
+          animBtn.textContent = '▶';
+          animBtn.title = 'Voir animé';
+        } else {
+          img.src = animSrc;
+          img.style.imageRendering = 'auto';
+          animBtn.dataset.mode = 'anim';
+          animBtn.textContent = '⏹';
+          animBtn.title = 'Voir normal';
+        }
+        img.style.opacity = '1';
+      }, 120);
+    });
   }
-
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => switchSprite(btn.dataset.mode!));
-  });
 
   // ── TCG show more ─────────────────────────────────────────────
   const moreBtn = document.getElementById('tcg-more-btn');
@@ -591,6 +648,107 @@ const schema = {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 
+<script>
+// ── i18n — Détection locale + switch de contenu ────────────────
+(function () {
+  const raw = document.getElementById('pkm-i18n-data')?.textContent ?? '{}';
+  const data = JSON.parse(raw) as {
+    names:        Record<string, string>;
+    categories:   Record<string, string>;
+    items:        Record<string, Record<string, string>>;
+    descriptions: Record<string, Record<string, string>>;
+    abilities:    { is_hidden: boolean; names: Record<string,string>; descs: Record<string,string> }[];
+  };
+
+  // Maps de traduction des types par langue
+  const TYPE_I18N: Record<string, Record<string, string>> = {
+    fr: { fire:'Feu', water:'Eau', grass:'Plante', electric:'Électrik', ice:'Glace', fighting:'Combat', poison:'Poison', ground:'Sol', flying:'Vol', psychic:'Psy', bug:'Insecte', rock:'Roche', ghost:'Spectre', dragon:'Dragon', dark:'Ténèbres', steel:'Acier', fairy:'Fée', normal:'Normal' },
+    en: { fire:'Fire', water:'Water', grass:'Grass', electric:'Electric', ice:'Ice', fighting:'Fighting', poison:'Poison', ground:'Ground', flying:'Flying', psychic:'Psychic', bug:'Bug', rock:'Rock', ghost:'Ghost', dragon:'Dragon', dark:'Dark', steel:'Steel', fairy:'Fairy', normal:'Normal' },
+    de: { fire:'Feuer', water:'Wasser', grass:'Pflanze', electric:'Elektro', ice:'Eis', fighting:'Kampf', poison:'Gift', ground:'Boden', flying:'Flug', psychic:'Psycho', bug:'Käfer', rock:'Gestein', ghost:'Geist', dragon:'Drache', dark:'Unlicht', steel:'Stahl', fairy:'Fee', normal:'Normal' },
+    es: { fire:'Fuego', water:'Agua', grass:'Planta', electric:'Eléctrico', ice:'Hielo', fighting:'Lucha', poison:'Veneno', ground:'Tierra', flying:'Volador', psychic:'Psíquico', bug:'Bicho', rock:'Roca', ghost:'Fantasma', dragon:'Dragón', dark:'Siniestro', steel:'Acero', fairy:'Hada', normal:'Normal' },
+    ja: { fire:'ほのお', water:'みず', grass:'くさ', electric:'でんき', ice:'こおり', fighting:'かくとう', poison:'どく', ground:'じめん', flying:'ひこう', psychic:'エスパー', bug:'むし', rock:'いわ', ghost:'ゴースト', dragon:'ドラゴン', dark:'あく', steel:'はがね', fairy:'フェアリー', normal:'ノーマル' },
+  };
+
+  // Labels UI par langue
+  const UI_I18N: Record<string, Record<string, string>> = {
+    fr: { 'abilities': 'Talents', 'hidden-ability': 'Talent caché', 'pokedex-entries': 'Entrées Pokédex' },
+    en: { 'abilities': 'Abilities', 'hidden-ability': 'Hidden ability', 'pokedex-entries': 'Pokédex Entries' },
+    de: { 'abilities': 'Fähigkeiten', 'hidden-ability': 'Versteckte Fähigkeit', 'pokedex-entries': 'Pokédex-Einträge' },
+    es: { 'abilities': 'Habilidades', 'hidden-ability': 'Habilidad oculta', 'pokedex-entries': 'Entradas de la Pokédex' },
+    ja: { 'abilities': '特性', 'hidden-ability': '隠れ特性', 'pokedex-entries': '図鑑の説明' },
+  };
+
+  // Détecte la meilleure langue disponible depuis navigator.languages
+  function detectLang(): string {
+    const supported = ['fr', 'en', 'de', 'es', 'ja'];
+    for (const l of navigator.languages ?? [navigator.language]) {
+      const short = l.split('-')[0].toLowerCase();
+      if (supported.includes(short)) return short;
+    }
+    return 'fr';
+  }
+
+  function applyLocale(lang: string) {
+    // Nom du Pokémon
+    document.querySelectorAll<HTMLElement>('[data-i18n="pkm-name"]').forEach(el => {
+      el.textContent = data.names[lang] ?? data.names['fr'];
+    });
+
+    // Catégorie
+    document.querySelectorAll<HTMLElement>('[data-i18n="pkm-category"]').forEach(el => {
+      el.textContent = data.categories[lang] ?? data.categories['fr'];
+    });
+
+    // Description courte
+    const descEl = document.querySelector<HTMLElement>('[data-i18n="pkm-desc"]');
+    if (descEl) {
+      const descs = data.descriptions[lang] ?? {};
+      const games = Object.keys(descs);
+      if (games.length) descEl.textContent = descs[games[games.length - 1]];
+    }
+
+    // Types
+    document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
+      const type = el.dataset.type!;
+      el.textContent = TYPE_I18N[lang]?.[type] ?? TYPE_I18N['fr'][type] ?? type;
+    });
+
+    // Capacités
+    data.abilities.forEach((ab, idx) => {
+      const nameEl = document.querySelector<HTMLElement>(`[data-i18n="ability-name-${idx}"]`);
+      const descEl = document.querySelector<HTMLElement>(`[data-i18n="ability-desc-${idx}"]`);
+      if (nameEl) nameEl.textContent = ab.names[lang] ?? ab.names['fr'];
+      if (descEl) descEl.textContent = ab.descs[lang] ?? ab.descs['fr'];
+    });
+
+    // Descriptions Pokédex par jeu
+    const allDescs = data.descriptions[lang] ?? {};
+    document.querySelectorAll<HTMLElement>('[data-i18n="pokedex-desc"]').forEach(dd => {
+      const game = dd.dataset.game!;
+      if (allDescs[game]) dd.textContent = allDescs[game];
+    });
+
+    // Objets tenus
+    const heldEl = document.getElementById('pkm-held-items');
+    if (heldEl && Object.keys(data.items).length > 0) {
+      const translated = Object.entries(data.items)
+        .map(([, names]) => names[lang] ?? names['fr'])
+        .join(', ');
+      if (translated) heldEl.textContent = translated;
+    }
+
+    // Labels UI
+    document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
+      const key = el.dataset.i18nUi!;
+      el.textContent = UI_I18N[lang]?.[key] ?? UI_I18N['fr'][key] ?? el.textContent;
+    });
+  }
+
+  const lang = detectLang();
+  if (lang !== 'fr') applyLocale(lang);
+})();
+</script>
+
 <style>
 .pkm-header {
   display: grid;
@@ -608,18 +766,38 @@ const schema = {
   position: relative;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   background: linear-gradient(135deg, var(--bg) 0%, #e8f0e8 100%);
-  border-radius: var(--radius); padding: 24px;
+  border-radius: var(--radius); padding: 20px 16px;
   border: 1.5px solid var(--border);
 }
+.sprite-pair {
+  display: flex; gap: 12px; align-items: flex-end; justify-content: center;
+}
+.sprite-slot {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  position: relative;
+}
+.sprite-label {
+  font-size: 0.68rem; font-weight: 600; color: var(--text-soft);
+  letter-spacing: 0.04em;
+}
+.sprite-btn-anim {
+  position: absolute; top: 4px; right: -4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--bg2);
+  font-size: 0.6rem; cursor: pointer; color: var(--text-mid);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, color 0.15s;
+}
+.sprite-btn-anim:hover { border-color: var(--red); color: var(--red); }
 .pkm-sprite {
-  width: 180px; height: 180px; object-fit: contain;
+  width: 120px; height: 120px; object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
   transition: opacity 0.12s;
 }
 .pkm-sprite--placeholder {
-  width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
-  font-size: 4rem; color: var(--text-soft); opacity: 0.3;
+  width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: var(--text-soft); opacity: 0.3;
 }
 .pkm-meta-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
 .pkm-id { font-size: 0.82rem; font-weight: 700; color: var(--text-soft); letter-spacing: 0.1em; }
@@ -636,19 +814,8 @@ const schema = {
 .pkm-badge--legendary { background: #fff8e1; color: #b8860b; border: 1px solid #f0d060; }
 .pkm-badge--mythical  { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
 
-/* Sprite toggles */
-.sprite-toggles {
-  margin-top: 12px;
-  display: flex; gap: 4px; background: var(--bg2);
-  border: 1.5px solid var(--border); border-radius: 999px; padding: 3px;
-}
-.sprite-btn {
-  border: none; background: none; border-radius: 999px;
-  padding: 4px 12px; font-size: 0.74rem; font-weight: 700;
-  color: var(--text-soft); cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.sprite-btn:hover { color: var(--text); }
-.sprite-btn--active { background: var(--red); color: #fff; }
+/* Capture rate hint */
+.radar-capture__hint { font-size: 0.72rem; color: var(--text-soft); font-style: italic; }
 
 /* Noms internationaux */
 .names-intl { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }

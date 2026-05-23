@@ -86,17 +86,17 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 </head>
 <body>
 
-  <nav class="nav" aria-label="Navigation principale">
+  <nav class="nav" aria-label="Navigation principale" data-i18n-ui="nav.aria">
     <div class="nav__inner">
       <a href="/" class="nav__logo" aria-label="PokéNom — Accueil">
         <div class="nav__logo-ball" aria-hidden="true"></div>
         PokéNom
       </a>
       <ul class="nav__links" role="list">
-        <li><a href="/">Recherche</a></li>
-        <li><a href="/duel">Duel ⚔️</a></li>
-        <li><a href="/top/legendaires">Légendaires</a></li>
-        <li><a href="/top/repandus">Top prénoms</a></li>
+        <li><a href="/" data-i18n-ui="nav.search">Recherche</a></li>
+        <li><a href="/duel" data-i18n-ui="nav.duel">Duel ⚔️</a></li>
+        <li><a href="/top/legendaires" data-i18n-ui="nav.legendaries">Légendaires</a></li>
+        <li><a href="/top/repandus" data-i18n-ui="nav.top-names">Top prénoms</a></li>
       </ul>
       <button class="theme-toggle" id="theme-toggle" aria-label="Basculer le thème sombre" title="Thème sombre">
         <span class="theme-toggle__icon">🌙</span>
@@ -121,6 +121,52 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
     });
   </script>
 
+  <!-- ── i18n global ──────────────────────────────────────────── -->
+  <script>
+    import translationsRaw from '../data/translations.json';
+    const T = translationsRaw as Record<string, Record<string, string> | Record<string, Record<string,string>>>;
+
+    const SUPPORTED = ['fr','en','de','es','ja'] as const;
+    type Lang = typeof SUPPORTED[number];
+
+    function detectLang(): Lang {
+      for (const l of (navigator.languages ?? [navigator.language])) {
+        const short = l.split('-')[0].toLowerCase() as Lang;
+        if (SUPPORTED.includes(short)) return short;
+      }
+      return 'fr';
+    }
+
+    const lang = detectLang();
+
+    // Expose globalement pour les scripts de pages spécifiques
+    (window as any).__pokenom_lang = lang;
+    (window as any).__pokenom_T    = T;
+
+    if (lang !== 'fr') {
+      const ui = T[lang] as Record<string, string>;
+      document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
+        const key = el.dataset.i18nUi!;
+        if (ui[key]) {
+          // Pour aria-label sur la nav
+          if (el.tagName === 'NAV' && key === 'nav.aria') {
+            el.setAttribute('aria-label', ui[key]);
+          } else {
+            el.textContent = ui[key];
+          }
+        }
+      });
+
+      // Noms de jeux (data-game-fr sur certains éléments)
+      const games = T['games'] as Record<string, Record<string, string>>;
+      document.querySelectorAll<HTMLElement>('[data-game-fr]').forEach(el => {
+        const fr = el.dataset.gameFr!;
+        const translated = games[fr]?.[lang];
+        if (translated) el.textContent = translated.replace('Pokémon ', '');
+      });
+    }
+  </script>
+
   <slot />
 
   <CookieBanner />
@@ -129,15 +175,15 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
     <div class="footer__inner">
       <div>
         <div class="footer__brand">PokéNom</div>
-        <p>Trouve ton dresseur Pokémon.<br />4 728 dresseurs · 17 jeux officiels.</p>
+        <p><span data-i18n-ui="footer.tagline">Trouve ton dresseur Pokémon.</span><br /><span data-i18n-ui="footer.stats">4 728 dresseurs · 17 jeux officiels.</span></p>
       </div>
       <div>
-        <strong style="display:block;margin-bottom:8px;color:var(--text)">Explorer</strong>
-        <p><a href="/top/legendaires">Prénoms légendaires</a></p>
-        <p><a href="/top/repandus">Prénoms populaires</a></p>
+        <strong style="display:block;margin-bottom:8px;color:var(--text)" data-i18n-ui="footer.explore">Explorer</strong>
+        <p><a href="/top/legendaires" data-i18n-ui="footer.legendary">Prénoms légendaires</a></p>
+        <p><a href="/top/repandus" data-i18n-ui="footer.popular">Prénoms populaires</a></p>
       </div>
       <div>
-        <strong style="display:block;margin-bottom:8px;color:var(--text)">Légal</strong>
+        <strong style="display:block;margin-bottom:8px;color:var(--text)" data-i18n-ui="footer.legal">Légal</strong>
         <p><a href="/mentions-legales">Mentions légales</a></p>
         <p><a href="/confidentialite">Confidentialité</a></p>
         <p style="margin-top:8px;font-size:0.72rem;opacity:0.6">
@@ -148,7 +194,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
     </div>
     <div class="footer__bottom">
       <span>© 2025 PokéNom</span>
-      <span>Données issues des jeux officiels Pokémon</span>
+      <span data-i18n-ui="footer.copyright">Données issues des jeux officiels Pokémon</span>
     </div>
   </footer>
 

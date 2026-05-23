@@ -8,7 +8,7 @@ fetch-pokemon.py v3 — Index officiel PokéAPI + noms français.
 
 Lance : python fetch-pokemon.py
 """
-import csv, io, json, re, time, sys
+import csv, io, json, os, re, time, sys
 from pathlib import Path
 
 try:
@@ -89,14 +89,17 @@ if DEST.exists():
         print(f"⚠️  Impossible de charger l'existant ({e}) — repartir de zéro\n")
 
 # ── 3. Enrichissement ────────────────────────────────────────────
-results = {}
+# On part de l'existant : seules les entrées MANQUANTES ou avec id=0 sont re-fetchées
+results = dict(existing)
 errors  = []
 ok      = 0
-total   = len(all_pokemon)
+skipped = 0
+to_fetch = [n for n in sorted(all_pokemon) if n not in results or results[n].get("id", 0) == 0]
+total   = len(to_fetch)
 
-print(f"\n🔍 Enrichissement de {total} Pokémon...\n")
+print(f"\n🔍 {len(all_pokemon)} Pokémon distincts ({len(results)} déjà en cache, {total} à fetcher)...\n")
 
-for i, name in enumerate(sorted(all_pokemon), 1):
+for i, name in enumerate(to_fetch, 1):
     # Chercher l'ID via l'index FR
     species_id = fr_to_id.get(name.lower())
 
@@ -182,9 +185,23 @@ for i, name in enumerate(sorted(all_pokemon), 1):
     print(f"  [{i:3d}/{total}] {status}")
     time.sleep(DELAY)
 
-# ── 3. Sauvegarde ────────────────────────────────────────────────
-with open(DEST, "w", encoding="utf-8") as f:
-    json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
+    # Sauvegarde intermédiaire toutes les 100 entrées
+    if i % 100 == 0:
+        _tmp = DEST.with_suffix(".tmp")
+        with open(_tmp, "w", encoding="utf-8") as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(_tmp, DEST)
+        print(f"\n  💾 Sauvegarde intermédiaire ({i}/{total})\n")
+
+# ── Sauvegarde finale atomique ────────────────────────────────────
+_tmp = DEST.with_suffix(".tmp")
+with open(_tmp, "w", encoding="utf-8") as f:
+    json.dump(results, f, ensure_ascii=False, indent=2)
+    f.flush()
+    os.fsync(f.fileno())
+os.replace(_tmp, DEST)
 
 print(f"\n{'='*55}")
 print(f"✅ {ok}/{total} Pokémon enrichis avec sprites et stats")
