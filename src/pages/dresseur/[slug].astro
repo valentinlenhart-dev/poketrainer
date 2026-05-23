@@ -6,7 +6,7 @@ import TrainerCard from '../../components/TrainerCard.astro';
 import trainersRaw from '../../data/trainers.json';
 import pokemonMetaRaw from '../../data/pokemon-meta.json';
 import classSpritesRaw from '../../data/trainer-class-sprites.json';
-import { toPokemonSlug } from '../../utils/slug';
+import { toPokemonSlug, placeLabel } from '../../utils/slug';
 import '../../styles/global.css';
 
 const pokemonMeta   = pokemonMetaRaw as Record<string, any>;
@@ -38,7 +38,7 @@ export async function getStaticPaths() {
 const { trainer: t } = Astro.props as { trainer: any };
 
 const gameName    = t.game.replace('Pokémon ', '');
-const placeText   = t.place ? t.place.replace(/-/g, ' ') : null;
+const placeText   = t.place ? placeLabel(t.place) : null;
 const teamText    = (t.team ?? []).join(', ');
 const classSprite = classSprites[t.class] ?? null;
 

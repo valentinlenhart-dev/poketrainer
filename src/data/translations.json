@@ -38,7 +38,16 @@
     "which-games":       "Dans quels jeux ?",
     "who-uses":          "Qui utilise",
     "legendary-badge":   "Légendaire",
-    "mythical-badge":    "Mythique"
+    "mythical-badge":    "Mythique",
+    "rarity.legendaire": "Légendaire",
+    "rarity.rare":       "Rare",
+    "rarity.repandu":    "Répandu",
+    "rarity.partout":    "Partout !",
+    "difficulty.very-easy":  "très facile",
+    "difficulty.easy":       "facile",
+    "difficulty.normal":     "normal",
+    "difficulty.hard":       "difficile",
+    "difficulty.very-hard":  "très difficile"
   },
   "en": {
     "nav.search":        "Search",
@@ -79,7 +88,16 @@
     "which-games":       "In which games?",
     "who-uses":          "Who uses",
     "legendary-badge":   "Legendary",
-    "mythical-badge":    "Mythical"
+    "mythical-badge":    "Mythical",
+    "rarity.legendaire": "Legendary",
+    "rarity.rare":       "Rare",
+    "rarity.repandu":    "Common",
+    "rarity.partout":    "Everywhere!",
+    "difficulty.very-easy":  "very easy",
+    "difficulty.easy":       "easy",
+    "difficulty.normal":     "normal",
+    "difficulty.hard":       "hard",
+    "difficulty.very-hard":  "very hard"
   },
   "de": {
     "nav.search":        "Suche",
@@ -120,7 +138,16 @@
     "which-games":       "In welchen Spielen?",
     "who-uses":          "Wer benutzt",
     "legendary-badge":   "Legendär",
-    "mythical-badge":    "Mysteriös"
+    "mythical-badge":    "Mysteriös",
+    "rarity.legendaire": "Legendär",
+    "rarity.rare":       "Selten",
+    "rarity.repandu":    "Verbreitet",
+    "rarity.partout":    "Überall!",
+    "difficulty.very-easy":  "sehr leicht",
+    "difficulty.easy":       "leicht",
+    "difficulty.normal":     "normal",
+    "difficulty.hard":       "schwer",
+    "difficulty.very-hard":  "sehr schwer"
   },
   "es": {
     "nav.search":        "Buscar",
@@ -161,7 +188,16 @@
     "which-games":       "¿En qué juegos?",
     "who-uses":          "Quién usa",
     "legendary-badge":   "Legendario",
-    "mythical-badge":    "Mítico"
+    "mythical-badge":    "Mítico",
+    "rarity.legendaire": "Legendario",
+    "rarity.rare":       "Raro",
+    "rarity.repandu":    "Común",
+    "rarity.partout":    "¡Por todas partes!",
+    "difficulty.very-easy":  "muy fácil",
+    "difficulty.easy":       "fácil",
+    "difficulty.normal":     "normal",
+    "difficulty.hard":       "difícil",
+    "difficulty.very-hard":  "muy difícil"
   },
   "ja": {
     "nav.search":        "検索",
@@ -202,7 +238,16 @@
     "which-games":       "どのゲームに？",
     "who-uses":          "誰が使う",
     "legendary-badge":   "伝説",
-    "mythical-badge":    "幻"
+    "mythical-badge":    "幻",
+    "rarity.legendaire": "伝説",
+    "rarity.rare":       "レア",
+    "rarity.repandu":    "よく見る",
+    "rarity.partout":    "どこでも！",
+    "difficulty.very-easy":  "非常に簡単",
+    "difficulty.easy":       "簡単",
+    "difficulty.normal":     "普通",
+    "difficulty.hard":       "難しい",
+    "difficulty.very-hard":  "非常に難しい"
   },
   "games": {
     "Pokémon Or et Argent": {

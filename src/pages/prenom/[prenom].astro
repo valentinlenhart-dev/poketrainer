@@ -4,7 +4,7 @@ import TrainerCard from '../../components/TrainerCard.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
-import { toPokemonSlug } from '../../utils/slug';
+import { toPokemonSlug, placeLabel } from '../../utils/slug';
 import '../../styles/global.css';
 
 
@@ -68,7 +68,7 @@ const schemaFAQ = {
         "text": count === 0
           ? `Non, aucun dresseur ne s'appelle ${displayName} dans les jeux Pokémon officiels.`
           : count === 1
-          ? `Oui ! Le ${first.class} ${displayName} est le seul dresseur Pokémon à porter ce prénom. On le trouve dans ${first.game}, à ${first.place?.replace(/-/g,' ') ?? 'un lieu mystérieux'}.`
+          ? `Oui ! Le ${first.class} ${displayName} est le seul dresseur Pokémon à porter ce prénom. On le trouve dans ${first.game}, à ${first.place ? placeLabel(first.place) : 'un lieu mystérieux'}.`
           : `Oui ! ${count} dresseurs Pokémon s'appellent ${displayName}, dans ${gamesUsed.length} jeu${gamesUsed.length > 1 ? 'x' : ''} différent${gamesUsed.length > 1 ? 's' : ''}.`
       }
     },

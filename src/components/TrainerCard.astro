@@ -1,5 +1,5 @@
 ---
-import { toPokemonSlug } from '../utils/slug';
+import { toPokemonSlug, placeLabel } from '../utils/slug';
 import pokemonMeta from '../data/pokemon-meta.json';
 import trainerSpritesRaw from '../data/trainer-class-sprites.json';
 
@@ -48,8 +48,8 @@ const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
     </div>
     <div class="trainer-card__meta">
       <span data-game-fr={t.game}>🎮 {t.game.replace('Pokémon ', '')}</span>
-      {t.place && <span>📍 {t.place.replace(/-/g, ' ')}</span>}
-      <span class={`rarity rarity--${t.rarity_key}`} style="font-size:0.72rem;padding:3px 10px">
+      {t.place && <span>📍 {placeLabel(t.place)}</span>}
+      <span class={`rarity rarity--${t.rarity_key}`} style="font-size:0.72rem;padding:3px 10px" data-i18n-rarity={t.rarity_key}>
         {t.rarity_emoji} {t.rarity_label}
       </span>
     </div>

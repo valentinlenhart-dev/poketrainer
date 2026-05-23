@@ -191,6 +191,25 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         const translated = games[fr]?.[lang];
         if (translated) el.textContent = translated.replace('Pokémon ', '');
       });
+
+      // Labels de rareté dans les cartes dresseur
+      document.querySelectorAll<HTMLElement>('[data-i18n-rarity]').forEach(el => {
+        const key = `rarity.${el.dataset.i18nRarity}`;
+        const label = ui[key];
+        if (label) {
+          // Préserve l'emoji au début (ex: "🏆 Légendaire" → "🏆 Legendary")
+          const text = el.textContent ?? '';
+          const emojiMatch = text.match(/^(\S+\s)/);
+          el.textContent = emojiMatch ? `${emojiMatch[1]}${label}` : label;
+        }
+      });
+
+      // Hints de difficulté (taux de capture)
+      document.querySelectorAll<HTMLElement>('[data-i18n-difficulty]').forEach(el => {
+        const key = `difficulty.${el.dataset.i18nDifficulty}`;
+        const label = ui[key];
+        if (label) el.textContent = ` · ${label}`;
+      });
     }
 
     // Init

@@ -4,6 +4,7 @@ import TrainerCard from '../../components/TrainerCard.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
+import { placeLabel } from '../../utils/slug';
 import '../../styles/global.css';
 
 export async function getStaticPaths() {
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 }
 
 const { placeName, trainers } = Astro.props as { slug: string; placeName: string; trainers: any[] };
-const displayPlace = placeName.replace(/-/g, ' ');
+const displayPlace = placeLabel(placeName);
 const count = trainers.length;
 const games = [...new Set(trainers.map((t: any) => t.game))];
 

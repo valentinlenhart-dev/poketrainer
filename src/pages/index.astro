@@ -104,10 +104,11 @@ const schema = {
 
 :global(.search-input-wrap) {
   display: flex;
+  position: relative; /* contexte pour le dropdown autocomplete */
   background: var(--bg2);
   border: 1.5px solid var(--border);
   border-radius: 999px;
-  overflow: hidden;
+  /* overflow:visible — le dropdown autocomplete doit déborder */
   transition: border-color 0.2s, box-shadow 0.2s;
   box-shadow: var(--shadow-sm);
 }
@@ -124,6 +125,7 @@ const schema = {
   background: transparent;
   color: var(--text);
   outline: none;
+  border-radius: 999px 0 0 999px; /* arrondi gauche car overflow:visible sur le parent */
 }
 :global(.search-input::placeholder) { color: var(--text-soft); }
 
@@ -273,6 +275,7 @@ const schema = {
   .home-main { justify-content: flex-start; padding-top: 60px; }
   .home-footer { position: static; margin-top: 40px; flex-wrap: wrap; justify-content: center; }
   :global(.search-input-wrap) { border-radius: var(--radius); }
+  :global(.search-input) { border-radius: var(--radius) 0 0 var(--radius); }
   :global(.search-btn) { border-radius: var(--radius-xs); }
 }
 </style>

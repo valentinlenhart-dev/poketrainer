@@ -57,11 +57,13 @@ const meta     = pokemonMeta[pokemonName] ?? null;
 const tcgCards = pokemonTcg[meta?.slug ?? slug] ?? [];
 
 // Sprites
-const spriteUrl      = meta?.sprite_hd ?? meta?.sprite ?? null;
-const spriteShinyUrl = (meta?.sprite_hd_shiny ?? meta?.sprite_shiny ?? null) as string | null;
-const spriteAnimUrl  = (meta?.sprite_anim ?? null) as string | null;
-const hasShiny       = !!spriteShinyUrl;
-const hasAnim        = !!spriteAnimUrl;
+const spriteUrl          = meta?.sprite_hd ?? meta?.sprite ?? null;
+const spriteShinyUrl     = (meta?.sprite_hd_shiny ?? meta?.sprite_shiny ?? null) as string | null;
+const spriteAnimUrl      = (meta?.sprite_anim ?? null) as string | null;
+const spriteAnimShinyUrl = (meta?.sprite_anim_shiny ?? null) as string | null;
+const hasShiny           = !!spriteShinyUrl;
+const hasAnim            = !!spriteAnimUrl;
+const hasAnimShiny       = !!spriteAnimShinyUrl;
 
 // Base
 const types        = (meta?.types ?? []) as string[];
@@ -235,7 +237,9 @@ const schema = {
 ---
 
 <!-- Données i18n injectées pour le switch JS côté client -->
-<script type="application/json" id="pkm-i18n-data" set:text={JSON.stringify({
+<!-- Note: utilise un <div> caché car set:text HTML-encode les " en &quot; dans <script>,
+     et textContent ne décode pas les entités HTML pour les éléments <script>. -->
+<div id="pkm-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify({
   names:        namesI18n,
   categories:   categoryI18n,
   items:        Object.fromEntries(heldItems.map(h => [h.item, itemsI18n[h.item] ?? { fr: h.item, en: h.item, de: h.item, es: h.item, ja: h.item }])),
@@ -289,13 +293,19 @@ const schema = {
           {hasShiny && (
             <div class="sprite-slot">
               <img
+                id="pkm-sprite-shiny-img"
                 src={spriteShinyUrl!}
+                data-normal={spriteShinyUrl}
+                data-anim={spriteAnimShinyUrl ?? ''}
                 alt={`Forme Shiny de ${pokemonName}`}
                 width="120" height="120"
                 class="pkm-sprite"
                 loading="lazy"
               />
-              <span class="sprite-label">✨ Shiny</span>
+              <span class="sprite-label">✨ Shiny{hasAnimShiny ? ' / Animé' : ''}</span>
+              {hasAnimShiny && (
+                <button class="sprite-btn-anim" id="sprite-anim-shiny-btn" data-mode="normal" title="Basculer animé shiny">▶</button>
+              )}
             </div>
           )}
         </div>
@@ -383,7 +393,7 @@ const schema = {
             {captureRate !== null && (
               <p class="radar-capture">
                 <span data-i18n-ui="capture-rate">Taux de capture</span> : <strong>{captureRate}</strong>
-                <span class="radar-capture__hint">
+                <span class="radar-capture__hint" data-i18n-difficulty={captureRate >= 200 ? 'very-easy' : captureRate >= 100 ? 'easy' : captureRate >= 45 ? 'normal' : captureRate >= 10 ? 'hard' : 'very-hard'}>
                   {captureRate >= 200 ? ' · très facile' : captureRate >= 100 ? ' · facile' : captureRate >= 45 ? ' · normal' : captureRate >= 10 ? ' · difficile' : ' · très difficile'}
                 </span>
               </p>
@@ -575,34 +585,38 @@ const schema = {
 </Base>
 
 <script>
-  // ── Toggle Animé ─────────────────────────────────────────────
-  const img     = document.getElementById('pkm-sprite-img') as HTMLImageElement | null;
-  const animBtn = document.getElementById('sprite-anim-btn') as HTMLButtonElement | null;
-
-  if (img && animBtn) {
+  // ── Toggle Animé (helper générique) ─────────────────────────
+  function setupAnimToggle(imgId: string, btnId: string) {
+    const img = document.getElementById(imgId) as HTMLImageElement | null;
+    const btn = document.getElementById(btnId) as HTMLButtonElement | null;
+    if (!img || !btn) return;
     const normalSrc = img.dataset.normal ?? '';
     const animSrc   = img.dataset.anim   ?? '';
-    animBtn.addEventListener('click', () => {
-      const isAnim = animBtn.dataset.mode === 'anim';
+    if (!animSrc) return;
+    btn.addEventListener('click', () => {
+      const isAnim = btn.dataset.mode === 'anim';
       img.style.opacity = '0';
       setTimeout(() => {
         if (isAnim) {
           img.src = normalSrc;
           img.style.imageRendering = 'pixelated';
-          animBtn.dataset.mode = 'normal';
-          animBtn.textContent = '▶';
-          animBtn.title = 'Voir animé';
+          btn.dataset.mode = 'normal';
+          btn.textContent = '▶';
+          btn.title = 'Voir animé';
         } else {
           img.src = animSrc;
           img.style.imageRendering = 'auto';
-          animBtn.dataset.mode = 'anim';
-          animBtn.textContent = '⏹';
-          animBtn.title = 'Voir normal';
+          btn.dataset.mode = 'anim';
+          btn.textContent = '⏹';
+          btn.title = 'Voir normal';
         }
         img.style.opacity = '1';
       }, 120);
     });
   }
+
+  setupAnimToggle('pkm-sprite-img',       'sprite-anim-btn');
+  setupAnimToggle('pkm-sprite-shiny-img', 'sprite-anim-shiny-btn');
 
   // ── TCG show more ─────────────────────────────────────────────
   const moreBtn = document.getElementById('tcg-more-btn');
