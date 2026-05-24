@@ -241,6 +241,134 @@ a:hover { text-decoration: underline; }
 .footer a { color: var(--text-soft); }
 .footer a:hover { color: var(--text); }
 
+/* ─── Prenom header ─────────────────────────────────────────────── */
+.prenom-header { padding: 28px 0 8px; }
+.prenom-header__badge { margin-bottom: 12px; }
+.prenom-header h1 { margin: 4px 0 10px; }
+.prenom-header__desc { color: var(--text-soft); font-size: 0.95rem; }
+
+/* ─── Game filter ────────────────────────────────────────────────── */
+.game-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 0 20px;
+}
+.game-filter__btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-mid);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.game-filter__btn:hover {
+  border-color: var(--border-focus);
+  color: var(--text);
+  background: var(--bg);
+}
+.game-filter__btn--active {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.game-filter__btn--active:hover {
+  background: var(--red-dark);
+  border-color: var(--red-dark);
+  color: #fff;
+}
+.filter-empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+/* ─── Related sections (Pokémon, jeux…) ─────────────────────────── */
+.related-section { padding: 28px 0 4px; }
+.related-section h2 { font-size: 1.1rem; margin-bottom: 14px; }
+
+.related-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pkm-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--bg2);
+  color: var(--text-mid);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.pkm-link:hover {
+  border-color: var(--border-focus);
+  color: var(--text);
+  background: var(--bg);
+  text-decoration: none;
+}
+
+/* ─── FAQ ────────────────────────────────────────────────────────── */
+.faq-section {
+  padding: 32px 0 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 32px;
+}
+.faq-section h2 { margin-bottom: 20px; }
+.faq-list { display: flex; flex-direction: column; gap: 16px; }
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+.faq-item dt {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.faq-item dd {
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ─── Empty state ────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+}
+.empty-state__emoji { font-size: 3rem; margin-bottom: 16px; }
+.empty-state h2 { margin-bottom: 10px; }
+.empty-state p { color: var(--text-soft); }
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+.btn-red {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 24px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-red:hover { background: var(--red-dark); text-decoration: none; color: #fff; }
+
 /* ─── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .nav__links { display: none; }

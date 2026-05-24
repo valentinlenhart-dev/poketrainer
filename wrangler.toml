@@ -3,6 +3,7 @@
 
 name = "poketrainer"
 compatibility_date = "2026-05-21"
+main = "src-worker/index.js"
 
 [assets]
 directory = "./dist"

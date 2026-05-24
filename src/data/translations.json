@@ -56,7 +56,14 @@
     "item-fling": "Lancer (CT Lancer)",
     "item-generations": "Disponible dans",
     "item-no-effect": "Aucun effet renseigné.",
-    "item-no-held": "Aucun Pokémon sauvage ne porte cet objet."
+    "item-no-held": "Aucun Pokémon sauvage ne porte cet objet.",
+    "nav.types": "Types",
+    "footer.types": "Dresseurs par type",
+    "share.btn": "Partager ce dresseur",
+    "share.copied": "Lien copié !",
+    "share.shared": "Partagé !",
+    "share.error": "Impossible de partager.",
+    "nav.random-title": "Dresseur aléatoire"
   },
   "en": {
     "nav.search": "Search",
@@ -115,7 +122,14 @@
     "item-fling": "Fling (move)",
     "item-generations": "Available in",
     "item-no-effect": "No known effect.",
-    "item-no-held": "No wild Pokémon holds this item."
+    "item-no-held": "No wild Pokémon holds this item.",
+    "nav.types": "Types",
+    "footer.types": "Trainers by type",
+    "share.btn": "Share this trainer",
+    "share.copied": "Link copied!",
+    "share.shared": "Shared!",
+    "share.error": "Could not share.",
+    "nav.random-title": "Random trainer"
   },
   "de": {
     "nav.search": "Suche",
@@ -174,7 +188,14 @@
     "item-fling": "Werfen (Attacke)",
     "item-generations": "Verfügbar in",
     "item-no-effect": "Kein bekannter Effekt.",
-    "item-no-held": "Kein wildes Pokémon hält dieses Item."
+    "item-no-held": "Kein wildes Pokémon hält dieses Item.",
+    "nav.types": "Typen",
+    "footer.types": "Trainer nach Typ",
+    "share.btn": "Trainer teilen",
+    "share.copied": "Link kopiert!",
+    "share.shared": "Geteilt!",
+    "share.error": "Teilen fehlgeschlagen.",
+    "nav.random-title": "Zufälliger Trainer"
   },
   "es": {
     "nav.search": "Buscar",
@@ -233,7 +254,14 @@
     "item-fling": "Lanzamiento (movimiento)",
     "item-generations": "Disponible en",
     "item-no-effect": "Sin efecto conocido.",
-    "item-no-held": "Ningún Pokémon salvaje lleva este objeto."
+    "item-no-held": "Ningún Pokémon salvaje lleva este objeto.",
+    "nav.types": "Tipos",
+    "footer.types": "Entrenadores por tipo",
+    "share.btn": "Compartir entrenador",
+    "share.copied": "¡Enlace copiado!",
+    "share.shared": "¡Compartido!",
+    "share.error": "No se pudo compartir.",
+    "nav.random-title": "Entrenador aleatorio"
   },
   "ja": {
     "nav.search": "検索",
@@ -292,7 +320,14 @@
     "item-fling": "なげつける",
     "item-generations": "登場する世代",
     "item-no-effect": "効果の記録なし。",
-    "item-no-held": "野生ポケモンは持っていない。"
+    "item-no-held": "野生ポケモンは持っていない。",
+    "nav.types": "タイプ",
+    "footer.types": "タイプ別トレーナー",
+    "share.btn": "トレーナーをシェア",
+    "share.copied": "リンクをコピーしました！",
+    "share.shared": "シェアしました！",
+    "share.error": "シェアできませんでした。",
+    "nav.random-title": "ランダムトレーナー"
   },
   "it": {
     "nav.search": "Cerca",
@@ -351,7 +386,14 @@
     "item-fling": "Lancio (mossa)",
     "item-generations": "Disponibile in",
     "item-no-effect": "Nessun effetto noto.",
-    "item-no-held": "Nessun Pokémon selvatico tiene questo oggetto."
+    "item-no-held": "Nessun Pokémon selvatico tiene questo oggetto.",
+    "nav.types": "Tipi",
+    "footer.types": "Allenatori per tipo",
+    "share.btn": "Condividi allenatore",
+    "share.copied": "Link copiato!",
+    "share.shared": "Condiviso!",
+    "share.error": "Impossibile condividere.",
+    "nav.random-title": "Allenatore casuale"
   },
   "ko": {
     "nav.search": "검색",
@@ -410,7 +452,14 @@
     "item-fling": "내던지기 (기술)",
     "item-generations": "등장 세대",
     "item-no-effect": "알려진 효과 없음.",
-    "item-no-held": "이 도구를 지닌 야생 포켓몬 없음."
+    "item-no-held": "이 도구를 지닌 야생 포켓몬 없음.",
+    "nav.types": "타입",
+    "footer.types": "타입별 트레이너",
+    "share.btn": "트레이너 공유",
+    "share.copied": "링크 복사됨!",
+    "share.shared": "공유됨!",
+    "share.error": "공유할 수 없습니다.",
+    "nav.random-title": "랜덤 트레이너"
   },
   "zh-Hans": {
     "nav.search": "搜索",
@@ -469,7 +518,14 @@
     "item-fling": "扔出去（招式）",
     "item-generations": "登场世代",
     "item-no-effect": "无已知效果。",
-    "item-no-held": "没有野生宝可梦携带此道具。"
+    "item-no-held": "没有野生宝可梦携带此道具。",
+    "nav.types": "属性",
+    "footer.types": "按属性查看训练师",
+    "share.btn": "分享训练师",
+    "share.copied": "链接已复制！",
+    "share.shared": "已分享！",
+    "share.error": "无法分享。",
+    "nav.random-title": "随机训练师"
   },
   "pt-BR": {
     "nav.search": "Pesquisar",
@@ -528,7 +584,14 @@
     "item-fling": "Arremesso (movimento)",
     "item-generations": "Disponível em",
     "item-no-effect": "Sem efeito conhecido.",
-    "item-no-held": "Nenhum Pokémon selvagem carrega este item."
+    "item-no-held": "Nenhum Pokémon selvagem carrega este item.",
+    "nav.types": "Tipos",
+    "footer.types": "Treinadores por tipo",
+    "share.btn": "Compartilhar treinador",
+    "share.copied": "Link copiado!",
+    "share.shared": "Compartilhado!",
+    "share.error": "Não foi possível compartilhar.",
+    "nav.random-title": "Treinador aleatório"
   },
   "zh-Hant": {
     "nav.search": "搜尋",
@@ -587,7 +650,14 @@
     "item-fling": "扔出去（招式）",
     "item-generations": "登場世代",
     "item-no-effect": "無已知效果。",
-    "item-no-held": "沒有野生寶可夢攜帶此道具。"
+    "item-no-held": "沒有野生寶可夢攜帶此道具。",
+    "nav.types": "屬性",
+    "footer.types": "依屬性查看訓練師",
+    "share.btn": "分享訓練師",
+    "share.copied": "連結已複製！",
+    "share.shared": "已分享！",
+    "share.error": "無法分享。",
+    "nav.random-title": "隨機訓練師"
   },
   "games": {
     "Pokémon Or et Argent": {

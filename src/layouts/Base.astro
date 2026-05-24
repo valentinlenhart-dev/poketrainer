@@ -97,6 +97,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         <li><a href="/duel" data-i18n-ui="nav.duel">Duel ⚔️</a></li>
         <li><a href="/top/legendaires" data-i18n-ui="nav.legendaries">Légendaires</a></li>
         <li><a href="/top/repandus" data-i18n-ui="nav.top-names">Top prénoms</a></li>
+        <li><a href="/type/water" data-i18n-ui="nav.types">Types</a></li>
       </ul>
       <!-- Sélecteur de langue -->
       <div class="lang-picker" id="lang-picker">
@@ -117,6 +118,8 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
           <li role="option" data-lang="zh-Hant">🇹🇼 ZH</li>
         </ul>
       </div>
+
+      <a href="/dresseur-aleatoire" class="random-btn" title="Dresseur aléatoire" aria-label="Dresseur aléatoire" data-i18n-ui="nav.random-title">🎲</a>
 
       <button class="theme-toggle" id="theme-toggle" aria-label="Basculer le thème sombre" title="Thème sombre">
         <span class="theme-toggle__icon">🌙</span>
@@ -185,6 +188,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         el.classList.toggle('lang-option--active', el.dataset.lang === lang);
       });
 
+      document.documentElement.lang = lang;
       if (lang === 'fr') return; // FR est la langue native
 
       const ui = T[lang] as Record<string, string> | undefined ?? {};
@@ -226,6 +230,19 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         const label = ui[key];
         if (label) el.textContent = ` · ${label}`;
       });
+
+      // ── Meta description traduite ────────────────────────────
+      const descI18n = (window as any).__page_desc_i18n as Record<string, string> | undefined;
+      if (descI18n?.[lang]) {
+        const metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', descI18n[lang]);
+        // og:description
+        const ogDesc = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', descI18n[lang]);
+        // twitter:description
+        const twDesc = document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]');
+        if (twDesc) twDesc.setAttribute('content', descI18n[lang]);
+      }
 
       // ── Classes de dresseurs ──────────────────────────────────
       document.querySelectorAll<HTMLElement>('[data-trainer-class]').forEach(el => {
@@ -272,6 +289,37 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 
   <CookieBanner />
 
+  <!-- ── Bannière sticky bas de page ───────────────────────── -->
+  <div id="sticky-ad-bar" class="sticky-ad" aria-label="Publicité" role="complementary">
+    <button id="sticky-ad-close" class="sticky-ad__close" aria-label="Fermer la publicité">✕</button>
+    <ins
+      class="adsbygoogle"
+      style="display:block;width:100%;max-height:50px;"
+      data-ad-client={ADSENSE_ID}
+      data-ad-slot="6643773892"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+  </div>
+  <script is:inline>
+    (function() {
+      var bar = document.getElementById('sticky-ad-bar');
+      var closeBtn = document.getElementById('sticky-ad-close');
+      if (!bar) return;
+      // Push l'unité AdSense
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch(e) {}
+      // Fermer après 6s
+      var t = setTimeout(function() { bar.classList.add('sticky-ad--hidden'); }, 6000);
+      // Fermer sur clic ×
+      closeBtn && closeBtn.addEventListener('click', function() {
+        clearTimeout(t);
+        bar.classList.add('sticky-ad--hidden');
+      });
+    })();
+  </script>
+
   <footer class="footer" aria-label="Pied de page">
     <div class="footer__inner">
       <div>
@@ -282,6 +330,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         <strong style="display:block;margin-bottom:8px;color:var(--text)" data-i18n-ui="footer.explore">Explorer</strong>
         <p><a href="/top/legendaires" data-i18n-ui="footer.legendary">Prénoms légendaires</a></p>
         <p><a href="/top/repandus" data-i18n-ui="footer.popular">Prénoms populaires</a></p>
+        <p><a href="/type/water" data-i18n-ui="footer.types">Dresseurs par type</a></p>
       </div>
       <div>
         <strong style="display:block;margin-bottom:8px;color:var(--text)" data-i18n-ui="footer.legal">Légal</strong>
@@ -303,6 +352,59 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 </html>
 
 <style is:global>
+/* ── Random trainer btn ─────────────────────────────── */
+.random-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  border-radius: 50%;
+  background: var(--surface, var(--bg2));
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: border-color .15s, transform .15s;
+  flex-shrink: 0;
+}
+.random-btn:hover { border-color: var(--border-focus); transform: rotate(20deg); text-decoration: none; }
+
+/* ── Sticky ad bar ───────────────────────────────────────── */
+.sticky-ad {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 890;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 3px 32px 3px 8px;
+  max-height: 56px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+}
+.sticky-ad--hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.sticky-ad__close {
+  position: absolute;
+  top: 6px; right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  padding: 4px 6px;
+  line-height: 1;
+  transition: color .15s;
+  border-radius: 4px;
+}
+.sticky-ad__close:hover { color: var(--text); background: var(--bg); }
+
 /* ── Lang picker ─────────────────────────────────────── */
 .lang-picker {
   position: relative;

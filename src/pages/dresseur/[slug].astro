@@ -68,6 +68,41 @@ const schema = {
 };
 ---
 
+<!-- Descriptions multilingues (mises à jour côté client via Base.astro applyLang) -->
+<script define:vars={{ trainerName: t.name, trainerClass: t.class, trainerGame: t.game, trainerPlace: placeText, trainerTeam: teamText }}>
+  // define:vars = JS pur (pas de TypeScript)
+  const templates = {
+    fr: (c,n,g,p,tm) => p
+      ? `${c} ${n} est un dresseur Pokémon rencontré ${p} dans ${g}. Son équipe : ${tm||'inconnue'}.`
+      : `${c} ${n} est un dresseur Pokémon de ${g}. Son équipe : ${tm||'inconnue'}.`,
+    en: (c,n,g,p,tm) => p
+      ? `${c} ${n} is a Pokémon Trainer encountered ${p} in ${g}. Team: ${tm||'unknown'}.`
+      : `${c} ${n} is a Pokémon Trainer from ${g}. Team: ${tm||'unknown'}.`,
+    de: (c,n,g,p,tm) => p
+      ? `${c} ${n} ist ein Pokémon-Trainer, dem du ${p} in ${g} begegnest. Team: ${tm||'unbekannt'}.`
+      : `${c} ${n} ist ein Pokémon-Trainer aus ${g}. Team: ${tm||'unbekannt'}.`,
+    es: (c,n,g,p,tm) => p
+      ? `${c} ${n} es un Entrenador Pokémon que se encuentra ${p} en ${g}. Equipo: ${tm||'desconocido'}.`
+      : `${c} ${n} es un Entrenador Pokémon de ${g}. Equipo: ${tm||'desconocido'}.`,
+    it: (c,n,g,p,tm) => p
+      ? `${c} ${n} è un Allenatore Pokémon incontrato ${p} in ${g}. Squadra: ${tm||'sconosciuta'}.`
+      : `${c} ${n} è un Allenatore Pokémon di ${g}. Squadra: ${tm||'sconosciuta'}.`,
+    'pt-BR': (c,n,g,p,tm) => p
+      ? `${c} ${n} é um Treinador Pokémon encontrado ${p} em ${g}. Time: ${tm||'desconhecido'}.`
+      : `${c} ${n} é um Treinador Pokémon de ${g}. Time: ${tm||'desconhecido'}.`,
+    ko: (c,n,g,p,tm) => `${g}의 포켓몬 트레이너 ${n}. 파티: ${tm||'알 수 없음'}.`,
+    ja: (c,n,g,p,tm) => `${g}のポケモントレーナー、${n}。パーティ: ${tm||'不明'}.`,
+    'zh-Hans': (c,n,g,p,tm) => `${g}中的宝可梦训练师${n}。队伍: ${tm||'未知'}.`,
+    'zh-Hant': (c,n,g,p,tm) => `${g}中的寶可夢訓練師${n}。隊伍: ${tm||'未知'}.`,
+  };
+
+  const desc = {};
+  for (const [lang, fn] of Object.entries(templates)) {
+    desc[lang] = fn(trainerClass, trainerName, trainerGame, trainerPlace, trainerTeam);
+  }
+  window.__page_desc_i18n = desc;
+</script>
+
 <Base
   title={title}
   description={description}
@@ -145,9 +180,9 @@ const schema = {
                       {types.length > 0 && (
                         <div class="team-pkm__types">
                           {types.map((type: string) => (
-                            <span class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`}>
+                            <a href={`/type/${type}`} class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`}>
                               {TYPE_FR[type] ?? type}
-                            </span>
+                            </a>
                           ))}
                         </div>
                       )}
@@ -182,6 +217,15 @@ const schema = {
           }
         </p>
       </section>
+
+      <!-- Partager -->
+      <div class="share-row">
+        <button class="share-btn" id="share-btn" data-url={`https://pokenom.fr/dresseur/${t.slug}`} data-title={`${t.class} ${t.name} — PokéNom`} data-text={description}>
+          <span class="share-btn__icon">🔗</span>
+          <span class="share-btn__label" data-i18n-ui="share.btn">Partager ce dresseur</span>
+        </button>
+        <span class="share-confirm" id="share-confirm" aria-live="polite"></span>
+      </div>
 
       <!-- Liens connexes -->
       <aside class="trainer-page__related">
@@ -219,6 +263,39 @@ const schema = {
     </article>
   </main>
 </Base>
+
+<script>
+  const btn = document.getElementById('share-btn') as HTMLButtonElement | null;
+  const confirm = document.getElementById('share-confirm');
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      const url   = btn.dataset.url   ?? location.href;
+      const title = btn.dataset.title ?? document.title;
+      const text  = btn.dataset.text  ?? '';
+      // Labels traduits (si dispo)
+      const lang = (window as any).__pokenom_lang ?? 'fr';
+      const T: Record<string,Record<string,string>> = (window as any).__pokenom_T ?? {};
+      const ui = (T[lang] ?? {}) as Record<string, string>;
+      const copied  = ui['share.copied']  ?? 'Lien copié !';
+      const shared  = ui['share.shared']  ?? 'Partagé !';
+      const shareErr = ui['share.error'] ?? 'Impossible de partager.';
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text, url });
+          if (confirm) { confirm.textContent = shared; setTimeout(()=>{ if(confirm) confirm.textContent=''; },3000); }
+        } catch {}
+      } else if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(url);
+          if (confirm) { confirm.textContent = copied; setTimeout(()=>{ if(confirm) confirm.textContent=''; },3000); }
+        } catch {
+          if (confirm) { confirm.textContent = shareErr; setTimeout(()=>{ if(confirm) confirm.textContent=''; },3000); }
+        }
+      }
+    });
+  }
+</script>
 
 <style>
 .trainer-page { padding: 32px 0 64px; }
@@ -308,7 +385,9 @@ const schema = {
   font-size: 0.68rem; font-weight: 600;
   color: #fff; padding: 1px 7px;
   border-radius: 999px;
+  text-decoration: none;
 }
+.team-type-badge:hover { opacity: 0.8; text-decoration: none; }
 .team-pkm__arrow {
   margin-left: auto;
   color: var(--text-soft);
@@ -353,6 +432,27 @@ const schema = {
   color: var(--red);
   text-decoration: none;
 }
+
+/* Partager */
+.share-row { margin: 24px 0; display:flex; align-items:center; gap:12px; }
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.share-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.share-btn__icon { font-size: 1rem; }
+.share-confirm { font-size: 0.85rem; color: var(--text-soft); }
 
 /* Dresseurs proches */
 .nearby-section { margin: 36px 0; }
