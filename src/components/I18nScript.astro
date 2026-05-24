@@ -1,0 +1,74 @@
+---
+/**
+ * I18nScript.astro — Script i18n côté client réutilisable
+ * Traduit automatiquement les éléments data-i18n-ui, data-i18n-rarity, data-type
+ * selon la langue du navigateur.
+ *
+ * À importer dans toutes les pages statiques qui ont du contenu traduisible.
+ */
+import allTranslations from '../data/translations.json';
+const T = allTranslations as Record<string, Record<string, string>>;
+---
+
+<script define:vars={{ T }}>
+(function () {
+  // ── Traductions des types par langue ─────────────────────────
+  const TYPE_I18N = {
+    fr: { fire:'Feu', water:'Eau', grass:'Plante', electric:'Électrik', ice:'Glace', fighting:'Combat', poison:'Poison', ground:'Sol', flying:'Vol', psychic:'Psy', bug:'Insecte', rock:'Roche', ghost:'Spectre', dragon:'Dragon', dark:'Ténèbres', steel:'Acier', fairy:'Fée', normal:'Normal' },
+    en: { fire:'Fire', water:'Water', grass:'Grass', electric:'Electric', ice:'Ice', fighting:'Fighting', poison:'Poison', ground:'Ground', flying:'Flying', psychic:'Psychic', bug:'Bug', rock:'Rock', ghost:'Ghost', dragon:'Dragon', dark:'Dark', steel:'Steel', fairy:'Fairy', normal:'Normal' },
+    de: { fire:'Feuer', water:'Wasser', grass:'Pflanze', electric:'Elektro', ice:'Eis', fighting:'Kampf', poison:'Gift', ground:'Boden', flying:'Flug', psychic:'Psycho', bug:'Käfer', rock:'Gestein', ghost:'Geist', dragon:'Drache', dark:'Unlicht', steel:'Stahl', fairy:'Fee', normal:'Normal' },
+    es: { fire:'Fuego', water:'Agua', grass:'Planta', electric:'Eléctrico', ice:'Hielo', fighting:'Lucha', poison:'Veneno', ground:'Tierra', flying:'Volador', psychic:'Psíquico', bug:'Bicho', rock:'Roca', ghost:'Fantasma', dragon:'Dragón', dark:'Siniestro', steel:'Acero', fairy:'Hada', normal:'Normal' },
+    ja: { fire:'ほのお', water:'みず', grass:'くさ', electric:'でんき', ice:'こおり', fighting:'かくとう', poison:'どく', ground:'じめん', flying:'ひこう', psychic:'エスパー', bug:'むし', rock:'いわ', ghost:'ゴースト', dragon:'ドラゴン', dark:'あく', steel:'はがね', fairy:'フェアリー', normal:'ノーマル' },
+    it: { fire:'Fuoco', water:'Acqua', grass:'Erba', electric:'Elettro', ice:'Ghiaccio', fighting:'Lotta', poison:'Veleno', ground:'Terra', flying:'Volante', psychic:'Psico', bug:'Coleottero', rock:'Roccia', ghost:'Spettro', dragon:'Drago', dark:'Buio', steel:'Acciaio', fairy:'Folletto', normal:'Normale' },
+    ko: { fire:'불꽃', water:'물', grass:'풀', electric:'전기', ice:'얼음', fighting:'격투', poison:'독', ground:'땅', flying:'비행', psychic:'에스퍼', bug:'벌레', rock:'바위', ghost:'고스트', dragon:'드래곤', dark:'악', steel:'강철', fairy:'페어리', normal:'노말' },
+    'zh-Hans': { fire:'火', water:'水', grass:'草', electric:'电', ice:'冰', fighting:'格斗', poison:'毒', ground:'地面', flying:'飞行', psychic:'超能力', bug:'虫', rock:'岩石', ghost:'幽灵', dragon:'龙', dark:'恶', steel:'钢', fairy:'妖精', normal:'一般' },
+    'zh-Hant': { fire:'火', water:'水', grass:'草', electric:'電', ice:'冰', fighting:'格鬥', poison:'毒', ground:'地面', flying:'飛行', psychic:'超能力', bug:'蟲', rock:'岩石', ghost:'幽靈', dragon:'龍', dark:'惡', steel:'鋼', fairy:'妖精', normal:'一般' },
+    'pt-BR': { fire:'Fogo', water:'Água', grass:'Planta', electric:'Elétrico', ice:'Gelo', fighting:'Lutador', poison:'Venenoso', ground:'Terra', flying:'Voador', psychic:'Psíquico', bug:'Inseto', rock:'Pedra', ghost:'Fantasma', dragon:'Dragão', dark:'Sombrio', steel:'Aço', fairy:'Fada', normal:'Normal' },
+  };
+
+  // ── Détection de la langue ───────────────────────────────────
+  const supported = ['fr','en','de','es','ja','it','ko','zh-Hans','zh-Hant','pt-BR'];
+  function detectLang() {
+    for (const l of navigator.languages ?? [navigator.language]) {
+      if (l.startsWith('zh-Hant') || l === 'zh-TW' || l === 'zh-HK') return 'zh-Hant';
+      if (l.startsWith('zh-Hans') || l === 'zh-CN' || l === 'zh-SG' || l === 'zh') return 'zh-Hans';
+      if (l === 'pt-BR' || l === 'pt') return 'pt-BR';
+      const s = l.split('-')[0].toLowerCase();
+      if (supported.includes(s)) return s;
+    }
+    return 'fr';
+  }
+
+  // ── Application des traductions ──────────────────────────────
+  function applyI18n(lang) {
+    const t = T[lang] ?? T['fr'];
+
+    // Labels UI (data-i18n-ui)
+    document.querySelectorAll('[data-i18n-ui]').forEach(el => {
+      const key = el.dataset.i18nUi;
+      if (t[key]) el.textContent = t[key];
+    });
+
+    // Rareté (data-i18n-rarity) — préserve l'<img> si présente
+    document.querySelectorAll('[data-i18n-rarity]').forEach(el => {
+      const key = el.dataset.i18nRarity;
+      const translated = t['rarity.' + key];
+      if (!translated) return;
+      const img = el.querySelector('img');
+      el.textContent = translated;
+      if (img) el.prepend(img);
+    });
+
+    // Types (data-type) — cible .type-name si présent
+    document.querySelectorAll('[data-type]').forEach(el => {
+      const type = el.dataset.type;
+      const nameEl = el.querySelector('.type-name') ?? el;
+      const translated = (TYPE_I18N[lang] ?? TYPE_I18N['fr'])[type];
+      if (translated) nameEl.textContent = translated;
+    });
+  }
+
+  const lang = detectLang();
+  if (lang !== 'fr') applyI18n(lang);
+})();
+</script>

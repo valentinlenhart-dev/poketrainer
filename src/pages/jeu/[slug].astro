@@ -6,6 +6,7 @@ import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
 import { toPokemonSlug } from '../../utils/slug';
 import '../../styles/global.css';
+import I18nScript from '../../components/I18nScript.astro';
 
 export async function getStaticPaths() {
   const trainers = trainersRaw as any[];
@@ -46,7 +47,7 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
 
     <!-- Classes présentes -->
     <section class="section-block">
-      <h2>Classes de dresseurs</h2>
+      <h2 data-i18n-ui="trainer-classes">Classes de dresseurs</h2>
       <div class="related-chips">
         {classes.map((c: string) => {
           const cs = (c as string).toLowerCase().normalize('NFD')
@@ -59,7 +60,7 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
     <!-- Top Pokémon du jeu -->
     {pkm.length > 0 && (
       <section class="section-block">
-        <h2>Pokémon utilisés</h2>
+        <h2 data-i18n-ui="pokemon-used">Pokémon utilisés</h2>
         <div class="related-chips">
           {pkm.map((p: string) => {
             return <a href={`/pokemon/${toPokemonSlug(p)}`} class="pkm-link">{p}</a>;
@@ -70,7 +71,7 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
 
     <!-- Dresseurs -->
     <section class="section-block">
-      <h2>Tous les dresseurs</h2>
+      <h2 data-i18n-ui="all-trainers">Tous les dresseurs</h2>
       <div class="cards-grid" style="margin-top:16px">
         {trainers.slice(0,6).map((t: any) => <TrainerCard trainer={t} />)}
       </div>
@@ -87,6 +88,7 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
     <AdSlot slot="9395123375" format="auto" />
   </main>
 </Base>
+<I18nScript />
 <style>
 .page-header { padding: 36px 0 28px; border-bottom: 1.5px solid var(--border); margin-bottom: 32px; }
 .game-badge { font-size:0.7rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }

@@ -7,6 +7,7 @@ import trainersRaw from '../../data/trainers.json';
 import pokemonMetaRaw from '../../data/pokemon-meta.json';
 import classSpritesRaw from '../../data/trainer-class-sprites.json';
 import { toPokemonSlug, placeLabel } from '../../utils/slug';
+import I18nScript from '../../components/I18nScript.astro';
 import '../../styles/global.css';
 
 const pokemonMeta   = pokemonMetaRaw as Record<string, any>;
@@ -134,18 +135,18 @@ const schema = {
 
         <div class="trainer-page__meta">
           <div class="meta-item">
-            <span class="meta-item__icon">🎮</span>
+            <span class="meta-item__icon"><img src="/assets/meta/game.svg" alt="" width="18" height="18" /></span>
             <a href={`/jeu/${t.game_slug}`} data-game-fr={t.game}>{gameName}</a>
           </div>
           {placeText && (
             <div class="meta-item">
-              <span class="meta-item__icon">📍</span>
+              <span class="meta-item__icon"><img src="/assets/meta/place.svg" alt="" width="18" height="18" /></span>
               <a href={`/lieu/${t.place_slug}`}>{placeText}</a>
             </div>
           )}
           <div class="meta-item">
-            <span class={`rarity rarity--${t.rarity_key}`}>
-              {t.rarity_emoji} {t.rarity_label}
+            <span class={`rarity rarity--${t.rarity_key}`} data-i18n-rarity={t.rarity_key}>
+              <img src={`/assets/rarity/${t.rarity_key}.svg`} alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> {t.rarity_label}
             </span>
           </div>
         </div>
@@ -157,7 +158,7 @@ const schema = {
       <!-- Équipe Pokémon -->
       {(t.team ?? []).length > 0 && (
         <section class="team-section" aria-label="Équipe Pokémon">
-          <h2>Équipe Pokémon</h2>
+          <h2 data-i18n-ui="trainer-team">Équipe Pokémon</h2>
           <ul class="team-list" role="list">
             {t.team.map((pkm: string) => {
               const pSlug  = toPokemonSlug(pkm);
@@ -167,7 +168,8 @@ const schema = {
               const nameEn = pMeta?.name_en ?? '';
               return (
                 <li>
-                  <a href={`/pokemon/${pSlug}`} class="team-pkm">
+                  <div class="team-pkm">
+                    <a href={`/pokemon/${pSlug}`} class="team-pkm__overlay" aria-label={`Voir ${pkm}`}></a>
                     <div class="team-pkm__visual">
                       {sprite
                         ? <img src={sprite} alt={pkm} width="48" height="48" class="team-pkm__sprite" loading="lazy" />
@@ -180,15 +182,15 @@ const schema = {
                       {types.length > 0 && (
                         <div class="team-pkm__types">
                           {types.map((type: string) => (
-                            <a href={`/type/${type}`} class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`}>
-                              {TYPE_FR[type] ?? type}
+                            <a href={`/type/${type}`} class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`} data-type={type}>
+                              <span class="type-name">{TYPE_FR[type] ?? type}</span>
                             </a>
                           ))}
                         </div>
                       )}
                     </div>
                     <span class="team-pkm__arrow">→</span>
-                  </a>
+                  </div>
                 </li>
               );
             })}
@@ -229,17 +231,17 @@ const schema = {
 
       <!-- Liens connexes -->
       <aside class="trainer-page__related">
-        <h2>Explorer</h2>
+        <h2 data-i18n-ui="trainer-explore">Explorer</h2>
         <div class="related-links">
           <a href={`/prenom/${t.name_slug}`} class="related-link">
             👤 Tous les dresseurs nommés {t.name}
           </a>
           <a href={`/jeu/${t.game_slug}`} class="related-link">
-            🎮 Tous les dresseurs de {gameName}
+            <img src="/assets/meta/game.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> Tous les dresseurs de {gameName}
           </a>
           {t.place && (
             <a href={`/lieu/${t.place_slug}`} class="related-link">
-              📍 Dresseurs au même endroit
+              <img src="/assets/meta/place.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> Dresseurs au même endroit
             </a>
           )}
           <a href="/" class="related-link">
@@ -263,6 +265,8 @@ const schema = {
     </article>
   </main>
 </Base>
+
+<I18nScript />
 
 <script>
   const btn = document.getElementById('share-btn') as HTMLButtonElement | null;
@@ -358,14 +362,29 @@ const schema = {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
-  text-decoration: none;
   color: inherit;
   transition: border-color 0.15s, transform 0.15s;
+  position: relative;
 }
-.team-pkm:hover {
+.team-pkm:has(.team-pkm__overlay:hover) {
   border-color: var(--border-focus);
   transform: translateY(-1px);
-  text-decoration: none;
+}
+.team-pkm__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--radius-sm);
+}
+.team-pkm__visual,
+.team-pkm__info,
+.team-pkm__arrow {
+  position: relative;
+  z-index: 1;
+}
+.team-type-badge {
+  position: relative;
+  z-index: 2;
 }
 .team-pkm__visual {
   width: 48px; height: 48px;

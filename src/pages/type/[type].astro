@@ -6,6 +6,7 @@ import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
 import typeTrainersRaw from '../../data/type-trainers.json';
 import '../../styles/global.css';
+import I18nScript from '../../components/I18nScript.astro';
 
 const typeTrainers = typeTrainersRaw as Record<string, string[]>;
 const allTrainers  = trainersRaw as any[];
@@ -58,7 +59,7 @@ const canonical = `https://pokenom.fr/type/${type}`;
     ]} />
 
     <header class="page-header">
-      <div class="type-badge">{typeEmoji} Type</div>
+      <div class="type-badge"><img src={`/assets/types/${type}.svg`} alt="" width="22" height="22" style="vertical-align:middle;margin-right:6px;" /> Type</div>
       <h1 class={`type-title type-title--${type}`}>{typeFr}</h1>
       <p class="page-sub">{count} dresseurs utilisent des Pokémon de type {typeFr}</p>
     </header>
@@ -78,7 +79,7 @@ const canonical = `https://pokenom.fr/type/${type}`;
 
     <!-- Autres types (navigation inter-type) -->
     <section class="section-block">
-      <h2>Explorer par type</h2>
+      <h2 data-i18n-ui="related">Explorer par type</h2>
       <div class="type-nav">
         {Object.entries(TYPE_FR).map(([t, label]) => (
           <a
@@ -86,7 +87,7 @@ const canonical = `https://pokenom.fr/type/${type}`;
             class={`type-chip type-chip--${t}${t === type ? ' type-chip--active' : ''}`}
             aria-current={t === type ? 'page' : undefined}
           >
-            {TYPE_EMOJI[t]} {label}
+            <img src={`/assets/types/${t}.svg`} alt="" width="16" height="16" style="vertical-align:middle;margin-right:5px;" /><span class="type-name" data-type={t}>{label}</span>
           </a>
         ))}
       </div>
@@ -118,6 +119,7 @@ const canonical = `https://pokenom.fr/type/${type}`;
 
   </main>
 </Base>
+<I18nScript />
 
 <style>
 .page-header { padding: 36px 0 28px; border-bottom: 1.5px solid var(--border); margin-bottom: 32px; }

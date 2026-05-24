@@ -5,6 +5,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
 import { toPokemonSlug } from '../../utils/slug';
+import { sortPokedexEntries } from '../../utils/games';
 // toPokemonSlug utilisé aussi côté serveur pour les liens d'évolution
 import '../../styles/global.css';
 
@@ -246,21 +247,6 @@ const schema = {
 };
 ---
 
-<!-- Données i18n injectées pour le switch JS côté client -->
-<!-- Note: utilise un <div> caché car set:text HTML-encode les " en &quot; dans <script>,
-     et textContent ne décode pas les entités HTML pour les éléments <script>. -->
-<div id="pkm-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify({
-  names:        namesI18n,
-  categories:   categoryI18n,
-  items:        Object.fromEntries(heldItems.map(h => [h.item, itemsI18n[h.item] ?? { fr: h.item, en: h.item, de: h.item, es: h.item, ja: h.item }])),
-  descriptions: descriptionsI18n,
-  abilities:    abilities.map(ab => ({
-    is_hidden: ab.is_hidden,
-    names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr, it: ab.name_it??ab.name_fr, ko: ab.name_ko??ab.name_fr, 'zh-Hans': (ab as any)['name_zh-Hans']??ab.name_fr, 'zh-Hant': (ab as any)['name_zh-Hant']??ab.name_fr, 'pt-BR': (ab as any)['name_pt-BR']??ab.name_fr },
-    descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr, it: ab.desc_it??ab.desc_fr, ko: ab.desc_ko??ab.desc_fr, 'zh-Hans': (ab as any)['desc_zh-Hans']??ab.desc_fr, 'zh-Hant': (ab as any)['desc_zh-Hant']??ab.desc_fr, 'pt-BR': (ab as any)['desc_pt-BR']??ab.desc_fr },
-  })),
-})} />
-
 <Base
   title={title}
   description={description}
@@ -269,6 +255,19 @@ const schema = {
   schema={schema}
 >
   <main id="main" class="container">
+    <!-- Données i18n injectées pour le switch JS côté client -->
+    <!-- Placé ici (dans <body>) pour que <meta charset="UTF-8"> soit vu en premier -->
+    <div id="pkm-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify({
+      names:        namesI18n,
+      categories:   categoryI18n,
+      items:        Object.fromEntries(heldItems.map(h => [h.item, itemsI18n[h.item] ?? { fr: h.item, en: h.item, de: h.item, es: h.item, ja: h.item }])),
+      descriptions: descriptionsI18n,
+      abilities:    abilities.map(ab => ({
+        is_hidden: ab.is_hidden,
+        names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr, it: ab.name_it??ab.name_fr, ko: ab.name_ko??ab.name_fr, 'zh-Hans': (ab as any)['name_zh-Hans']??ab.name_fr, 'zh-Hant': (ab as any)['name_zh-Hant']??ab.name_fr, 'pt-BR': (ab as any)['name_pt-BR']??ab.name_fr },
+        descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr, it: ab.desc_it??ab.desc_fr, ko: ab.desc_ko??ab.desc_fr, 'zh-Hans': (ab as any)['desc_zh-Hans']??ab.desc_fr, 'zh-Hant': (ab as any)['desc_zh-Hant']??ab.desc_fr, 'pt-BR': (ab as any)['desc_pt-BR']??ab.desc_fr },
+      })),
+    })} />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: 'Pokémon', href: '/' },
@@ -351,7 +350,8 @@ const schema = {
                 data-type={type}
                 style={`background:${TYPE_COLORS[type] ?? '#888'}`}
               >
-                {TYPE_FR[type] ?? type}
+                <img src={`/assets/types/${type}.svg`} alt="" width="14" height="14" style="vertical-align:middle;margin-right:5px;filter:brightness(10)" />
+                <span class="type-name">{TYPE_FR[type] ?? type}</span>
               </span>
             ))}
           </div>
@@ -475,7 +475,7 @@ const schema = {
       <section class="pokedex-section">
         <h2 data-i18n-ui="pokedex-entries">Entrées Pokédex</h2>
         <dl class="pokedex-list" id="pokedex-list">
-          {Object.entries(descsByGame).map(([game, desc]) => (
+          {sortPokedexEntries(Object.entries(descsByGame) as [string,string][]).map(([game, desc]) => (
             <><dt>{game}</dt><dd data-game={game} data-i18n="pokedex-desc">{desc}</dd></>
           ))}
         </dl>
@@ -829,10 +829,11 @@ const schema = {
       if (games.length) descEl.textContent = descs[games[games.length - 1]];
     }
 
-    // Types
+    // Types — on cible le <span class="type-name"> pour préserver l'<img>
     document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
       const type = el.dataset.type!;
-      el.textContent = TYPE_I18N[lang]?.[type] ?? TYPE_I18N['fr'][type] ?? type;
+      const nameEl = el.querySelector<HTMLElement>('.type-name') ?? el;
+      nameEl.textContent = TYPE_I18N[lang]?.[type] ?? TYPE_I18N['fr'][type] ?? type;
     });
 
     // Capacités
@@ -891,7 +892,7 @@ const schema = {
   border: 1.5px solid var(--border);
 }
 .sprite-pair {
-  display: flex; gap: 12px; align-items: flex-end; justify-content: center;
+  display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center;
 }
 .sprite-slot {
   display: flex; flex-direction: column; align-items: center; gap: 6px;

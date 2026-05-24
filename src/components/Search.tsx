@@ -287,7 +287,7 @@ function ShareModal({
       <div class="share-card">
         <button class="share-close" onClick={onClose} aria-label="Fermer">✕</button>
 
-        <div class="share-rarity-big">{rarityEmoji}</div>
+        <div class="share-rarity-big"><img src={`/assets/rarity/${rarityKey}.svg`} alt="" width="48" height="48" /></div>
         <p class="share-name">"{query}"</p>
         <p class="share-label">
           {count === 0
@@ -561,7 +561,7 @@ export default function Search({ trainers }: SearchProps) {
         <div class="search-results" role="region" aria-live="polite" aria-label="Résultats">
           <div class="results-header">
             <span class={`rarity rarity--${rarityKey}`}>
-              {rarityEmoji} {rarityLabel}
+              <img src={`/assets/rarity/${rarityKey}.svg`} alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> {rarityLabel}
             </span>
             <p class="results-count">
               {count === 0
