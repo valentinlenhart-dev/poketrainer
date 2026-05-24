@@ -475,9 +475,11 @@ const schema = {
       <section class="pokedex-section">
         <h2 data-i18n-ui="pokedex-entries">Entrées Pokédex</h2>
         <dl class="pokedex-list" id="pokedex-list">
-          {sortPokedexEntries(Object.entries(descsByGame) as [string,string][]).map(([game, desc]) => (
-            <><dt>{game}</dt><dd data-game={game} data-i18n="pokedex-desc">{desc}</dd></>
-          ))}
+          {sortPokedexEntries(Object.entries(descsByGame) as [string,string][]).map(([game, desc]) => {
+            const letsGoFr = game === 'Pikachu' ? "Let's Go, Pikachu" : game === 'Évoli' ? "Let's Go, Évoli" : null;
+            const displayLabel = letsGoFr ?? ('Pokémon ' + game);
+            return <><dt data-game-label={game}>{displayLabel}</dt><dd data-game={game} data-i18n="pokedex-desc">{desc}</dd></>;
+          })}
         </dl>
       </section>
     )}
@@ -554,7 +556,7 @@ const schema = {
               />
               <div class="tcg-card__info">
                 <span class="tcg-card__set">{card.set}</span>
-                {card.rarity && <span class="tcg-card__rarity">{RARITY_FR[card.rarity] ?? card.rarity}</span>}
+                {card.rarity && <span class="tcg-card__rarity" data-rarity-key={card.rarity}>{RARITY_FR[card.rarity] ?? card.rarity}</span>}
                 {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
               </div>
             </div>
@@ -576,7 +578,7 @@ const schema = {
                   />
                   <div class="tcg-card__info">
                     <span class="tcg-card__set">{card.set}</span>
-                    {card.rarity && <span class="tcg-card__rarity">{RARITY_FR[card.rarity] ?? card.rarity}</span>}
+                    {card.rarity && <span class="tcg-card__rarity" data-rarity-key={card.rarity}>{RARITY_FR[card.rarity] ?? card.rarity}</span>}
                     {card.artist && <span class="tcg-card__artist">✏️ {card.artist}</span>}
                   </div>
                 </div>
@@ -792,6 +794,41 @@ const schema = {
     },
   };
 
+  // ── Traductions noms de jeux Pokédex (labels courts, clés = label FR) ──
+  const VERSION_I18N: Record<string, Record<string, string>> = {
+    fr: {'Rouge':'Rouge','Bleu':'Bleu','Jaune':'Jaune','Or':'Or','Argent':'Argent','Cristal':'Cristal','Rubis':'Rubis','Saphir':'Saphir','Émeraude':'Émeraude','Rouge Feu':'Rouge Feu','Vert Feuille':'Vert Feuille','Diamant':'Diamant','Perle':'Perle','Platine':'Platine','Or HeartGold':'Or HeartGold','Argent SoulSilver':'Argent SoulSilver','Noir':'Noir','Blanc':'Blanc','Noir 2':'Noir 2','Blanc 2':'Blanc 2','X':'X','Y':'Y','Rubis Oméga':'Rubis Oméga','Saphir Alpha':'Saphir Alpha','Soleil':'Soleil','Lune':'Lune','Ultra-Soleil':'Ultra-Soleil','Ultra-Lune':'Ultra-Lune','Pikachu':'Pikachu','Évoli':'Évoli','Épée':'Épée','Bouclier':'Bouclier','Diamant Étincelant':'Diamant Étincelant','Perle Scintillante':'Perle Scintillante','Légendes : Arceus':'Légendes : Arceus','Écarlate':'Écarlate','Violet':'Violet'},
+    en: {'Rouge':'Red','Bleu':'Blue','Jaune':'Yellow','Or':'Gold','Argent':'Silver','Cristal':'Crystal','Rubis':'Ruby','Saphir':'Sapphire','Émeraude':'Emerald','Rouge Feu':'FireRed','Vert Feuille':'LeafGreen','Diamant':'Diamond','Perle':'Pearl','Platine':'Platinum','Or HeartGold':'HeartGold','Argent SoulSilver':'SoulSilver','Noir':'Black','Blanc':'White','Noir 2':'Black 2','Blanc 2':'White 2','X':'X','Y':'Y','Rubis Oméga':'Omega Ruby','Saphir Alpha':'Alpha Sapphire','Soleil':'Sun','Lune':'Moon','Ultra-Soleil':'Ultra Sun','Ultra-Lune':'Ultra Moon','Pikachu':'Pikachu','Évoli':'Eevee','Épée':'Sword','Bouclier':'Shield','Diamant Étincelant':'Brilliant Diamond','Perle Scintillante':'Shining Pearl','Légendes : Arceus':'Legends: Arceus','Écarlate':'Scarlet','Violet':'Violet'},
+    de: {'Rouge':'Rot','Bleu':'Blau','Jaune':'Gelb','Or':'Gold','Argent':'Silber','Cristal':'Kristall','Rubis':'Rubin','Saphir':'Saphir','Émeraude':'Smaragd','Rouge Feu':'Feuerrot','Vert Feuille':'Blattgrün','Diamant':'Diamant','Perle':'Perl','Platine':'Platin','Or HeartGold':'HeartGold','Argent SoulSilver':'SoulSilver','Noir':'Schwarz','Blanc':'Weiß','Noir 2':'Schwarz 2','Blanc 2':'Weiß 2','X':'X','Y':'Y','Rubis Oméga':'Omega Rubin','Saphir Alpha':'Alpha Saphir','Soleil':'Sonne','Lune':'Mond','Ultra-Soleil':'Ultrasonne','Ultra-Lune':'Ultramond','Pikachu':'Pikachu','Évoli':'Evoli','Épée':'Schwert','Bouclier':'Schild','Diamant Étincelant':'Strahlender Diamant','Perle Scintillante':'Leuchtende Perle','Légendes : Arceus':'Legenden: Arceus','Écarlate':'Karmesin','Violet':'Purpur'},
+    es: {'Rouge':'Rojo','Bleu':'Azul','Jaune':'Amarillo','Or':'Oro','Argent':'Plata','Cristal':'Cristal','Rubis':'Rubí','Saphir':'Zafiro','Émeraude':'Esmeralda','Rouge Feu':'RojoFuego','Vert Feuille':'VerdeHoja','Diamant':'Diamante','Perle':'Perla','Platine':'Platino','Or HeartGold':'HeartGold','Argent SoulSilver':'SoulSilver','Noir':'Negro','Blanc':'Blanco','Noir 2':'Negro 2','Blanc 2':'Blanco 2','X':'X','Y':'Y','Rubis Oméga':'Rubí Omega','Saphir Alpha':'Zafiro Alfa','Soleil':'Sol','Lune':'Luna','Ultra-Soleil':'Ultrasol','Ultra-Lune':'Ultraluna','Pikachu':'Pikachu','Évoli':'Eevee','Épée':'Espada','Bouclier':'Escudo','Diamant Étincelant':'Diamante Brillante','Perle Scintillante':'Perla Reluciente','Légendes : Arceus':'Leyendas: Arceus','Écarlate':'Escarlata','Violet':'Púrpura'},
+    ja: {'Rouge':'アカ','Bleu':'アオ','Jaune':'キイロ','Or':'キン','Argent':'ギン','Cristal':'クリスタル','Rubis':'ルビー','Saphir':'サファイア','Émeraude':'エメラルド','Rouge Feu':'ファイアレッド','Vert Feuille':'リーフグリーン','Diamant':'ダイヤモンド','Perle':'パール','Platine':'プラチナ','Or HeartGold':'ハートゴールド','Argent SoulSilver':'ソウルシルバー','Noir':'ブラック','Blanc':'ホワイト','Noir 2':'ブラック2','Blanc 2':'ホワイト2','X':'X','Y':'Y','Rubis Oméga':'オメガルビー','Saphir Alpha':'アルファサファイア','Soleil':'サン','Lune':'ムーン','Ultra-Soleil':'ウルトラサン','Ultra-Lune':'ウルトラムーン','Pikachu':'ピカチュウ','Évoli':'イーブイ','Épée':'ソード','Bouclier':'シールド','Diamant Étincelant':'ブリリアントダイヤモンド','Perle Scintillante':'シャイニングパール','Légendes : Arceus':'レジェンズ アルセウス','Écarlate':'スカーレット','Violet':'バイオレット'},
+    it: {'Rouge':'Rosso','Bleu':'Blu','Jaune':'Giallo','Or':'Oro','Argent':'Argento','Cristal':'Cristallo','Rubis':'Rubino','Saphir':'Zaffiro','Émeraude':'Smeraldo','Rouge Feu':'Rosso Fuoco','Vert Feuille':'Verde Foglia','Diamant':'Diamante','Perle':'Perla','Platine':'Platino','Or HeartGold':'HeartGold','Argent SoulSilver':'SoulSilver','Noir':'Nero','Blanc':'Bianco','Noir 2':'Nero 2','Blanc 2':'Bianco 2','X':'X','Y':'Y','Rubis Oméga':'Rubino Omega','Saphir Alpha':'Zaffiro Alpha','Soleil':'Sole','Lune':'Luna','Ultra-Soleil':'Ultrasole','Ultra-Lune':'Ultraluna','Pikachu':'Pikachu','Évoli':'Eevee','Épée':'Spada','Bouclier':'Scudo','Diamant Étincelant':'Diamante Lucente','Perle Scintillante':'Perla Splendente','Légendes : Arceus':'Leggende: Arceus','Écarlate':'Scarlatto','Violet':'Violetto'},
+    ko: {'Rouge':'레드','Bleu':'블루','Jaune':'옐로우','Or':'골드','Argent':'실버','Cristal':'크리스탈','Rubis':'루비','Saphir':'사파이어','Émeraude':'에메랄드','Rouge Feu':'파이어레드','Vert Feuille':'리프그린','Diamant':'다이아몬드','Perle':'펄','Platine':'플래티넘','Or HeartGold':'하트골드','Argent SoulSilver':'소울실버','Noir':'블랙','Blanc':'화이트','Noir 2':'블랙 2','Blanc 2':'화이트 2','X':'X','Y':'Y','Rubis Oméga':'오메가루비','Saphir Alpha':'알파사파이어','Soleil':'썬','Lune':'문','Ultra-Soleil':'울트라썬','Ultra-Lune':'울트라문','Pikachu':'피카츄','Évoli':'이브이','Épée':'소드','Bouclier':'실드','Diamant Étincelant':'브릴리언트 다이아몬드','Perle Scintillante':'샤이닝 펄','Légendes : Arceus':'레전드 아르세우스','Écarlate':'스칼렛','Violet':'바이올렛'},
+    'zh-Hans': {'Rouge':'红','Bleu':'蓝','Jaune':'黄','Or':'金','Argent':'银','Cristal':'水晶','Rubis':'红宝石','Saphir':'蓝宝石','Émeraude':'翡翠','Rouge Feu':'火红','Vert Feuille':'叶绿','Diamant':'钻石','Perle':'珍珠','Platine':'白金','Or HeartGold':'心金','Argent SoulSilver':'魂银','Noir':'黑','Blanc':'白','Noir 2':'黑2','Blanc 2':'白2','X':'X','Y':'Y','Rubis Oméga':'Ω红宝石','Saphir Alpha':'α蓝宝石','Soleil':'太阳','Lune':'月亮','Ultra-Soleil':'究极之日','Ultra-Lune':'究极之月','Pikachu':'皮卡丘','Évoli':'伊布','Épée':'剑','Bouclier':'盾','Diamant Étincelant':'晶灿钻石','Perle Scintillante':'明亮珍珠','Légendes : Arceus':'阿尔宙斯传说','Écarlate':'朱','Violet':'紫'},
+    'zh-Hant': {'Rouge':'紅','Bleu':'藍','Jaune':'黃','Or':'金','Argent':'銀','Cristal':'水晶','Rubis':'紅寶石','Saphir':'藍寶石','Émeraude':'翡翠','Rouge Feu':'火紅','Vert Feuille':'葉綠','Diamant':'鑽石','Perle':'珍珠','Platine':'白金','Or HeartGold':'心金','Argent SoulSilver':'魂銀','Noir':'黑','Blanc':'白','Noir 2':'黑2','Blanc 2':'白2','X':'X','Y':'Y','Rubis Oméga':'Ω紅寶石','Saphir Alpha':'α藍寶石','Soleil':'太陽','Lune':'月亮','Ultra-Soleil':'究極之日','Ultra-Lune':'究極之月','Pikachu':'皮卡丘','Évoli':'伊布','Épée':'劍','Bouclier':'盾','Diamant Étincelant':'晶燦鑽石','Perle Scintillante':'明亮珍珠','Légendes : Arceus':'阿爾宙斯傳說','Écarlate':'朱','Violet':'紫'},
+    'pt-BR': {'Rouge':'Vermelho','Bleu':'Azul','Jaune':'Amarelo','Or':'Ouro','Argent':'Prata','Cristal':'Cristal','Rubis':'Rubi','Saphir':'Safira','Émeraude':'Esmeralda','Rouge Feu':'Vermelho Fogo','Vert Feuille':'Verde Folha','Diamant':'Diamante','Perle':'Pérola','Platine':'Platina','Or HeartGold':'HeartGold','Argent SoulSilver':'SoulSilver','Noir':'Preto','Blanc':'Branco','Noir 2':'Preto 2','Blanc 2':'Branco 2','X':'X','Y':'Y','Rubis Oméga':'Rubi Ômega','Saphir Alpha':'Safira Alfa','Soleil':'Sol','Lune':'Lua','Ultra-Soleil':'UltraSol','Ultra-Lune':'UltraLua','Pikachu':'Pikachu','Évoli':'Eevee','Épée':'Espada','Bouclier':'Escudo','Diamant Étincelant':'Diamante Brilhante','Perle Scintillante':'Pérola Cintilante','Légendes : Arceus':'Lendas Arceus','Écarlate':'Escarlate','Violet':'Violeta'},
+  };
+
+  // ── Traductions noms de jeux complets (pour data-game-fr sur trainer cards) ──
+  const GAME_I18N: Record<string, Record<string, string>> = {
+    en: {'Pokémon Colosseum':'Colosseum','Pokémon Cristal':'Crystal','Pokémon Diamant Perle':'Diamond & Pearl','Pokémon Diamant Étincelant et Perle Scintillante':'Brilliant Diamond & Shining Pearl','Pokémon HeartGold SoulSilver':'HeartGold & SoulSilver',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go, Pikachu & Eevee",'Pokémon Noir 2 et Blanc 2':'Black 2 & White 2','Pokémon Noir et Blanc':'Black & White','Pokémon Or et Argent':'Gold & Silver','Pokémon Platine':'Platinum','Pokémon Rouge Feu Vert Feuille':'FireRed & LeafGreen','Pokémon Rubis Oméga Saphir Alpha':'Omega Ruby & Alpha Sapphire','Pokémon Rubis Saphir':'Ruby & Sapphire','Pokémon Soleil et Lune':'Sun & Moon','Pokémon Ultra-Soleil et Ultra-Lune':'Ultra Sun & Ultra Moon','Pokémon X et Y':'X & Y','Pokémon XD : Le Souffle des Ténèbres':'XD: Gale of Darkness','Pokémon Écarlate et Violet':'Scarlet & Violet','Pokémon Émeraude':'Emerald','Pokémon Épée et Bouclier':'Sword & Shield'},
+    de: {'Pokémon Colosseum':'Colosseum','Pokémon Cristal':'Kristall','Pokémon Diamant Perle':'Diamant & Perl','Pokémon Diamant Étincelant et Perle Scintillante':'Strahlender Diamant & Leuchtende Perle','Pokémon HeartGold SoulSilver':'HeartGold & SoulSilver',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go, Pikachu & Evoli",'Pokémon Noir 2 et Blanc 2':'Schwarz 2 & Weiß 2','Pokémon Noir et Blanc':'Schwarz & Weiß','Pokémon Or et Argent':'Gold & Silber','Pokémon Platine':'Platin','Pokémon Rouge Feu Vert Feuille':'Feuerrot & Blattgrün','Pokémon Rubis Oméga Saphir Alpha':'Omega Rubin & Alpha Saphir','Pokémon Rubis Saphir':'Rubin & Saphir','Pokémon Soleil et Lune':'Sonne & Mond','Pokémon Ultra-Soleil et Ultra-Lune':'Ultrasonne & Ultramond','Pokémon X et Y':'X & Y','Pokémon XD : Le Souffle des Ténèbres':'XD: Der Dunkle Sturm','Pokémon Écarlate et Violet':'Karmesin & Purpur','Pokémon Émeraude':'Smaragd','Pokémon Épée et Bouclier':'Schwert & Schild'},
+    es: {'Pokémon Colosseum':'Colosseum','Pokémon Cristal':'Cristal','Pokémon Diamant Perle':'Diamante & Perla','Pokémon Diamant Étincelant et Perle Scintillante':'Diamante Brillante & Perla Reluciente','Pokémon HeartGold SoulSilver':'HeartGold & SoulSilver',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go, Pikachu & Eevee",'Pokémon Noir 2 et Blanc 2':'Negro 2 & Blanco 2','Pokémon Noir et Blanc':'Negro & Blanco','Pokémon Or et Argent':'Oro & Plata','Pokémon Platine':'Platino','Pokémon Rouge Feu Vert Feuille':'RojoFuego & VerdeHoja','Pokémon Rubis Oméga Saphir Alpha':'Rubí Omega & Zafiro Alfa','Pokémon Rubis Saphir':'Rubí & Zafiro','Pokémon Soleil et Lune':'Sol & Luna','Pokémon Ultra-Soleil et Ultra-Lune':'Ultrasol & Ultraluna','Pokémon X et Y':'X & Y','Pokémon XD : Le Souffle des Ténèbres':'XD: El Torbellino Oscuro','Pokémon Écarlate et Violet':'Escarlata & Púrpura','Pokémon Émeraude':'Esmeralda','Pokémon Épée et Bouclier':'Espada & Escudo'},
+    ja: {'Pokémon Colosseum':'コロシアム','Pokémon Cristal':'クリスタル','Pokémon Diamant Perle':'ダイヤモンド&パール','Pokémon Diamant Étincelant et Perle Scintillante':'ブリリアントダイヤモンド&シャイニングパール','Pokémon HeartGold SoulSilver':'ハートゴールド&ソウルシルバー',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go! ピカチュウ&イーブイ",'Pokémon Noir 2 et Blanc 2':'ブラック2&ホワイト2','Pokémon Noir et Blanc':'ブラック&ホワイト','Pokémon Or et Argent':'金&銀','Pokémon Platine':'プラチナ','Pokémon Rouge Feu Vert Feuille':'ファイアレッド&リーフグリーン','Pokémon Rubis Oméga Saphir Alpha':'オメガルビー&アルファサファイア','Pokémon Rubis Saphir':'ルビー&サファイア','Pokémon Soleil et Lune':'サン&ムーン','Pokémon Ultra-Soleil et Ultra-Lune':'ウルトラサン&ウルトラムーン','Pokémon X et Y':'X&Y','Pokémon XD : Le Souffle des Ténèbres':'XD 闇の旋風','Pokémon Écarlate et Violet':'スカーレット&バイオレット','Pokémon Émeraude':'エメラルド','Pokémon Épée et Bouclier':'ソード&シールド'},
+    it: {'Pokémon Colosseum':'Colosseum','Pokémon Cristal':'Cristallo','Pokémon Diamant Perle':'Diamante & Perla','Pokémon Diamant Étincelant et Perle Scintillante':'Diamante Lucente & Perla Splendente','Pokémon HeartGold SoulSilver':'HeartGold & SoulSilver',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go, Pikachu & Eevee",'Pokémon Noir 2 et Blanc 2':'Nero 2 & Bianco 2','Pokémon Noir et Blanc':'Nero & Bianco','Pokémon Or et Argent':'Oro & Argento','Pokémon Platine':'Platino','Pokémon Rouge Feu Vert Feuille':'Rosso Fuoco & Verde Foglia','Pokémon Rubis Oméga Saphir Alpha':'Rubino Omega & Zaffiro Alpha','Pokémon Rubis Saphir':'Rubino & Zaffiro','Pokémon Soleil et Lune':'Sole & Luna','Pokémon Ultra-Soleil et Ultra-Lune':'Ultrasole & Ultraluna','Pokémon X et Y':'X & Y','Pokémon XD : Le Souffle des Ténèbres':'XD: La Tempesta Oscura','Pokémon Écarlate et Violet':'Scarlatto & Violetto','Pokémon Émeraude':'Smeraldo','Pokémon Épée et Bouclier':'Spada & Scudo'},
+    ko: {'Pokémon Colosseum':'콜로세움','Pokémon Cristal':'크리스탈','Pokémon Diamant Perle':'다이아몬드&펄','Pokémon Diamant Étincelant et Perle Scintillante':'브릴리언트 다이아몬드&샤이닝 펄','Pokémon HeartGold SoulSilver':'하트골드&소울실버',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go! 피카츄&이브이",'Pokémon Noir 2 et Blanc 2':'블랙 2&화이트 2','Pokémon Noir et Blanc':'블랙&화이트','Pokémon Or et Argent':'골드&실버','Pokémon Platine':'플래티넘','Pokémon Rouge Feu Vert Feuille':'파이어레드&리프그린','Pokémon Rubis Oméga Saphir Alpha':'오메가루비&알파사파이어','Pokémon Rubis Saphir':'루비&사파이어','Pokémon Soleil et Lune':'썬&문','Pokémon Ultra-Soleil et Ultra-Lune':'울트라썬&울트라문','Pokémon X et Y':'X&Y','Pokémon XD : Le Souffle des Ténèbres':'XD 어둠의 선풍','Pokémon Écarlate et Violet':'스칼렛&바이올렛','Pokémon Émeraude':'에메랄드','Pokémon Épée et Bouclier':'소드&실드'},
+    'zh-Hans': {'Pokémon Colosseum':'战斗旋转剧场','Pokémon Cristal':'水晶','Pokémon Diamant Perle':'钻石&珍珠','Pokémon Diamant Étincelant et Perle Scintillante':'晶灿钻石&明亮珍珠','Pokémon HeartGold SoulSilver':'心金&魂银',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go! 皮卡丘&伊布",'Pokémon Noir 2 et Blanc 2':'黑2&白2','Pokémon Noir et Blanc':'黑&白','Pokémon Or et Argent':'金&银','Pokémon Platine':'白金','Pokémon Rouge Feu Vert Feuille':'火红&叶绿','Pokémon Rubis Oméga Saphir Alpha':'Ω红宝石&α蓝宝石','Pokémon Rubis Saphir':'红宝石&蓝宝石','Pokémon Soleil et Lune':'太阳&月亮','Pokémon Ultra-Soleil et Ultra-Lune':'究极之日&究极之月','Pokémon X et Y':'X&Y','Pokémon XD : Le Souffle des Ténèbres':'XD 暗之旋风','Pokémon Écarlate et Violet':'朱&紫','Pokémon Émeraude':'翡翠','Pokémon Épée et Bouclier':'剑&盾'},
+    'zh-Hant': {'Pokémon Colosseum':'戰鬥旋轉劇場','Pokémon Cristal':'水晶','Pokémon Diamant Perle':'鑽石&珍珠','Pokémon Diamant Étincelant et Perle Scintillante':'晶燦鑽石&明亮珍珠','Pokémon HeartGold SoulSilver':'心金&魂銀',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go! 皮卡丘&伊布",'Pokémon Noir 2 et Blanc 2':'黑2&白2','Pokémon Noir et Blanc':'黑&白','Pokémon Or et Argent':'金&銀','Pokémon Platine':'白金','Pokémon Rouge Feu Vert Feuille':'火紅&葉綠','Pokémon Rubis Oméga Saphir Alpha':'Ω紅寶石&α藍寶石','Pokémon Rubis Saphir':'紅寶石&藍寶石','Pokémon Soleil et Lune':'太陽&月亮','Pokémon Ultra-Soleil et Ultra-Lune':'究極之日&究極之月','Pokémon X et Y':'X&Y','Pokémon XD : Le Souffle des Ténèbres':'XD 暗之旋風','Pokémon Écarlate et Violet':'朱&紫','Pokémon Émeraude':'翡翠','Pokémon Épée et Bouclier':'劍&盾'},
+    'pt-BR': {'Pokémon Colosseum':'Colosseum','Pokémon Cristal':'Crystal','Pokémon Diamant Perle':'Diamante & Pérola','Pokémon Diamant Étincelant et Perle Scintillante':'Diamante Brilhante & Pérola Cintilante','Pokémon HeartGold SoulSilver':'HeartGold & SoulSilver',"Pokémon Let's Go, Pikachu et Évoli":"Let's Go, Pikachu & Eevee",'Pokémon Noir 2 et Blanc 2':'Preto 2 & Branco 2','Pokémon Noir et Blanc':'Preto & Branco','Pokémon Or et Argent':'Ouro & Prata','Pokémon Platine':'Platina','Pokémon Rouge Feu Vert Feuille':'Vermelho Fogo & Verde Folha','Pokémon Rubis Oméga Saphir Alpha':'Rubi Ômega & Safira Alfa','Pokémon Rubis Saphir':'Rubi & Safira','Pokémon Soleil et Lune':'Sol & Lua','Pokémon Ultra-Soleil et Ultra-Lune':'UltraSol & UltraLua','Pokémon X et Y':'X & Y','Pokémon XD : Le Souffle des Ténèbres':'XD: Gale of Darkness','Pokémon Écarlate et Violet':'Escarlate & Violeta','Pokémon Émeraude':'Esmeralda','Pokémon Épée et Bouclier':'Espada & Escudo'},
+  };
+
+  // ── Traductions rareté TCG ────────────────────────────────────────
+  const TCG_RARITY_I18N: Record<string, Record<string, string>> = {
+    de: {'Common':'Häufig','Uncommon':'Ungewöhnlich','Rare':'Selten','Rare Holo':'Selten Holo','Rare Ultra':'Ultra Selten','Rare Rainbow':'Regenbogen Selten','Rare Secret':'Geheim Selten','Rare Shiny':'Chrom Selten','Promo':'Promo','LEGEND':'Legende'},
+    es: {'Common':'Común','Uncommon':'Poco común','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Promo':'Promo'},
+    it: {'Common':'Comune','Uncommon':'Non comune','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Promo':'Promo'},
+    pt: {'Common':'Comum','Uncommon':'Incomum','Rare':'Rara','Rare Ultra':'Ultra Rara','Promo':'Promo'},
+  };
+
   // Détecte la meilleure langue disponible (localStorage > navigator.languages > fr)
   function detectLang(): string {
     const supported = ['fr', 'en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'];
@@ -863,6 +900,34 @@ const schema = {
     document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
       const key = el.dataset.i18nUi!;
       el.textContent = UI_I18N[lang]?.[key] ?? UI_I18N['fr'][key] ?? el.textContent;
+    });
+
+    // Pokédex dt labels — traduit + re-ajoute le prefix
+    const letsGoKeys = new Set(['Pikachu', 'Évoli']);
+    document.querySelectorAll<HTMLElement>('dt[data-game-label]').forEach(dt => {
+      const frKey = dt.dataset.gameLabel!;
+      const translated = VERSION_I18N[lang]?.[frKey] ?? frKey;
+      dt.textContent = letsGoKeys.has(frKey)
+        ? "Let's Go, " + translated
+        : 'Pokémon ' + translated;
+    });
+
+    // Trainer cards — noms de jeux (data-game-fr)
+    document.querySelectorAll<HTMLElement>('[data-game-fr]').forEach(el => {
+      const gameFr = el.dataset.gameFr!;
+      const translated = GAME_I18N[lang]?.[gameFr];
+      if (translated) {
+        const img = el.querySelector('img');
+        el.textContent = translated;
+        if (img) el.prepend(img);
+      }
+    });
+
+    // TCG rarity labels
+    document.querySelectorAll<HTMLElement>('[data-rarity-key]').forEach(el => {
+      const key = el.dataset.rarityKey!;
+      const translated = TCG_RARITY_I18N[lang]?.[key];
+      if (translated) el.textContent = translated;
     });
   }
 

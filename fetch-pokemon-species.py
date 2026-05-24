@@ -180,8 +180,8 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
         data.get("descriptions_en") and
         data.get("category_en") and
         data.get("height") and
-        data.get("descriptions_it") is not None and   # it/ko/zh ajoutés en v2
-        data.get("descriptions_pt") is not None       # pt-BR/zh-Hant ajoutés en v3
+        data.get("descriptions_it") and   # it/ko/zh ajoutés en v2
+        data.get("descriptions_pt")       # pt-BR/zh-Hant ajoutés en v3
     )
     if already_complete:
         ok += 1
