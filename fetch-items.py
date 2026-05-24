@@ -42,7 +42,7 @@ DEST  = Path(__file__).parent / "src" / "data" / "items-meta.json"
 DEST_I18N = Path(__file__).parent / "src" / "data" / "items-i18n.json"
 DELAY = 0.35
 
-LANGS = ["fr", "en", "de", "es", "ja", "it", "ko", "zh-Hans"]
+LANGS = ["fr", "en", "de", "es", "ja", "it", "ko", "zh-Hans", "zh-Hant", "pt-BR"]
 
 # ── Labels de version_group → label FR ───────────────────────────
 VG_FR = {
@@ -136,7 +136,7 @@ for i, slug in enumerate(sorted(to_fetch), 1):
     # Re-fetch si les nouvelles langues (it/ko/zh-Hans) manquent dans l'entrée existante
     if slug in output:
         existing_names = output[slug].get("names", {})
-        if "it" in existing_names and "ko" in existing_names and "zh-Hans" in existing_names:
+        if "it" in existing_names and "ko" in existing_names and "zh-Hans" in existing_names and "pt-BR" in existing_names:
             skipped += 1
             continue
 

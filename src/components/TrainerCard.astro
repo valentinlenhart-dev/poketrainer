@@ -42,7 +42,7 @@ const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
         />
       )}
       <div>
-        <p class="trainer-card__class">{t.class}</p>
+        <p class="trainer-card__class" data-trainer-class={t.class}>{t.class}</p>
         <Heading class="trainer-card__name">{t.name}</Heading>
       </div>
     </div>

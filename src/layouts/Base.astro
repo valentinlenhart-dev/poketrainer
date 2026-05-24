@@ -109,7 +109,12 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
           <li role="option" data-lang="en">🇬🇧 EN</li>
           <li role="option" data-lang="de">🇩🇪 DE</li>
           <li role="option" data-lang="es">🇪🇸 ES</li>
+          <li role="option" data-lang="it">🇮🇹 IT</li>
+          <li role="option" data-lang="pt-BR">🇧🇷 PT</li>
           <li role="option" data-lang="ja">🇯🇵 JA</li>
+          <li role="option" data-lang="ko">🇰🇷 KO</li>
+          <li role="option" data-lang="zh-Hans">🇨🇳 ZH</li>
+          <li role="option" data-lang="zh-Hant">🇹🇼 ZH</li>
         </ul>
       </div>
 
@@ -139,20 +144,29 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
   <!-- ── i18n global ──────────────────────────────────────────── -->
   <script>
     import translationsRaw from '../data/translations.json';
-    const T = translationsRaw as Record<string, Record<string, string> | Record<string, Record<string,string>>>;
+    import trainerClassesRaw from '../data/trainer-classes-i18n.json';
+    const T  = translationsRaw  as Record<string, Record<string, string> | Record<string, Record<string,string>>>;
+    const TC = trainerClassesRaw as Record<string, Record<string, string>>;
 
-    const SUPPORTED = ['fr','en','de','es','ja'] as const;
+    const SUPPORTED = ['fr','en','de','es','ja','it','ko','zh-Hans','zh-Hant','pt-BR'] as const;
     type Lang = typeof SUPPORTED[number];
-    const LANG_LABELS: Record<Lang, string> = { fr:'FR', en:'EN', de:'DE', es:'ES', ja:'JA' };
+    const LANG_LABELS: Record<string, string> = {
+      fr:'FR', en:'EN', de:'DE', es:'ES', ja:'JA',
+      it:'IT', ko:'KO', 'zh-Hans':'ZH', 'zh-Hant':'ZH', 'pt-BR':'PT',
+    };
 
     function detectLang(): Lang {
-      // 1. Choix manuel mémorisé
       const saved = localStorage.getItem('pokenom_lang') as Lang | null;
-      if (saved && SUPPORTED.includes(saved)) return saved;
-      // 2. Langue du navigateur
+      if (saved && (SUPPORTED as readonly string[]).includes(saved)) return saved;
       for (const l of (navigator.languages ?? [navigator.language])) {
+        // Chinois traditionnel
+        if (l.startsWith('zh-Hant') || l === 'zh-TW' || l === 'zh-HK' || l === 'zh-MO') return 'zh-Hant';
+        // Chinois simplifié
+        if (l.startsWith('zh-Hans') || l === 'zh-CN' || l === 'zh-SG' || l === 'zh') return 'zh-Hans';
+        // Portugais brésilien
+        if (l === 'pt-BR' || l === 'pt') return 'pt-BR';
         const short = l.split('-')[0].toLowerCase() as Lang;
-        if (SUPPORTED.includes(short)) return short;
+        if ((SUPPORTED as readonly string[]).includes(short)) return short;
       }
       return 'fr';
     }
@@ -161,9 +175,9 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
       (window as any).__pokenom_lang = lang;
       (window as any).__pokenom_T    = T;
 
-      // Mettre à jour le label du picker
+      // Label du picker
       const cur = document.getElementById('lang-current');
-      if (cur) cur.textContent = LANG_LABELS[lang];
+      if (cur) cur.textContent = LANG_LABELS[lang] ?? lang.toUpperCase();
 
       // Marquer l'option active
       document.querySelectorAll<HTMLElement>('#lang-dropdown [data-lang]').forEach(el => {
@@ -171,9 +185,11 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         el.classList.toggle('lang-option--active', el.dataset.lang === lang);
       });
 
-      if (lang === 'fr') return; // FR est la langue native, pas de substitution
+      if (lang === 'fr') return; // FR est la langue native
 
-      const ui = T[lang] as Record<string, string>;
+      const ui = T[lang] as Record<string, string> | undefined ?? {};
+
+      // Labels UI nav/footer
       document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
         const key = el.dataset.i18nUi!;
         if (ui[key]) {
@@ -185,6 +201,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         }
       });
 
+      // Noms de jeux
       const games = T['games'] as Record<string, Record<string, string>>;
       document.querySelectorAll<HTMLElement>('[data-game-fr]').forEach(el => {
         const fr = el.dataset.gameFr!;
@@ -192,23 +209,29 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         if (translated) el.textContent = translated.replace('Pokémon ', '');
       });
 
-      // Labels de rareté dans les cartes dresseur
+      // Labels de rareté
       document.querySelectorAll<HTMLElement>('[data-i18n-rarity]').forEach(el => {
         const key = `rarity.${el.dataset.i18nRarity}`;
         const label = ui[key];
         if (label) {
-          // Préserve l'emoji au début (ex: "🏆 Légendaire" → "🏆 Legendary")
           const text = el.textContent ?? '';
           const emojiMatch = text.match(/^(\S+\s)/);
           el.textContent = emojiMatch ? `${emojiMatch[1]}${label}` : label;
         }
       });
 
-      // Hints de difficulté (taux de capture)
+      // Difficulté taux de capture
       document.querySelectorAll<HTMLElement>('[data-i18n-difficulty]').forEach(el => {
         const key = `difficulty.${el.dataset.i18nDifficulty}`;
         const label = ui[key];
         if (label) el.textContent = ` · ${label}`;
+      });
+
+      // ── Classes de dresseurs ──────────────────────────────────
+      document.querySelectorAll<HTMLElement>('[data-trainer-class]').forEach(el => {
+        const frClass = el.dataset.trainerClass!;
+        const translated = TC[frClass]?.[lang];
+        if (translated) el.textContent = translated;
       });
     }
 

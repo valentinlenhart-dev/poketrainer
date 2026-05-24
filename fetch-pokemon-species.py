@@ -35,8 +35,8 @@ DEST  = Path(__file__).parent / "src" / "data" / "pokemon-meta.json"
 DELAY = 0.3
 
 # ── Langues cibles ───────────────────────────────────────────────
-LANGS_DESC = ["fr", "en", "de", "es", "ja", "it", "ko", "zh-Hans"]  # langues pour descriptions + capacités
-LANGS_INTL = {"en", "de", "es", "it", "ja", "ja-Hrkt", "ko", "zh-Hans", "zh-Hant"}
+LANGS_DESC = ["fr", "en", "de", "es", "ja", "it", "ko", "zh-Hans", "zh-Hant", "pt-BR"]  # toutes les langues PokeAPI utiles
+LANGS_INTL = {"en", "de", "es", "it", "ja", "ja-Hrkt", "ko", "zh-Hans", "zh-Hant", "pt-BR"}
 
 # ── Traductions ───────────────────────────────────────────────────
 GEN_FR = {
@@ -178,9 +178,10 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
     already_complete = (
         data.get("descriptions_fr") and
         data.get("descriptions_en") and
-        data.get("category_en") and          # manquant pour ~218 entrées anciennes
-        data.get("height") and               # manquant pour ~61 formes régionales
-        data.get("descriptions_it") is not None  # force re-fetch si langues ajoutées
+        data.get("category_en") and
+        data.get("height") and
+        data.get("descriptions_it") is not None and   # it/ko/zh ajoutés en v2
+        data.get("descriptions_pt") is not None       # pt-BR/zh-Hant ajoutés en v3
     )
     if already_complete:
         ok += 1
@@ -241,9 +242,11 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
         descriptions_de = descriptions_by_lang["de"]
         descriptions_es = descriptions_by_lang["es"]
         descriptions_ja = descriptions_by_lang["ja"]
-        descriptions_it = descriptions_by_lang.get("it", {})
-        descriptions_ko = descriptions_by_lang.get("ko", {})
-        descriptions_zh = descriptions_by_lang.get("zh-Hans", {})
+        descriptions_it      = descriptions_by_lang.get("it", {})
+        descriptions_ko      = descriptions_by_lang.get("ko", {})
+        descriptions_zh      = descriptions_by_lang.get("zh-Hans", {})
+        descriptions_zh_hant = descriptions_by_lang.get("zh-Hant", {})
+        descriptions_pt      = descriptions_by_lang.get("pt-BR", {})
 
         # Noms dans d'autres langues (SEO + fun)
         names_intl = {}
@@ -322,17 +325,21 @@ for i, (name_fr, data) in enumerate(meta.items(), 1):
         data["descriptions_de"] = descriptions_de
         data["descriptions_es"] = descriptions_es
         data["descriptions_ja"] = descriptions_ja
-        data["descriptions_it"] = descriptions_it
-        data["descriptions_ko"] = descriptions_ko
-        data["descriptions_zh"] = descriptions_zh
-        data["category_fr"]     = category_fr
-        data["category_en"]     = categories.get("en", category_fr)
-        data["category_de"]     = categories.get("de", category_fr)
-        data["category_es"]     = categories.get("es", category_fr)
-        data["category_ja"]     = categories.get("ja", category_fr)
-        data["category_it"]     = categories.get("it", category_fr)
-        data["category_ko"]     = categories.get("ko", category_fr)
-        data["category_zh"]     = categories.get("zh-Hans", category_fr)
+        data["descriptions_it"]      = descriptions_it
+        data["descriptions_ko"]      = descriptions_ko
+        data["descriptions_zh"]      = descriptions_zh
+        data["descriptions_zh_hant"] = descriptions_zh_hant
+        data["descriptions_pt"]      = descriptions_pt
+        data["category_fr"]          = category_fr
+        data["category_en"]          = categories.get("en", category_fr)
+        data["category_de"]          = categories.get("de", category_fr)
+        data["category_es"]          = categories.get("es", category_fr)
+        data["category_ja"]          = categories.get("ja", category_fr)
+        data["category_it"]          = categories.get("it", category_fr)
+        data["category_ko"]          = categories.get("ko", category_fr)
+        data["category_zh"]          = categories.get("zh-Hans", category_fr)
+        data["category_zh_hant"]     = categories.get("zh-Hant", category_fr)
+        data["category_pt"]          = categories.get("pt-BR", category_fr)
         data["generation"]      = generation
         data["capture_rate"]    = capture_rate
         data["is_legendary"]    = is_legendary
