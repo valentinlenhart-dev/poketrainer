@@ -3,6 +3,68 @@ import Base from '../layouts/Base.astro';
 import '../styles/global.css';
 ---
 
+<!-- i18n: section body content via __page_html_i18n -->
+<script>
+  const HTML_I18N: Record<string, Record<string, string>> = {
+    'priv-data-body': {
+      en: `<p>PokéNom does not directly collect any personal data. No user accounts, no forms, no proprietary tracking.</p>`,
+      de: `<p>PokéNom erhebt keine personenbezogenen Daten direkt. Keine Benutzerkonten, keine Formulare, kein eigenes Tracking.</p>`,
+      es: `<p>PokéNom no recopila ningún dato personal directamente. Sin cuentas de usuario, sin formularios, sin seguimiento propio.</p>`,
+      ja: `<p>PokéNomは個人データを直接収集しません。ユーザーアカウントなし、フォームなし、独自のトラッキングなし。</p>`,
+      it: `<p>PokéNom non raccoglie direttamente dati personali. Nessun account utente, nessun modulo, nessun tracciamento proprietario.</p>`,
+      ko: `<p>PokéNom은 개인 데이터를 직접 수집하지 않습니다. 사용자 계정, 양식, 자체 추적 없음.</p>`,
+      'zh-Hans': `<p>PokéNom不直接收集任何个人数据。无用户账户、无表单、无自有追踪。</p>`,
+      'zh-Hant': `<p>PokéNom不直接收集任何個人數據。無用戶賬戶、無表單、無自有追蹤。</p>`,
+      'pt-BR': `<p>O PokéNom não coleta nenhum dado pessoal diretamente. Sem contas de usuário, sem formulários, sem rastreamento próprio.</p>`,
+    },
+    'priv-adsense-body': {
+      en: `<p>This site uses <strong>Google AdSense</strong> to display advertisements. AdSense may place third-party cookies to personalize ads based on your interests (<em>personalized advertising</em>).</p><p>These cookies are only activated <strong>after your explicit consent</strong> via the cookie banner shown on your first visit.</p><p>You can withdraw your consent at any time by clearing your browser's browsing data (localStorage → key <code>pkn_consent</code>).</p><p>To learn more about how Google manages data: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>`,
+      de: `<p>Diese Website verwendet <strong>Google AdSense</strong> zur Anzeige von Werbung. AdSense kann Drittanbieter-Cookies setzen, um Anzeigen basierend auf Ihren Interessen zu personalisieren (<em>personalisierte Werbung</em>).</p><p>Diese Cookies werden nur <strong>nach Ihrer ausdrücklichen Zustimmung</strong> über das Cookie-Banner bei Ihrem ersten Besuch aktiviert.</p><p>Sie können Ihre Zustimmung jederzeit widerrufen, indem Sie die Browserdaten löschen (localStorage → Schlüssel <code>pkn_consent</code>).</p><p>Weitere Informationen zur Datenverwaltung durch Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google-Datenschutzerklärung</a>.</p>`,
+      es: `<p>Este sitio utiliza <strong>Google AdSense</strong> para mostrar publicidad. AdSense puede colocar cookies de terceros para personalizar los anuncios según sus intereses (<em>publicidad personalizada</em>).</p><p>Estas cookies solo se activan <strong>después de su consentimiento explícito</strong> a través del banner de cookies en su primera visita.</p><p>Puede retirar su consentimiento en cualquier momento borrando los datos de navegación de su navegador (localStorage → clave <code>pkn_consent</code>).</p><p>Para más información sobre cómo Google gestiona los datos: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidad de Google</a>.</p>`,
+      ja: `<p>このサイトは広告表示に<strong>Google AdSense</strong>を使用しています。AdSenseはお客様の興味に基づいて広告をパーソナライズするためにサードパーティCookieを設定する場合があります（<em>パーソナライズド広告</em>）。</p><p>これらのCookieは最初の訪問時に表示されるCookieバナーによる<strong>明示的な同意後のみ</strong>有効になります。</p><p>ブラウザのデータを消去することでいつでも同意を取り消せます（localStorage → キー<code>pkn_consent</code>）。</p><p>Googleのデータ管理について: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googleプライバシーポリシー</a>。</p>`,
+      it: `<p>Questo sito utilizza <strong>Google AdSense</strong> per visualizzare pubblicità. AdSense può inserire cookie di terze parti per personalizzare gli annunci in base ai tuoi interessi (<em>pubblicità personalizzata</em>).</p><p>Questi cookie vengono attivati solo <strong>dopo il tuo consenso esplicito</strong> tramite il banner dei cookie mostrato alla prima visita.</p><p>Puoi revocare il consenso in qualsiasi momento cancellando i dati di navigazione del browser (localStorage → chiave <code>pkn_consent</code>).</p><p>Per saperne di più su come Google gestisce i dati: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Informativa sulla privacy di Google</a>.</p>`,
+      ko: `<p>이 사이트는 광고 표시를 위해 <strong>Google AdSense</strong>를 사용합니다. AdSense는 귀하의 관심사에 따라 광고를 맞춤화하기 위해 제3자 쿠키를 배치할 수 있습니다(<em>맞춤형 광고</em>).</p><p>이러한 쿠키는 첫 방문 시 표시되는 쿠키 배너를 통한 <strong>명시적인 동의 후에만</strong> 활성화됩니다.</p><p>브라우저 데이터를 지워 언제든지 동의를 철회할 수 있습니다(localStorage → 키 <code>pkn_consent</code>).</p><p>Google의 데이터 관리에 대해 더 알아보기: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보처리방침</a>.</p>`,
+      'zh-Hans': `<p>本站使用<strong>Google AdSense</strong>展示广告。AdSense可能会放置第三方Cookie，根据您的兴趣个性化广告（<em>个性化广告</em>）。</p><p>这些Cookie仅在您首次访问时通过Cookie横幅的<strong>明确同意后</strong>才会激活。</p><p>您可以随时通过清除浏览器数据来撤回同意（localStorage → 键<code>pkn_consent</code>）。</p><p>了解更多关于Google数据管理的信息：<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google隐私政策</a>。</p>`,
+      'zh-Hant': `<p>本站使用<strong>Google AdSense</strong>展示廣告。AdSense可能會放置第三方Cookie，根據您的興趣個性化廣告（<em>個性化廣告</em>）。</p><p>這些Cookie僅在您首次訪問時通過Cookie橫幅的<strong>明確同意後</strong>才會激活。</p><p>您可以隨時通過清除瀏覽器數據來撤回同意（localStorage → 鍵<code>pkn_consent</code>）。</p><p>了解更多關於Google數據管理的信息：<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google隱私政策</a>。</p>`,
+      'pt-BR': `<p>Este site usa <strong>Google AdSense</strong> para exibir anúncios. O AdSense pode colocar cookies de terceiros para personalizar anúncios com base nos seus interesses (<em>publicidade personalizada</em>).</p><p>Esses cookies são ativados apenas <strong>após o seu consentimento explícito</strong> via banner de cookies exibido na sua primeira visita.</p><p>Você pode retirar seu consentimento a qualquer momento limpando os dados de navegação do seu navegador (localStorage → chave <code>pkn_consent</code>).</p><p>Para saber mais sobre como o Google gerencia dados: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de Privacidade do Google</a>.</p>`,
+    },
+    'priv-hosting-body': {
+      en: `<p>The site is hosted on Cloudflare Workers. Cloudflare may collect technical data (IP address, user-agent) for security and performance purposes, in accordance with its own <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">privacy policy</a>.</p>`,
+      de: `<p>Die Website wird auf Cloudflare Workers gehostet. Cloudflare kann technische Daten (IP-Adresse, User-Agent) zu Sicherheits- und Leistungszwecken gemäß seiner eigenen <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Datenschutzerklärung</a> erheben.</p>`,
+      es: `<p>El sitio está alojado en Cloudflare Workers. Cloudflare puede recopilar datos técnicos (dirección IP, agente de usuario) con fines de seguridad y rendimiento, de acuerdo con su propia <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">política de privacidad</a>.</p>`,
+      ja: `<p>このサイトはCloudflare Workersでホスティングされています。Cloudflareは自社の<a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">プライバシーポリシー</a>に従い、セキュリティとパフォーマンスのために技術データ（IPアドレス、ユーザーエージェント）を収集する場合があります。</p>`,
+      it: `<p>Il sito è ospitato su Cloudflare Workers. Cloudflare può raccogliere dati tecnici (indirizzo IP, user-agent) per scopi di sicurezza e performance, conformemente alla propria <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">informativa sulla privacy</a>.</p>`,
+      ko: `<p>이 사이트는 Cloudflare Workers에서 호스팅됩니다. Cloudflare는 자체 <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">개인정보처리방침</a>에 따라 보안 및 성능 목적으로 기술 데이터(IP 주소, 사용자 에이전트)를 수집할 수 있습니다.</p>`,
+      'zh-Hans': `<p>本站托管在Cloudflare Workers上。根据Cloudflare自己的<a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">隐私政策</a>，Cloudflare可能会出于安全和性能目的收集技术数据（IP地址、用户代理）。</p>`,
+      'zh-Hant': `<p>本站托管在Cloudflare Workers上。根據Cloudflare自己的<a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">隱私政策</a>，Cloudflare可能會出於安全和性能目的收集技術數據（IP地址、用戶代理）。</p>`,
+      'pt-BR': `<p>O site é hospedado no Cloudflare Workers. O Cloudflare pode coletar dados técnicos (endereço IP, user-agent) para fins de segurança e desempenho, de acordo com sua própria <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">política de privacidade</a>.</p>`,
+    },
+    'priv-gdpr-body': {
+      en: `<p>In accordance with the General Data Protection Regulation (GDPR), you have the right to access, rectify, and delete your data.</p><p>To exercise these rights or for any questions: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      de: `<p>Gemäß der Datenschutz-Grundverordnung (DSGVO) haben Sie das Recht auf Zugang, Berichtigung und Löschung Ihrer Daten.</p><p>Zur Ausübung dieser Rechte oder bei Fragen: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      es: `<p>De conformidad con el Reglamento General de Protección de Datos (RGPD), tiene derecho a acceder, rectificar y eliminar sus datos.</p><p>Para ejercer estos derechos o para cualquier pregunta: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      ja: `<p>一般データ保護規則（GDPR）に従い、お客様はデータへのアクセス、修正、削除の権利を有します。</p><p>これらの権利の行使またはご質問は: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      it: `<p>Ai sensi del Regolamento Generale sulla Protezione dei Dati (GDPR), hai il diritto di accedere, rettificare ed eliminare i tuoi dati.</p><p>Per esercitare questi diritti o per qualsiasi domanda: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      ko: `<p>일반 데이터 보호 규정(GDPR)에 따라 귀하는 데이터에 대한 접근, 수정 및 삭제 권리를 갖습니다.</p><p>이러한 권리를 행사하거나 질문이 있으시면: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'zh-Hans': `<p>根据《通用数据保护条例》（GDPR），您有权访问、更正和删除您的数据。</p><p>行使这些权利或有任何疑问：<a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'zh-Hant': `<p>根據《通用數據保護條例》（GDPR），您有權訪問、更正和刪除您的數據。</p><p>行使這些權利或有任何疑問：<a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'pt-BR': `<p>De acordo com o Regulamento Geral sobre a Proteção de Dados (RGPD/LGPD), você tem o direito de acessar, retificar e excluir seus dados.</p><p>Para exercer esses direitos ou para qualquer dúvida: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+    },
+    'priv-links-body': {
+      en: `<p>This site contains links to third-party sites (PokéAPI, Pokémon Showdown, etc.). PokéNom is not responsible for the privacy practices of these sites.</p>`,
+      de: `<p>Diese Website enthält Links zu Drittanbieter-Websites (PokéAPI, Pokémon Showdown usw.). PokéNom ist nicht verantwortlich für die Datenschutzpraktiken dieser Websites.</p>`,
+      es: `<p>Este sitio contiene enlaces a sitios de terceros (PokéAPI, Pokémon Showdown, etc.). PokéNom no es responsable de las prácticas de privacidad de estos sitios.</p>`,
+      ja: `<p>このサイトにはサードパーティサイト（PokéAPI、Pokémon Showdownなど）へのリンクが含まれています。PokéNomはこれらのサイトのプライバシー慣行について責任を負いません。</p>`,
+      it: `<p>Questo sito contiene link a siti di terze parti (PokéAPI, Pokémon Showdown, ecc.). PokéNom non è responsabile delle pratiche sulla privacy di questi siti.</p>`,
+      ko: `<p>이 사이트에는 타사 사이트(PokéAPI, Pokémon Showdown 등)에 대한 링크가 포함되어 있습니다. PokéNom은 이러한 사이트의 개인정보 보호 관행에 대해 책임을 지지 않습니다.</p>`,
+      'zh-Hans': `<p>本站包含指向第三方网站（PokéAPI、Pokémon Showdown等）的链接。PokéNom对这些网站的隐私惯例不负责任。</p>`,
+      'zh-Hant': `<p>本站包含指向第三方網站（PokéAPI、Pokémon Showdown等）的鏈接。PokéNom對這些網站的隱私慣例不負責任。</p>`,
+      'pt-BR': `<p>Este site contém links para sites de terceiros (PokéAPI, Pokémon Showdown, etc.). O PokéNom não é responsável pelas práticas de privacidade desses sites.</p>`,
+    },
+  };
+  window.__page_html_i18n = HTML_I18N;
+</script>
+
 <Base
   title="Politique de confidentialité | PokéNom"
   description="Politique de confidentialité de PokéNom — cookies, données personnelles, droits RGPD."
@@ -10,70 +72,80 @@ import '../styles/global.css';
   noindex={true}
 >
   <main id="main" class="container legal-page">
-    <h1>Politique de confidentialité</h1>
-    <p class="legal-page__date">Dernière mise à jour : mai 2025</p>
+    <h1 data-i18n-ui="legal.privacy-title">Politique de confidentialité</h1>
+    <p class="legal-page__date" data-i18n-ui="legal.privacy-updated">Dernière mise à jour : mai 2025</p>
 
     <section>
-      <h2>Données collectées</h2>
-      <p>
-        PokéNom ne collecte aucune donnée personnelle directement. Aucun compte utilisateur,
-        aucun formulaire, aucun tracking propriétaire.
-      </p>
+      <h2 data-i18n-ui="legal.privacy-data">Données collectées</h2>
+      <div id="priv-data-body">
+        <p>
+          PokéNom ne collecte aucune donnée personnelle directement. Aucun compte utilisateur,
+          aucun formulaire, aucun tracking propriétaire.
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Cookies publicitaires (Google AdSense)</h2>
-      <p>
-        Ce site utilise <strong>Google AdSense</strong> pour afficher des publicités.
-        AdSense peut déposer des cookies tiers pour personnaliser les annonces en fonction
-        de vos centres d'intérêt (<em>publicité personnalisée</em>).
-      </p>
-      <p>
-        Ces cookies ne sont activés <strong>qu'après votre consentement explicite</strong>
-        via le bandeau cookies affiché à votre première visite.
-      </p>
-      <p>
-        Vous pouvez retirer votre consentement à tout moment en effaçant les données de
-        navigation de votre navigateur (localStorage → clé <code>pkn_consent</code>).
-      </p>
-      <p>
-        Pour en savoir plus sur la gestion des données par Google :
-        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">
-          Politique de confidentialité Google
-        </a>.
-      </p>
+      <h2 data-i18n-ui="legal.privacy-adsense">Cookies publicitaires (Google AdSense)</h2>
+      <div id="priv-adsense-body">
+        <p>
+          Ce site utilise <strong>Google AdSense</strong> pour afficher des publicités.
+          AdSense peut déposer des cookies tiers pour personnaliser les annonces en fonction
+          de vos centres d'intérêt (<em>publicité personnalisée</em>).
+        </p>
+        <p>
+          Ces cookies ne sont activés <strong>qu'après votre consentement explicite</strong>
+          via le bandeau cookies affiché à votre première visite.
+        </p>
+        <p>
+          Vous pouvez retirer votre consentement à tout moment en effaçant les données de
+          navigation de votre navigateur (localStorage → clé <code>pkn_consent</code>).
+        </p>
+        <p>
+          Pour en savoir plus sur la gestion des données par Google :
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">
+            Politique de confidentialité Google
+          </a>.
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Hébergement et logs serveur</h2>
-      <p>
-        Le site est hébergé sur Cloudflare Workers. Cloudflare peut collecter des données
-        techniques (adresse IP, user-agent) à des fins de sécurité et de performance,
-        conformément à sa propre
-        <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">
-          politique de confidentialité
-        </a>.
-      </p>
+      <h2 data-i18n-ui="legal.privacy-hosting">Hébergement et logs serveur</h2>
+      <div id="priv-hosting-body">
+        <p>
+          Le site est hébergé sur Cloudflare Workers. Cloudflare peut collecter des données
+          techniques (adresse IP, user-agent) à des fins de sécurité et de performance,
+          conformément à sa propre
+          <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">
+            politique de confidentialité
+          </a>.
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Vos droits (RGPD)</h2>
-      <p>
-        Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez
-        d'un droit d'accès, de rectification et de suppression de vos données.
-      </p>
-      <p>
-        Pour exercer ces droits ou pour toute question :
-        <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a>
-      </p>
+      <h2 data-i18n-ui="legal.privacy-gdpr">Vos droits (RGPD)</h2>
+      <div id="priv-gdpr-body">
+        <p>
+          Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez
+          d'un droit d'accès, de rectification et de suppression de vos données.
+        </p>
+        <p>
+          Pour exercer ces droits ou pour toute question :
+          <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a>
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Liens externes</h2>
-      <p>
-        Ce site contient des liens vers des sites tiers (PokeAPI, Pokémon Showdown, etc.).
-        PokéNom n'est pas responsable des pratiques de confidentialité de ces sites.
-      </p>
+      <h2 data-i18n-ui="legal.privacy-links">Liens externes</h2>
+      <div id="priv-links-body">
+        <p>
+          Ce site contient des liens vers des sites tiers (PokeAPI, Pokémon Showdown, etc.).
+          PokéNom n'est pas responsable des pratiques de confidentialité de ces sites.
+        </p>
+      </div>
     </section>
   </main>
 </Base>

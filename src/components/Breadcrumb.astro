@@ -1,8 +1,16 @@
 ---
 export interface Props {
-  crumbs: { label: string; href?: string }[];
+  crumbs: { label: string; href?: string; type?: string }[];
 }
 const { crumbs } = Astro.props;
+
+// Map French static labels → i18n keys (runtime translation via data-i18n-ui)
+const CRUMB_KEYS: Record<string, string> = {
+  'Accueil':      'crumb.home',
+  'Top prénoms':  'crumb.top-names',
+  'Légendaires':  'crumb.legendaries',
+  'Prénoms':      'crumb.prenames',
+};
 
 const schema = {
   "@context": "https://schema.org",
@@ -18,14 +26,19 @@ const schema = {
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-<nav class="breadcrumb" aria-label="Fil d'Ariane">
-  {crumbs.map((c, i) => (
-    <>
-      {i > 0 && <span class="breadcrumb__sep" aria-hidden="true">›</span>}
-      {c.href
-        ? <a href={c.href}>{c.label}</a>
-        : <span aria-current="page">{c.label}</span>
-      }
-    </>
-  ))}
+<nav class="breadcrumb" aria-label="Fil d'Ariane" data-i18n-ui="crumb.aria">
+  {crumbs.map((c, i) => {
+    const i18nKey = CRUMB_KEYS[c.label];
+    return (
+      <>
+        {i > 0 && <span class="breadcrumb__sep" aria-hidden="true">›</span>}
+        {c.href
+          ? <a href={c.href} {...(i18nKey ? { 'data-i18n-ui': i18nKey } : {})}>{c.label}</a>
+          : c.type
+          ? <span aria-current="page" data-i18n-type-crumb={c.type}>{c.label}</span>
+          : <span aria-current="page" {...(i18nKey ? { 'data-i18n-ui': i18nKey } : {})}>{c.label}</span>
+        }
+      </>
+    );
+  })}
 </nav>

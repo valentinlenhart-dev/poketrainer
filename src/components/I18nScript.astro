@@ -59,7 +59,16 @@ const T = allTranslations as Record<string, Record<string, string>>;
     // Labels UI (data-i18n-ui)
     document.querySelectorAll('[data-i18n-ui]').forEach(el => {
       const key = el.dataset.i18nUi;
-      if (t[key]) el.textContent = t[key];
+      if (!t[key]) return;
+      // nav.aria → attribut seulement, ne pas écraser le contenu du nav
+      if (key === 'nav.aria') { el.setAttribute('aria-label', t[key]); return; }
+      // nav.random-title → title + aria-label seulement, ne pas écraser l'icône 🎲
+      if (key === 'nav.random-title') { el.setAttribute('title', t[key]); el.setAttribute('aria-label', t[key]); return; }
+      let text = t[key];
+      if (el.dataset.count !== undefined) text = text.replace('{n}', el.dataset.count);
+      if (el.dataset.trainerName !== undefined) text = text.replace('{name}', el.dataset.trainerName);
+      if (el.dataset.trainerGame !== undefined) text = text.replace('{game}', el.dataset.trainerGame);
+      el.textContent = text;
     });
 
     // Rareté (data-i18n-rarity) — préserve l'<img> si présente

@@ -39,6 +39,21 @@ const firstHalf  = legendaires.slice(0, half);
 const secondHalf = legendaires.slice(half);
 ---
 
+<script define:vars={{ count, totalCount: trainers.length }}>
+  const LEG_SUB = {
+    en: `<strong>${count} trainers</strong> are the only ones in the entire Pokémon saga to carry their name. A unique name = legendary status.`,
+    de: `<strong>${count} Trainer</strong> sind in der gesamten Pokémon-Saga die einzigen, die ihren Namen tragen. Ein einzigartiger Name = Legendenstatus.`,
+    es: `<strong>${count} entrenadores</strong> son los únicos en toda la saga Pokémon que llevan su nombre. Un nombre único = un estatus legendario.`,
+    ja: `ポケモンシリーズ全体で、<strong>${count}人のトレーナー</strong>だけが自分の名前を持つ唯一の存在です。ユニークな名前 = 伝説のステータス。`,
+    it: `<strong>${count} allenatori</strong> sono gli unici in tutta la saga Pokémon a portare il loro nome. Un nome unico = uno status leggendario.`,
+    ko: `<strong>${count}명의 트레이너</strong>만이 포켓몬 시리즈 전체에서 자신의 이름을 가진 유일한 존재입니다. 유일한 이름 = 전설의 지위.`,
+    'zh-Hans': `<strong>${count}名训练家</strong>是整个宝可梦系列中唯一拥有自己名字的存在。独一无二的名字 = 传说地位。`,
+    'zh-Hant': `<strong>${count}名訓練家</strong>是整個寶可夢系列中唯一擁有自己名字的存在。獨一無二的名字 = 傳說地位。`,
+    'pt-BR': `<strong>${count} treinadores</strong> são os únicos em toda a saga Pokémon a carregar seu nome. Um nome único = status lendário.`,
+  };
+  window.__page_html_i18n = { 'leg-header-sub': LEG_SUB };
+</script>
+
 <Base
   title={title}
   description={description}
@@ -53,24 +68,24 @@ const secondHalf = legendaires.slice(half);
     ]} />
 
     <header class="top-header">
-      <div class="top-header__label">🏆 Exclusivité absolue</div>
-      <h1>Prénoms légendaires</h1>
-      <p class="top-header__sub">
+      <div class="top-header__label" data-i18n-ui="top.legendary-label">🏆 Exclusivité absolue</div>
+      <h1 data-i18n-ui="top.legendary-title">Prénoms légendaires</h1>
+      <p class="top-header__sub" id="leg-header-sub">
         <strong>{count} dresseurs</strong> sont les seuls au monde à porter leur prénom dans toute la saga Pokémon.
         Un prénom unique = un statut de légende.
       </p>
       <div class="top-header__stats">
         <div class="stat-chip">
           <span class="stat-chip__val">{count}</span>
-          <span class="stat-chip__lbl">prénoms uniques</span>
+          <span class="stat-chip__lbl" data-i18n-ui="top.stat-unique">prénoms uniques</span>
         </div>
         <div class="stat-chip">
           <span class="stat-chip__val">{trainers.length}</span>
-          <span class="stat-chip__lbl">dresseurs au total</span>
+          <span class="stat-chip__lbl" data-i18n-ui="top.stat-total">dresseurs au total</span>
         </div>
         <div class="stat-chip">
           <span class="stat-chip__val">{Math.round(count / trainers.length * 100)}%</span>
-          <span class="stat-chip__lbl">sont légendaires</span>
+          <span class="stat-chip__lbl" data-i18n-ui="top.stat-pct-legendary">sont légendaires</span>
         </div>
       </div>
     </header>
@@ -98,7 +113,7 @@ const secondHalf = legendaires.slice(half);
 
     <!-- Lien croisé -->
     <div class="crosslink">
-      <a href="/top/repandus" class="crosslink__btn">
+      <a href="/top/repandus" class="crosslink__btn" data-i18n-ui="top.crosslink-repandus">
         🔥 Voir les prénoms les plus répandus →
       </a>
     </div>

@@ -26,7 +26,7 @@ DEST = ROOT / "src" / "data" / "pokemon-tcg.json"
 
 API       = "https://api.pokemontcg.io/v2"
 DELAY     = 1.1    # respecte la limite sans clé (~1000 req/jour)
-CARDS_MAX = 30     # cartes à conserver par Pokémon (None = illimité)
+CARDS_MAX = None     # cartes à conserver par Pokémon (None = illimité)
 PAGE_SIZE = 250    # max autorisé par l'API
 
 # ── Tri : on veut un mix de raretés, pas que des ultra-rares ─────

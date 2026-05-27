@@ -32,13 +32,13 @@ const description = `${count} dresseur${count>1?'s':''} sur ${displayPlace} dans
   <main id="main" class="container">
     <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: displayPlace }]} />
     <header class="page-header">
-      <div class="game-badge">📍 Lieu</div>
+      <div class="game-badge">📍 <span data-i18n-ui="location-label">Lieu</span></div>
       <h1>{displayPlace}</h1>
       <p class="page-sub">{count} dresseur{count>1?'s':''} · {games.map((g: string) => g.replace('Pokémon ','')).join(', ')}</p>
     </header>
     <AdSlot slot="5466423598" format="auto" />
     <section class="section-block">
-      <h2>Dresseurs rencontrés ici</h2>
+      <h2 data-i18n-ui="lieu.trainers-here">Dresseurs rencontrés ici</h2>
       <div class="cards-grid" style="margin-top:16px">
         {trainers.slice(0,6).map((t: any) => <TrainerCard trainer={t} />)}
       </div>

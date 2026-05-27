@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
+import { tmpdir } from 'os';
 
 export default defineConfig({
   site: 'https://pokenom.fr',
@@ -16,6 +17,7 @@ export default defineConfig({
     inlineStylesheets: 'auto',
   },
   vite: {
+    cacheDir: `${tmpdir()}/pokenom-vite-cache`,
     json: {
       stringify: true,
     },

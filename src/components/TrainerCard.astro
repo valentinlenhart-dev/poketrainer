@@ -20,7 +20,7 @@ export interface Props {
 
 const { trainer: t, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
-const meta = pokemonMeta as Record<string, { sprite?: string; id?: number }>;
+const meta = pokemonMeta as Record<string, { sprite?: string; id?: number; name_en?: string; names_intl?: Record<string, string> }>;
 const trainerSprites = trainerSpritesRaw as Record<string, string>;
 
 const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers';
@@ -48,7 +48,7 @@ const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
     </div>
     <div class="trainer-card__meta">
       <span data-game-fr={t.game}><img src="/assets/meta/game.svg" alt="" width="14" height="14" class="meta-icon" /> {t.game.replace('Pokémon ', '')}</span>
-      {t.place && <span><img src="/assets/meta/place.svg" alt="" width="14" height="14" class="meta-icon" /> {placeLabel(t.place)}</span>}
+      {t.place && <span><img src="/assets/meta/place.svg" alt="" width="14" height="14" class="meta-icon" /> <span data-place-slug={t.place}>{placeLabel(t.place)}</span></span>}
       <span class={`rarity rarity--${t.rarity_key}`} style="font-size:0.72rem;padding:3px 10px" data-i18n-rarity={t.rarity_key}>
         <img src={`/assets/rarity/${t.rarity_key}.svg`} alt="" width="14" height="14" class="meta-icon" /> {t.rarity_label}
       </span>
@@ -56,18 +56,24 @@ const classSprite = classSlug ? `${SPRITE_BASE}/${classSlug}.png` : null;
     {t.team && t.team.length > 0 && (
       <div class="trainer-card__team" aria-label="Équipe Pokémon">
         {t.team.map(p => {
-          const sprite = meta[p]?.sprite ?? null;
+          const pMeta = meta[p];
+          const sprite = pMeta?.sprite ?? null;
+          const intl = pMeta?.names_intl ?? {};
+          const en = pMeta?.name_en ?? intl['en'] ?? null;
+          const namesData = Object.entries({ en, ...intl }).filter(([,v]) => v).map(([k,v]) => `${k}:${v}`).join('|');
           return (
             <a
               href={`/pokemon/${toPokemonSlug(p)}`}
               class="pkm-badge"
               aria-label={`Voir ${p}`}
+              data-pkm-name-fr={p}
+              data-pkm-names={namesData || undefined}
             >
               {sprite
                 ? <img src={sprite} alt={p} width="24" height="24" class="pkm-badge__sprite" loading="lazy" />
                 : <span class="pkm-badge__dot" aria-hidden="true">●</span>
               }
-              {p}
+              <span class="pkm-badge__name">{p}</span>
             </a>
           );
         })}

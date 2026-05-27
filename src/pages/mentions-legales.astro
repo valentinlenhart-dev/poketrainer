@@ -3,6 +3,68 @@ import Base from '../layouts/Base.astro';
 import '../styles/global.css';
 ---
 
+<!-- i18n: section body content via __page_html_i18n -->
+<script>
+  const HTML_I18N: Record<string, Record<string, string>> = {
+    'legal-editor-body': {
+      en: `<p>The PokéNom website (<a href="https://pokenom.fr">pokenom.fr</a>) is a personal, non-commercial website edited privately by an individual.</p><p>Contact: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      de: `<p>Die Website PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) ist eine persönliche, nicht-kommerzielle Website, die von einer Privatperson betrieben wird.</p><p>Kontakt: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      es: `<p>El sitio web PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) es un sitio personal sin fines de lucro, editado de forma privada por un particular.</p><p>Contacto: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      ja: `<p>PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) は個人が非営利で運営する個人サイトです。</p><p>お問い合わせ: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      it: `<p>Il sito PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) è un sito personale senza scopo di lucro, gestito privatamente da un privato.</p><p>Contatto: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      ko: `<p>PokéNom 웹사이트(<a href="https://pokenom.fr">pokenom.fr</a>)는 개인이 비영리로 운영하는 개인 사이트입니다.</p><p>연락처: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'zh-Hans': `<p>PokéNom网站（<a href="https://pokenom.fr">pokenom.fr</a>）是一个由个人私下运营的非商业性个人网站。</p><p>联系方式：<a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'zh-Hant': `<p>PokéNom網站（<a href="https://pokenom.fr">pokenom.fr</a>）是一個由個人私下運營的非商業性個人網站。</p><p>聯絡方式：<a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+      'pt-BR': `<p>O site PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) é um site pessoal sem fins comerciais, editado de forma privada por um particular.</p><p>Contato: <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>`,
+    },
+    'legal-hosting-body': {
+      en: `<p>This site is hosted by <strong>Cloudflare, Inc.</strong><br/>101 Townsend St, San Francisco, CA 94107, USA<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      de: `<p>Diese Website wird gehostet von <strong>Cloudflare, Inc.</strong><br/>101 Townsend St, San Francisco, CA 94107, USA<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      es: `<p>Este sitio está alojado por <strong>Cloudflare, Inc.</strong><br/>101 Townsend St, San Francisco, CA 94107, EE.UU.<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      ja: `<p>このサイトは<strong>Cloudflare, Inc.</strong>がホスティングしています。<br/>101 Townsend St, San Francisco, CA 94107, アメリカ合衆国<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      it: `<p>Questo sito è ospitato da <strong>Cloudflare, Inc.</strong><br/>101 Townsend St, San Francisco, CA 94107, Stati Uniti<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      ko: `<p>이 사이트는 <strong>Cloudflare, Inc.</strong>가 호스팅합니다.<br/>101 Townsend St, San Francisco, CA 94107, 미국<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      'zh-Hans': `<p>本站由<strong>Cloudflare, Inc.</strong>托管。<br/>101 Townsend St, San Francisco, CA 94107, 美国<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      'zh-Hant': `<p>本站由<strong>Cloudflare, Inc.</strong>托管。<br/>101 Townsend St, San Francisco, CA 94107, 美國<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+      'pt-BR': `<p>Este site é hospedado pela <strong>Cloudflare, Inc.</strong><br/>101 Townsend St, San Francisco, CA 94107, Estados Unidos<br/><a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>`,
+    },
+    'legal-ip-body': {
+      en: `<p>Pokémon and all associated characters, names, and elements are trademarks of <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> and <strong>The Pokémon Company</strong>.</p><p>PokéNom is an unofficial <em>fan-made</em> site, with no affiliation or endorsement from Nintendo or The Pokémon Company. No protected content is reproduced for commercial purposes.</p><p>Trainer data comes from the official Pokémon games and was compiled manually for informational purposes.</p><p>Trainer sprites are provided by <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a> (fan project). Pokémon sprites come from the <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a> project.</p>`,
+      de: `<p>Pokémon und alle zugehörigen Charaktere, Namen und Elemente sind Marken von <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> und <strong>The Pokémon Company</strong>.</p><p>PokéNom ist eine inoffizielle <em>Fan-Website</em> ohne Verbindung zu oder Billigung von Nintendo oder The Pokémon Company. Keine geschützten Inhalte werden für kommerzielle Zwecke reproduziert.</p><p>Trainer-Daten stammen aus den offiziellen Pokémon-Spielen und wurden manuell zu Informationszwecken zusammengestellt.</p><p>Trainer-Sprites werden von <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a> bereitgestellt. Pokémon-Sprites stammen vom <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>-Projekt.</p>`,
+      es: `<p>Pokémon y todos los personajes, nombres y elementos asociados son marcas registradas de <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> y <strong>The Pokémon Company</strong>.</p><p>PokéNom es un sitio <em>fan-made</em> no oficial, sin afiliación ni aprobación de Nintendo o The Pokémon Company. Ningún contenido protegido se reproduce con fines comerciales.</p><p>Los datos de los entrenadores provienen de los juegos oficiales de Pokémon y fueron compilados manualmente con fines informativos.</p><p>Los sprites de entrenadores son proporcionados por <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>. Los sprites de Pokémon provienen del proyecto <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.</p>`,
+      ja: `<p>ポケモンおよび関連するキャラクター、名前、要素はすべて<strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong>および<strong>株式会社ポケモン</strong>の登録商標です。</p><p>PokéNomはNintendoや株式会社ポケモンとは無関係の非公式ファンサイトです。保護されたコンテンツを商業目的で複製することはありません。</p><p>トレーナーデータは公式ポケモンゲームから手動で収集されました。</p><p>トレーナースプライトは<a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>より提供。ポケモンスプライトは<a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>プロジェクトより。</p>`,
+      it: `<p>Pokémon e tutti i personaggi, nomi ed elementi associati sono marchi registrati di <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> e <strong>The Pokémon Company</strong>.</p><p>PokéNom è un sito <em>fan-made</em> non ufficiale, senza affiliazione o approvazione di Nintendo o The Pokémon Company. Nessun contenuto protetto viene riprodotto a scopi commerciali.</p><p>I dati degli allenatori provengono dai giochi ufficiali Pokémon e sono stati compilati manualmente a scopo informativo.</p><p>Gli sprite degli allenatori sono forniti da <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>. Gli sprite Pokémon provengono dal progetto <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.</p>`,
+      ko: `<p>포켓몬 및 모든 관련 캐릭터, 이름, 요소는 <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> 및 <strong>주식회사 포켓몬</strong>의 등록 상표입니다.</p><p>PokéNom은 Nintendo나 주식회사 포켓몬과 관련이 없는 비공식 팬 사이트입니다. 보호된 콘텐츠는 상업적 목적으로 복제되지 않습니다.</p><p>트레이너 데이터는 공식 포켓몬 게임에서 수동으로 수집되었습니다.</p><p>트레이너 스프라이트는 <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>에서 제공됩니다. 포켓몬 스프라이트는 <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a> 프로젝트에서 제공됩니다.</p>`,
+      'zh-Hans': `<p>宝可梦及所有相关角色、名称和元素均为<strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong>和<strong>株式会社宝可梦</strong>的注册商标。</p><p>PokéNom是一个与Nintendo或株式会社宝可梦无关的非官方粉丝网站。不以商业目的复制受保护内容。</p><p>训练家数据来自官方宝可梦游戏，为信息目的手动整理。</p><p>训练家精灵图由<a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>提供。宝可梦精灵图来自<a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>项目。</p>`,
+      'zh-Hant': `<p>寶可夢及所有相關角色、名稱和元素均為<strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong>和<strong>株式會社寶可夢</strong>的注冊商標。</p><p>PokéNom是一個與Nintendo或株式會社寶可夢無關的非官方粉絲網站。不以商業目的複製受保護內容。</p><p>訓練家數據來自官方寶可夢遊戲，為資訊目的手動整理。</p><p>訓練家精靈圖由<a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>提供。寶可夢精靈圖來自<a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>項目。</p>`,
+      'pt-BR': `<p>Pokémon e todos os personagens, nomes e elementos associados são marcas registradas da <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> e <strong>The Pokémon Company</strong>.</p><p>PokéNom é um site <em>fan-made</em> não oficial, sem afiliação ou aprovação da Nintendo ou The Pokémon Company. Nenhum conteúdo protegido é reproduzido para fins comerciais.</p><p>Os dados dos treinadores vêm dos jogos oficiais de Pokémon e foram compilados manualmente para fins informativos.</p><p>Sprites de treinadores fornecidos por <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>. Sprites de Pokémon do projeto <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.</p>`,
+    },
+    'legal-liability-body': {
+      en: `<p>The information on this site is provided for informational purposes only. The editor cannot be held responsible for errors or omissions in the data.</p>`,
+      de: `<p>Die auf dieser Website bereitgestellten Informationen dienen nur zu Informationszwecken. Der Herausgeber übernimmt keine Verantwortung für Fehler oder Auslassungen in den Daten.</p>`,
+      es: `<p>La información presentada en este sitio se proporciona únicamente con fines informativos. El editor no puede ser responsable de errores u omisiones en los datos.</p>`,
+      ja: `<p>このサイトの情報は参考目的のみで提供されています。データの誤りや漏れについて、運営者は責任を負いません。</p>`,
+      it: `<p>Le informazioni presentate su questo sito sono fornite a solo scopo informativo. L'editore non può essere ritenuto responsabile di errori od omissioni nei dati.</p>`,
+      ko: `<p>이 사이트의 정보는 참고 목적으로만 제공됩니다. 운영자는 데이터의 오류나 누락에 대해 책임을 지지 않습니다.</p>`,
+      'zh-Hans': `<p>本站提供的信息仅供参考。编辑不对数据中的错误或遗漏负责。</p>`,
+      'zh-Hant': `<p>本站提供的資訊僅供參考。編輯不對數據中的錯誤或遺漏負責。</p>`,
+      'pt-BR': `<p>As informações apresentadas neste site são fornecidas apenas para fins informativos. O editor não pode ser responsabilizado por erros ou omissões nos dados.</p>`,
+    },
+    'legal-cookies-body': {
+      en: `<p>This site uses advertising cookies via Google AdSense only with your explicit consent. For more information, see our <a href="/confidentialite">privacy policy</a>.</p>`,
+      de: `<p>Diese Website verwendet Werbe-Cookies über Google AdSense nur mit Ihrer ausdrücklichen Zustimmung. Weitere Informationen finden Sie in unserer <a href="/confidentialite">Datenschutzerklärung</a>.</p>`,
+      es: `<p>Este sitio utiliza cookies publicitarias a través de Google AdSense solo con su consentimiento explícito. Para más información, consulte nuestra <a href="/confidentialite">política de privacidad</a>.</p>`,
+      ja: `<p>このサイトはお客様の明示的な同意のみに基づいてGoogle AdSenseの広告クッキーを使用します。詳細は<a href="/confidentialite">プライバシーポリシー</a>をご覧ください。</p>`,
+      it: `<p>Questo sito utilizza cookie pubblicitari tramite Google AdSense solo con il tuo consenso esplicito. Per ulteriori informazioni, consulta la nostra <a href="/confidentialite">informativa sulla privacy</a>.</p>`,
+      ko: `<p>이 사이트는 귀하의 명시적인 동의를 통해서만 Google AdSense 광고 쿠키를 사용합니다. 자세한 내용은 <a href="/confidentialite">개인정보 처리방침</a>을 참조하세요.</p>`,
+      'zh-Hans': `<p>本站仅在您明确同意的情况下通过Google AdSense使用广告Cookie。更多信息请参阅我们的<a href="/confidentialite">隐私政策</a>。</p>`,
+      'zh-Hant': `<p>本站僅在您明確同意的情況下通過Google AdSense使用廣告Cookie。更多資訊請參閱我們的<a href="/confidentialite">隱私政策</a>。</p>`,
+      'pt-BR': `<p>Este site usa cookies publicitários via Google AdSense apenas com o seu consentimento explícito. Para mais informações, consulte nossa <a href="/confidentialite">política de privacidade</a>.</p>`,
+    },
+  };
+  window.__page_html_i18n = HTML_I18N;
+</script>
+
 <Base
   title="Mentions légales | PokéNom"
   description="Mentions légales du site PokéNom — éditeur, hébergeur, propriété intellectuelle."
@@ -10,66 +72,76 @@ import '../styles/global.css';
   noindex={true}
 >
   <main id="main" class="container legal-page">
-    <h1>Mentions légales</h1>
+    <h1 data-i18n-ui="legal.mentions-title">Mentions légales</h1>
 
     <section>
-      <h2>Éditeur du site</h2>
-      <p>
-        Le site PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) est un site personnel
-        à but non commercial, édité à titre privé par un particulier.
-      </p>
-      <p>Contact : <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>
+      <h2 data-i18n-ui="legal.mentions-editor">Éditeur du site</h2>
+      <div id="legal-editor-body">
+        <p>
+          Le site PokéNom (<a href="https://pokenom.fr">pokenom.fr</a>) est un site personnel
+          à but non commercial, édité à titre privé par un particulier.
+        </p>
+        <p>Contact : <a href="mailto:valentin.lenhart@gmail.com">valentin.lenhart@gmail.com</a></p>
+      </div>
     </section>
 
     <section>
-      <h2>Hébergement</h2>
-      <p>
-        Ce site est hébergé par <strong>Cloudflare, Inc.</strong><br />
-        101 Townsend St, San Francisco, CA 94107, États-Unis<br />
-        <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a>
-      </p>
+      <h2 data-i18n-ui="legal.mentions-hosting">Hébergement</h2>
+      <div id="legal-hosting-body">
+        <p>
+          Ce site est hébergé par <strong>Cloudflare, Inc.</strong><br />
+          101 Townsend St, San Francisco, CA 94107, États-Unis<br />
+          <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a>
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Propriété intellectuelle</h2>
-      <p>
-        Pokémon et tous les personnages, noms et éléments associés sont des marques déposées
-        de <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> et de
-        <strong>The Pokémon Company</strong>.
-      </p>
-      <p>
-        PokéNom est un site <em>fan-made</em> non officiel, sans affiliation ni approbation
-        de Nintendo ou The Pokémon Company. Aucun contenu protégé n'est reproduit à des fins
-        commerciales.
-      </p>
-      <p>
-        Les données des dresseurs sont issues des jeux officiels Pokémon et compilées
-        manuellement à titre informatif.
-      </p>
-      <p>
-        Les sprites de dresseurs sont fournis par
-        <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>
-        (fan project).
-        Les sprites de Pokémon proviennent du projet
-        <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.
-      </p>
+      <h2 data-i18n-ui="legal.mentions-ip">Propriété intellectuelle</h2>
+      <div id="legal-ip-body">
+        <p>
+          Pokémon et tous les personnages, noms et éléments associés sont des marques déposées
+          de <strong>Nintendo / Creatures Inc. / GAME FREAK inc.</strong> et de
+          <strong>The Pokémon Company</strong>.
+        </p>
+        <p>
+          PokéNom est un site <em>fan-made</em> non officiel, sans affiliation ni approbation
+          de Nintendo ou The Pokémon Company. Aucun contenu protégé n'est reproduit à des fins
+          commerciales.
+        </p>
+        <p>
+          Les données des dresseurs sont issues des jeux officiels Pokémon et compilées
+          manuellement à titre informatif.
+        </p>
+        <p>
+          Les sprites de dresseurs sont fournis par
+          <a href="https://play.pokemonshowdown.com" target="_blank" rel="noopener">Pokémon Showdown</a>
+          (fan project).
+          Les sprites de Pokémon proviennent du projet
+          <a href="https://pokeapi.co" target="_blank" rel="noopener">PokéAPI</a>.
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Limitation de responsabilité</h2>
-      <p>
-        Les informations présentées sur ce site sont fournies à titre indicatif.
-        L'éditeur ne saurait être tenu responsable des erreurs ou omissions dans les données.
-      </p>
+      <h2 data-i18n-ui="legal.mentions-liability">Limitation de responsabilité</h2>
+      <div id="legal-liability-body">
+        <p>
+          Les informations présentées sur ce site sont fournies à titre indicatif.
+          L'éditeur ne saurait être tenu responsable des erreurs ou omissions dans les données.
+        </p>
+      </div>
     </section>
 
     <section>
-      <h2>Cookies et publicité</h2>
-      <p>
-        Ce site utilise des cookies publicitaires via Google AdSense uniquement avec votre
-        consentement explicite. Pour en savoir plus, consultez notre
-        <a href="/confidentialite">politique de confidentialité</a>.
-      </p>
+      <h2 data-i18n-ui="legal.mentions-cookies">Cookies et publicité</h2>
+      <div id="legal-cookies-body">
+        <p>
+          Ce site utilise des cookies publicitaires via Google AdSense uniquement avec votre
+          consentement explicite. Pour en savoir plus, consultez notre
+          <a href="/confidentialite">politique de confidentialité</a>.
+        </p>
+      </div>
     </section>
   </main>
 </Base>

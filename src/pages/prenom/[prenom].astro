@@ -110,6 +110,125 @@ const schemaList = count > 0 ? {
 } : null;
 ---
 
+<!-- ── i18n dynamique (rarityDesc, FAQ answers) ──────────────────── -->
+<script define:vars={{ displayName, count, rarityKey, firstClass: first.class, firstGame: first.game, firstTeam: first.team ?? [] }}>
+  function prenomRarityDesc(lang, displayName, count, rarityKey) {
+    const n = count;
+    const d = {
+      legendaire: {
+        fr: `Un seul dresseur légendaire dans tout l'univers Pokémon s'appelle ${displayName} !`,
+        en: `Only one legendary trainer in the entire Pokémon universe is named ${displayName}!`,
+        de: `Nur ein legendärer Trainer im gesamten Pokémon-Universum heißt ${displayName}!`,
+        es: `¡Solo un entrenador legendario en todo el universo Pokémon se llama ${displayName}!`,
+        ja: `ポケモン世界で${displayName}という名前の伝説のトレーナーはたった1人！`,
+        it: `Solo un allenatore leggendario in tutto l'universo Pokémon si chiama ${displayName}!`,
+        ko: `포켓몬 세계 전체에서 ${displayName}라는 이름의 전설적인 트레이너는 딱 한 명뿐!`,
+        'zh-Hans': `整个宝可梦世界中只有一位传说级训练家叫${displayName}！`,
+        'zh-Hant': `整個寶可夢世界中只有一位傳說級訓練家叫${displayName}！`,
+        'pt-BR': `Apenas um treinador lendário em todo o universo Pokémon se chama ${displayName}!`,
+      },
+      rare: {
+        fr: `Ce prénom est assez rare — seulement ${n} dresseurs le portent.`,
+        en: `This name is quite rare — only ${n} trainers have it.`,
+        de: `Dieser Name ist ziemlich selten — nur ${n} Trainer tragen ihn.`,
+        es: `Este nombre es bastante raro — solo ${n} entrenadores lo tienen.`,
+        ja: `この名前はかなり珍しい — ${n}人のトレーナーしかいない。`,
+        it: `Questo nome è piuttosto raro — solo ${n} allenatori lo portano.`,
+        ko: `이 이름은 꽤 희귀 — ${n}명의 트레이너만 갖고 있습니다.`,
+        'zh-Hans': `这个名字相当罕见 — 只有${n}位训练家拥有。`,
+        'zh-Hant': `這個名字相當罕見 — 只有${n}位訓練家擁有。`,
+        'pt-BR': `Este nome é bem raro — apenas ${n} treinadores o têm.`,
+      },
+      repandu: {
+        fr: `${n} dresseurs portent ce prénom dans les jeux Pokémon.`,
+        en: `${n} trainers have this name in the Pokémon games.`,
+        de: `${n} Trainer tragen diesen Namen in den Pokémon-Spielen.`,
+        es: `${n} entrenadores tienen este nombre en los juegos Pokémon.`,
+        ja: `ポケモンゲームで${n}人のトレーナーがこの名前を持っています。`,
+        it: `${n} allenatori hanno questo nome nei giochi Pokémon.`,
+        ko: `포켓몬 게임에서 ${n}명의 트레이너가 이 이름을 가지고 있습니다.`,
+        'zh-Hans': `宝可梦游戏中有${n}位训练家拥有这个名字。`,
+        'zh-Hant': `寶可夢遊戲中有${n}位訓練家擁有這個名字。`,
+        'pt-BR': `${n} treinadores têm este nome nos jogos Pokémon.`,
+      },
+      partout: {
+        fr: `${n} dresseurs s'appellent ${displayName}, c'est l'un des prénoms les plus répandus !`,
+        en: `${n} trainers are named ${displayName} — one of the most common names!`,
+        de: `${n} Trainer heißen ${displayName} — einer der häufigsten Namen!`,
+        es: `${n} entrenadores se llaman ${displayName} — ¡uno de los nombres más comunes!`,
+        ja: `${n}人のトレーナーが${displayName}という名前 — 最もよくある名前の一つ！`,
+        it: `${n} allenatori si chiamano ${displayName} — uno dei nomi più diffusi!`,
+        ko: `${n}명의 트레이너가 ${displayName}이라는 이름 — 가장 흔한 이름 중 하나!`,
+        'zh-Hans': `${n}位训练家叫${displayName}，是最常见的名字之一！`,
+        'zh-Hant': `${n}位訓練家叫${displayName}，是最常見的名字之一！`,
+        'pt-BR': `${n} treinadores se chamam ${displayName} — um dos nomes mais comuns!`,
+      },
+    };
+    return d[rarityKey]?.[lang] ?? d[rarityKey]?.['fr'] ?? '';
+  }
+
+  function prenomFaqExistsA(lang, displayName, count, firstClass, firstGame) {
+    if (count === 1) {
+      const m = {
+        fr: `Oui ! Le ${firstClass} ${displayName} est le seul dresseur Pokémon à porter ce prénom — c'est un prénom légendaire. On le trouve dans ${firstGame}.`,
+        en: `Yes! ${firstClass} ${displayName} is the only Pokémon Trainer with this name — a legendary name. Found in ${firstGame}.`,
+        de: `Ja! ${firstClass} ${displayName} ist der einzige Pokémon-Trainer mit diesem Namen — ein legendärer Name. Zu finden in ${firstGame}.`,
+        es: `¡Sí! ${firstClass} ${displayName} es el único Entrenador Pokémon con este nombre — un nombre legendario. Se encuentra en ${firstGame}.`,
+        ja: `はい！${firstClass} ${displayName}はこの名前を持つ唯一のポケモントレーナー — 伝説の名前。${firstGame}に登場。`,
+        it: `Sì! ${firstClass} ${displayName} è l'unico Allenatore Pokémon con questo nome — un nome leggendario. Si trova in ${firstGame}.`,
+        ko: `네! ${firstClass} ${displayName}은(는) 이 이름을 가진 유일한 포켓몬 트레이너 — 전설의 이름. ${firstGame}에 등장.`,
+        'zh-Hans': `是的！${firstClass} ${displayName}是唯一拥有此名字的宝可梦训练家——一个传奇名字。出现在${firstGame}。`,
+        'zh-Hant': `是的！${firstClass} ${displayName}是唯一擁有此名字的寶可夢訓練家——一個傳奇名字。出現在${firstGame}。`,
+        'pt-BR': `Sim! ${firstClass} ${displayName} é o único Treinador Pokémon com este nome — um nome lendário. Encontrado em ${firstGame}.`,
+      };
+      return m[lang] ?? m['fr'];
+    } else {
+      const m = {
+        fr: `Oui ! ${count} dresseurs s'appellent ${displayName} dans les jeux Pokémon officiels.`,
+        en: `Yes! ${count} trainers are named ${displayName} in the official Pokémon games.`,
+        de: `Ja! ${count} Trainer heißen ${displayName} in den offiziellen Pokémon-Spielen.`,
+        es: `¡Sí! ${count} entrenadores se llaman ${displayName} en los juegos Pokémon oficiales.`,
+        ja: `はい！公式ポケモンゲームで${count}人のトレーナーが${displayName}という名前です。`,
+        it: `Sì! ${count} allenatori si chiamano ${displayName} nei giochi Pokémon ufficiali.`,
+        ko: `네! 공식 포켓몬 게임에서 ${count}명의 트레이너가 ${displayName}라는 이름입니다.`,
+        'zh-Hans': `是的！在官方宝可梦游戏中有${count}位训练家叫${displayName}。`,
+        'zh-Hant': `是的！在官方寶可夢遊戲中有${count}位訓練家叫${displayName}。`,
+        'pt-BR': `Sim! ${count} treinadores se chamam ${displayName} nos jogos Pokémon oficiais.`,
+      };
+      return m[lang] ?? m['fr'];
+    }
+  }
+
+  function prenomFaqTeamA(lang, firstClass, displayName, team, firstGame) {
+    const teamStr = team.join(', ');
+    const m = {
+      fr: `${firstClass} ${displayName} utilise ${teamStr} dans ${firstGame}.`,
+      en: `${firstClass} ${displayName} uses ${teamStr} in ${firstGame}.`,
+      de: `${firstClass} ${displayName} nutzt ${teamStr} in ${firstGame}.`,
+      es: `${firstClass} ${displayName} usa ${teamStr} en ${firstGame}.`,
+      ja: `${firstClass} ${displayName}は${firstGame}で${teamStr}を使います。`,
+      it: `${firstClass} ${displayName} usa ${teamStr} in ${firstGame}.`,
+      ko: `${firstClass} ${displayName}은(는) ${firstGame}에서 ${teamStr}을(를) 사용합니다.`,
+      'zh-Hans': `${firstClass} ${displayName}在${firstGame}中使用${teamStr}。`,
+      'zh-Hant': `${firstClass} ${displayName}在${firstGame}中使用${teamStr}。`,
+      'pt-BR': `${firstClass} ${displayName} usa ${teamStr} em ${firstGame}.`,
+    };
+    return m[lang] ?? m['fr'];
+  }
+
+  // Build the i18n payload for all languages
+  const SUPPORTED_LANGS = ['fr','en','de','es','ja','it','ko','zh-Hans','zh-Hant','pt-BR'];
+  const prenomI18n = {};
+  for (const lang of SUPPORTED_LANGS) {
+    prenomI18n[lang] = {
+      rarityDesc: prenomRarityDesc(lang, displayName, count, rarityKey),
+      faqExistsA: prenomFaqExistsA(lang, displayName, count, firstClass, firstGame),
+      faqTeamA:   firstTeam.length > 0 ? prenomFaqTeamA(lang, firstClass, displayName, firstTeam, firstGame) : null,
+    };
+  }
+  window.__prenom_i18n = prenomI18n;
+</script>
+
 <Base
   title={title}
   description={description}
@@ -126,12 +245,12 @@ const schemaList = count > 0 ? {
     <!-- En-tête -->
     <header class="prenom-header">
       <div class="prenom-header__badge">
-        <span class={`rarity rarity--${rarityKey}`}>
+        <span class={`rarity rarity--${rarityKey}`} data-i18n-rarity={rarityKey}>
           <img src={`/assets/rarity/${rarityKey}.svg`} alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> {rarityLabel}
         </span>
       </div>
       <h1>{displayName}</h1>
-      <p class="prenom-header__desc">{rarityDesc}</p>
+      <p class="prenom-header__desc" id="prenom-rarity-desc">{rarityDesc}</p>
     </header>
 
     <!-- Pub leaderboard — après le titre, avant les résultats -->
@@ -151,7 +270,7 @@ const schemaList = count > 0 ? {
         <!-- Filtre par jeu (affiché seulement si plusieurs jeux) -->
         {gamesUsed.length > 1 && (
           <div class="game-filter" id="game-filter">
-            <button class="game-filter__btn game-filter__btn--active" data-filter="all">
+            <button class="game-filter__btn game-filter__btn--active" data-filter="all" data-i18n-ui="prenom.filter-all" data-count={count}>
               Tous ({count})
             </button>
             {gamesUsed.map(g => {
@@ -174,7 +293,7 @@ const schemaList = count > 0 ? {
               </div>
             ))}
           </div>
-          <p class="filter-empty" id="filter-empty" style="display:none">
+          <p class="filter-empty" id="filter-empty" style="display:none" data-i18n-ui="prenom.filter-empty">
             Aucun dresseur dans ce jeu.
           </p>
           {count > 3 && (
@@ -185,8 +304,8 @@ const schemaList = count > 0 ? {
         <!-- Pokémon utilisés — maillage interne -->
         {pokemonUsed.length > 0 && (
           <section class="related-section">
-            <h2>Pokémon de {displayName}</h2>
-            <p style="color:var(--text-soft);margin:8px 0 16px;font-size:0.9rem">
+            <h2 data-i18n-ui="prenom.pokemon-of" data-trainer-name={displayName}>Pokémon de {displayName}</h2>
+            <p style="color:var(--text-soft);margin:8px 0 16px;font-size:0.9rem" data-i18n-ui="prenom.team-used">
               Les Pokémon que ces dresseurs utilisent dans leurs équipes.
             </p>
             <div class="related-chips">
@@ -204,11 +323,11 @@ const schemaList = count > 0 ? {
 
         <!-- FAQ visible pour SEO -->
         <section class="faq-section" aria-label="Questions fréquentes">
-          <h2>Questions fréquentes sur {displayName}</h2>
+          <h2 data-i18n-ui="prenom.faq-title" data-trainer-name={displayName}>Questions fréquentes sur {displayName}</h2>
           <dl class="faq-list">
             <div class="faq-item">
-              <dt>Existe-t-il un dresseur Pokémon nommé {displayName} ?</dt>
-              <dd>
+              <dt data-i18n-ui="prenom.exists-q" data-trainer-name={displayName}>Existe-t-il un dresseur Pokémon nommé {displayName} ?</dt>
+              <dd id="prenom-faq-exists-a">
                 {count === 1
                   ? `Oui ! Le ${first.class} ${displayName} est le seul dresseur Pokémon à porter ce prénom — c'est un prénom légendaire. On le trouve dans ${first.game}.`
                   : `Oui ! ${count} dresseurs s'appellent ${displayName} dans les jeux Pokémon officiels.`
@@ -216,13 +335,13 @@ const schemaList = count > 0 ? {
               </dd>
             </div>
             <div class="faq-item">
-              <dt>Le prénom {displayName} est-il rare dans Pokémon ?</dt>
-              <dd>{rarityDesc}</dd>
+              <dt data-i18n-ui="prenom.rare-q" data-trainer-name={displayName}>Le prénom {displayName} est-il rare dans Pokémon ?</dt>
+              <dd id="prenom-faq-rare-a">{rarityDesc}</dd>
             </div>
             {count === 1 && first.team && first.team.length > 0 && (
               <div class="faq-item">
-                <dt>Quelle est l'équipe du dresseur {displayName} ?</dt>
-                <dd>{first.class} {displayName} utilise {first.team.join(', ')} dans {first.game}.</dd>
+                <dt data-i18n-ui="prenom.team-q" data-trainer-name={displayName}>Quelle est l'équipe du dresseur {displayName} ?</dt>
+                <dd id="prenom-faq-team-a">{first.class} {displayName} utilise {first.team.join(', ')} dans {first.game}.</dd>
               </div>
             )}
           </dl>
@@ -231,12 +350,12 @@ const schemaList = count > 0 ? {
         <!-- Maillage jeux -->
         {gamesUsed.length > 0 && (
           <section class="related-section">
-            <h2>Dans quels jeux ?</h2>
+            <h2 data-i18n-ui="which-games">Dans quels jeux ?</h2>
             <div class="related-chips">
               {gamesUsed.map(g => {
                 const gs = g.replace('Pokémon ','').toLowerCase()
                   .normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-                return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
+                return <a href={`/jeu/${gs}`} class="pkm-link" data-game-fr={g}>{g.replace('Pokémon ','')}</a>;
               })}
             </div>
           </section>

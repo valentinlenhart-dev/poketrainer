@@ -85,17 +85,25 @@ const evolvesTo      = (meta?.evolves_to ?? []) as string[];
 const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; name_en?:string; desc_en?:string; name_de?:string; desc_de?:string; name_es?:string; desc_es?:string; name_ja?:string; desc_ja?:string; name_it?:string; desc_it?:string; name_ko?:string; desc_ko?:string; 'name_zh-Hans'?:string; 'desc_zh-Hans'?:string; is_hidden:boolean}[];
 
 // i18n — descriptions + noms par langue (injectés en JSON pour le switch JS)
+// Chaque langue hérite des descriptions FR pour les jeux manquants (même logique que categoryI18n)
+const _descsFr = (meta?.descriptions_fr ?? {}) as Record<string, string>;
+function _mergeDescsFr(langDescs: unknown): Record<string, string> {
+  const d = (langDescs ?? {}) as Record<string, string>;
+  const result: Record<string, string> = { ..._descsFr };
+  for (const [game, desc] of Object.entries(d)) { if (desc) result[game] = desc; }
+  return result;
+}
 const descriptionsI18n = {
-  fr:         meta?.descriptions_fr      ?? {},
-  en:         meta?.descriptions_en      ?? {},
-  de:         meta?.descriptions_de      ?? {},
-  es:         meta?.descriptions_es      ?? {},
-  ja:         meta?.descriptions_ja      ?? {},
-  it:         meta?.descriptions_it      ?? {},
-  ko:         meta?.descriptions_ko      ?? {},
-  'zh-Hans':  meta?.descriptions_zh      ?? {},
-  'zh-Hant':  meta?.descriptions_zh_hant ?? {},
-  'pt-BR':    meta?.descriptions_pt      ?? {},
+  fr:         _descsFr,
+  en:         _mergeDescsFr(meta?.descriptions_en),
+  de:         _mergeDescsFr(meta?.descriptions_de),
+  es:         _mergeDescsFr(meta?.descriptions_es),
+  ja:         _mergeDescsFr(meta?.descriptions_ja),
+  it:         _mergeDescsFr(meta?.descriptions_it),
+  ko:         _mergeDescsFr(meta?.descriptions_ko),
+  'zh-Hans':  _mergeDescsFr(meta?.descriptions_zh),
+  'zh-Hant':  _mergeDescsFr(meta?.descriptions_zh_hant),
+  'pt-BR':    _mergeDescsFr(meta?.descriptions_pt),
 } as Record<string, Record<string, string>>;
 
 const namesI18n = {
@@ -174,6 +182,7 @@ const radarLabels = STAT_ORDER.map((s,i)=>{
   const lr = RADAR_R * 1.26;
   const a  = (Math.PI*2*i/6) - Math.PI/2;
   return {
+    stat:  s,
     label: STAT_LABELS[s]??s,
     val:   stats[s]??0,
     x:     (RADAR_CX + lr*Math.cos(a)).toFixed(1),
@@ -293,7 +302,7 @@ const schema = {
             ) : (
               <div class="pkm-sprite pkm-sprite--placeholder" aria-hidden="true"><span>?</span></div>
             )}
-            <span class="sprite-label">Normal{hasAnim ? ' / Animé' : ''}</span>
+            <span class="sprite-label" data-i18n-ui={hasAnim ? 'sprite.normal-anim' : 'sprite.normal'}>Normal{hasAnim ? ' / Animé' : ''}</span>
             {hasAnim && (
               <button class="sprite-btn-anim" id="sprite-anim-btn" data-mode="normal" title="Basculer animé">▶</button>
             )}
@@ -311,7 +320,7 @@ const schema = {
                 class="pkm-sprite"
                 loading="lazy"
               />
-              <span class="sprite-label">✨ Shiny{hasAnimShiny ? ' / Animé' : ''}</span>
+              <span class="sprite-label" data-i18n-ui={hasAnimShiny ? 'sprite.shiny-anim' : 'sprite.shiny'}>✨ Shiny{hasAnimShiny ? ' / Animé' : ''}</span>
               {hasAnimShiny && (
                 <button class="sprite-btn-anim" id="sprite-anim-shiny-btn" data-mode="normal" title="Basculer animé shiny">▶</button>
               )}
@@ -324,7 +333,7 @@ const schema = {
         <div class="pkm-meta-row">
           {meta?.id && <p class="pkm-id">#{String(meta.id).padStart(3,'0')}</p>}
           {categoryFr && <p class="pkm-category" data-i18n="pkm-category">{categoryFr}</p>}
-          {generation && <p class="pkm-gen">{generation}</p>}
+          {generation && <p class="pkm-gen" data-generation={generation.replace('Génération ','').replace('Generation ','').trim()}>{generation}</p>}
           {isLegendary && <p class="pkm-badge pkm-badge--legendary">⭐ <span data-i18n-ui="legendary-badge">Légendaire</span></p>}
           {isMythical  && <p class="pkm-badge pkm-badge--mythical">✨ <span data-i18n-ui="mythical-badge">Mythique</span></p>}
         </div>
@@ -359,7 +368,7 @@ const schema = {
 
         {descFr && <blockquote class="pkm-desc" data-i18n="pkm-desc">{descFr}</blockquote>}
 
-        <p class="pkm-summary">
+        <p class="pkm-summary" data-i18n-ui="pkm-summary" data-count={trainerCount} data-game-count={games.length}>
           <strong>{trainerCount} dresseur{trainerCount > 1 ? 's' : ''}</strong>
           {trainerCount > 1 ? ' utilisent ' : ' utilise '}
           {pokemonName} dans les jeux Pokémon officiels,
@@ -395,7 +404,7 @@ const schema = {
               <polygon points={radarPoly} class="radar-fill" />
               {radarLabels.map(l => (
                 <>
-                  <text x={l.x} y={l.y} class="radar-lbl" text-anchor={l.anchor}>{l.label}</text>
+                  <text x={l.x} y={l.y} class="radar-lbl" text-anchor={l.anchor} data-i18n-ui={`stat.${l.stat}`}>{l.label}</text>
                   <text x={l.x} y={String(Number(l.y)+12)} class="radar-val" text-anchor={l.anchor}>{l.val}</text>
                 </>
               ))}
@@ -424,7 +433,7 @@ const schema = {
             <><dt data-i18n-ui="gender">Genre</dt><dd>{genderLabel(genderFr)}</dd></>
           )}
           {habitatFr && (
-            <><dt data-i18n-ui="habitat">Habitat</dt><dd>{habitatFr}</dd></>
+            <><dt data-i18n-ui="habitat">Habitat</dt><dd data-i18n-habitat={habitatFr}>{habitatFr}</dd></>
           )}
           {baseHappiness !== null && (
             <><dt data-i18n-ui="base-happiness">Bonheur de base</dt><dd>{baseHappiness}/255</dd></>
@@ -487,7 +496,7 @@ const schema = {
     <!-- Dresseurs -->
     <section class="trainers-section">
       <h2><span data-i18n-ui="trainers-using">Dresseurs utilisant</span> <span data-i18n="pkm-name">{pokemonName}</span></h2>
-      <p style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
+      <p id="trainer-count-p" data-trainer-count={trainerCount} data-games-json={JSON.stringify(games)} style="color:var(--text-soft);margin:8px 0 20px;font-size:0.9rem">
         {trainerCount} dresseur{trainerCount > 1 ? 's' : ''} dans la base
         {games.length > 0 && ` — ${games.map((g: string) => g.replace('Pokémon ','')).join(', ')}`}.
       </p>
@@ -513,7 +522,7 @@ const schema = {
             const cs = cls.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
             return (
               <a href={`/classe/${cs}`} class="class-stat-item">
-                <span class="class-stat-name">{cls}</span>
+                <span class="class-stat-name" data-trainer-class={cls}>{cls}</span>
                 <span class="class-stat-count">{count}×</span>
               </a>
             );
@@ -530,7 +539,7 @@ const schema = {
           const gs = g.replace('Pokémon ','').toLowerCase()
             .normalize('NFD').replace(/[̀-ͯ]/g,'')
             .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-          return <a href={`/jeu/${gs}`} class="pkm-link">{g.replace('Pokémon ','')}</a>;
+          return <a href={`/jeu/${gs}`} class="pkm-link" data-game-fr={g}>{g.replace('Pokémon ','')}</a>;
         })}
       </div>
     </section>
@@ -539,8 +548,8 @@ const schema = {
     {tcgCards.length > 0 && (
       <section class="related-section">
         <div class="tcg-header">
-          <h2>Cartes Pokémon JCC</h2>
-          <span class="tcg-count">{tcgCards.length} carte{tcgCards.length > 1 ? 's' : ''}</span>
+          <h2 data-i18n-ui="tcg-cards">Cartes Pokémon JCC</h2>
+          <span class="tcg-count" data-i18n-ui={tcgCards.length === 1 ? 'tcg-count' : 'tcg-count-pl'} data-count={tcgCards.length}>{tcgCards.length} carte{tcgCards.length > 1 ? 's' : ''}</span>
         </div>
         <div class="tcg-grid">
           {tcgCards.slice(0, 8).map(card => (
@@ -584,7 +593,7 @@ const schema = {
                 </div>
               ))}
             </div>
-            <button class="tcg-more-btn" id="tcg-more-btn">
+            <button class="tcg-more-btn" id="tcg-more-btn" data-i18n-ui="tcg-more-btn" data-count={tcgCards.length - 8}>
               Voir les {tcgCards.length - 8} autres cartes ↓
             </button>
           </>
@@ -823,10 +832,15 @@ const schema = {
 
   // ── Traductions rareté TCG ────────────────────────────────────────
   const TCG_RARITY_I18N: Record<string, Record<string, string>> = {
+    en: {'Common':'Common','Uncommon':'Uncommon','Rare':'Rare','Rare Holo':'Rare Holo','Rare Ultra':'Ultra Rare','Rare Rainbow':'Rainbow Rare','Rare Secret':'Secret Rare','Rare Shiny':'Shiny Rare','Promo':'Promo','LEGEND':'Legend'},
     de: {'Common':'Häufig','Uncommon':'Ungewöhnlich','Rare':'Selten','Rare Holo':'Selten Holo','Rare Ultra':'Ultra Selten','Rare Rainbow':'Regenbogen Selten','Rare Secret':'Geheim Selten','Rare Shiny':'Chrom Selten','Promo':'Promo','LEGEND':'Legende'},
-    es: {'Common':'Común','Uncommon':'Poco común','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Promo':'Promo'},
-    it: {'Common':'Comune','Uncommon':'Non comune','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Promo':'Promo'},
-    pt: {'Common':'Comum','Uncommon':'Incomum','Rare':'Rara','Rare Ultra':'Ultra Rara','Promo':'Promo'},
+    es: {'Common':'Común','Uncommon':'Poco común','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Rare Rainbow':'Rara Arcoíris','Rare Secret':'Rara Secreta','Rare Shiny':'Rara Brillante','Promo':'Promo','LEGEND':'Leyenda'},
+    it: {'Common':'Comune','Uncommon':'Non comune','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Rare Rainbow':'Rara Arcobaleno','Rare Secret':'Rara Segreta','Rare Shiny':'Rara Cromatica','Promo':'Promo','LEGEND':'Leggenda'},
+    'pt-BR': {'Common':'Comum','Uncommon':'Incomum','Rare':'Rara','Rare Holo':'Rara Holo','Rare Ultra':'Ultra Rara','Rare Rainbow':'Rara Arco-Íris','Rare Secret':'Rara Secreta','Rare Shiny':'Rara Brilhante','Promo':'Promo','LEGEND':'Lenda'},
+    ja: {'Common':'コモン','Uncommon':'アンコモン','Rare':'レア','Rare Holo':'キラレア','Rare Ultra':'UR','Rare Rainbow':'RR','Rare Secret':'SR','Rare Shiny':'SR','Promo':'プロモ','LEGEND':'LEGEND'},
+    ko: {'Common':'노말','Uncommon':'언코먼','Rare':'레어','Rare Holo':'홀로레어','Rare Ultra':'UR','Rare Rainbow':'RR','Rare Secret':'SR','Rare Shiny':'SR','Promo':'프로모','LEGEND':'레전드'},
+    'zh-Hans': {'Common':'普通','Uncommon':'非普通','Rare':'稀有','Rare Holo':'闪光稀有','Rare Ultra':'UR','Rare Rainbow':'彩虹稀有','Rare Secret':'秘密稀有','Rare Shiny':'闪亮稀有','Promo':'促销卡','LEGEND':'传说'},
+    'zh-Hant': {'Common':'普通','Uncommon':'非普通','Rare':'稀有','Rare Holo':'閃光稀有','Rare Ultra':'UR','Rare Rainbow':'彩虹稀有','Rare Secret':'秘密稀有','Rare Shiny':'閃亮稀有','Promo':'促銷卡','LEGEND':'傳說'},
   };
 
   // Détecte la meilleure langue disponible (localStorage > navigator.languages > fr)
@@ -899,7 +913,12 @@ const schema = {
     // Labels UI
     document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
       const key = el.dataset.i18nUi!;
-      el.textContent = UI_I18N[lang]?.[key] ?? UI_I18N['fr'][key] ?? el.textContent;
+      // nav.aria → attribut seulement, ne pas écraser le contenu du nav
+      if (key === 'nav.aria') { el.setAttribute('aria-label', UI_I18N[lang]?.['nav.aria'] ?? el.getAttribute('aria-label') ?? ''); return; }
+      const text = UI_I18N[lang]?.[key] ?? UI_I18N['fr']?.[key];
+      if (text === undefined) return; // clé inconnue → ne pas toucher l'élément
+      const final = el.dataset.count !== undefined ? text.replace('{n}', el.dataset.count) : text;
+      el.textContent = final;
     });
 
     // Pokédex dt labels — traduit + re-ajoute le prefix
@@ -929,6 +948,36 @@ const schema = {
       const translated = TCG_RARITY_I18N[lang]?.[key];
       if (translated) el.textContent = translated;
     });
+
+    // ── Trainer count paragraph ─────────────────────────────────
+    const TRAINER_COUNT_I18N: Record<string, [string, string]> = {
+      // [singular, plural]
+      en:       ['{n} trainer in the database',   '{n} trainers in the database'],
+      de:       ['{n} Trainer in der Datenbank',  '{n} Trainer in der Datenbank'],
+      es:       ['{n} entrenador en la base de datos', '{n} entrenadores en la base de datos'],
+      ja:       ['データベースに{n}人のトレーナー',         'データベースに{n}人のトレーナー'],
+      it:       ['{n} allenatore nel database',    '{n} allenatori nel database'],
+      ko:       ['데이터베이스에 {n}명의 트레이너',         '데이터베이스에 {n}명의 트레이너'],
+      'zh-Hans':['数据库中有{n}位训练家',               '数据库中有{n}位训练家'],
+      'zh-Hant':['資料庫中有{n}位訓練家',               '資料庫中有{n}位訓練家'],
+      'pt-BR':  ['{n} treinador no banco de dados', '{n} treinadores no banco de dados'],
+    };
+    const countEl = document.getElementById('trainer-count-p');
+    if (countEl) {
+      const n = parseInt(countEl.dataset.trainerCount ?? '0');
+      const gamesRaw = JSON.parse(countEl.dataset.gamesJson ?? '[]') as string[];
+      const templates = TRAINER_COUNT_I18N[lang];
+      if (templates) {
+        const tpl = n === 1 ? templates[0] : templates[1];
+        const countStr = tpl.replace('{n}', String(n));
+        const gamesTranslated = gamesRaw.map(g => {
+          const translated = GAME_I18N[lang]?.[g];
+          return translated ?? g.replace('Pokémon ', '');
+        });
+        const gamesSuffix = gamesTranslated.length > 0 ? ' — ' + gamesTranslated.join(', ') : '';
+        countEl.textContent = countStr + gamesSuffix + '.';
+      }
+    }
   }
 
   const lang = detectLang();
@@ -1119,6 +1168,11 @@ const schema = {
 .ability-card--hidden { border-style: dashed; }
 .ability-card__header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .ability-card__name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.ability-card__badge {
+  font-size: 0.68rem; font-weight: 700; color: var(--text-soft);
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 2px 9px;
+}
 .ability-card__badge {
   font-size: 0.68rem; font-weight: 700; color: var(--text-soft);
   background: var(--bg); border: 1px solid var(--border);

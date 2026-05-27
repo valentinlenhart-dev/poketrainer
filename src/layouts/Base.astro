@@ -1,5 +1,7 @@
 ---
 import CookieBanner from '../components/CookieBanner.astro';
+import placeNamesRaw from '../data/place-names-i18n.json';
+const placeNamesData = placeNamesRaw as Record<string, Record<string, string>>;
 
 export interface Props {
   title: string;
@@ -30,7 +32,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
 ---
 
 <!DOCTYPE html>
-<html lang="fr" data-ads-pub={ADSENSE_ID} data-theme="light">
+<html lang="fr" data-ads-pub={ADSENSE_ID}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -74,15 +76,6 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
   </style>
 
-  <!-- Dark mode : applique le thème avant le premier rendu pour éviter le flash -->
-  <script is:inline>
-    (function() {
-      const saved = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = saved ?? (prefersDark ? 'dark' : 'light');
-      document.documentElement.dataset.theme = theme;
-    })();
-  </script>
 </head>
 <body>
 
@@ -120,36 +113,19 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
       </div>
 
       <a href="/dresseur-aleatoire" class="random-btn" title="Dresseur aléatoire" aria-label="Dresseur aléatoire" data-i18n-ui="nav.random-title">🎲</a>
-
-      <button class="theme-toggle" id="theme-toggle" aria-label="Basculer le thème sombre" title="Thème sombre">
-        <span class="theme-toggle__icon">🌙</span>
-      </button>
     </div>
   </nav>
 
-  <script>
-    const btn = document.getElementById('theme-toggle');
-    const icon = btn?.querySelector('.theme-toggle__icon');
-    function applyTheme(theme: string) {
-      document.documentElement.dataset.theme = theme;
-      localStorage.setItem('theme', theme);
-      if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-    // Init icon based on current theme
-    const current = document.documentElement.dataset.theme ?? 'light';
-    if (icon) icon.textContent = current === 'dark' ? '☀️' : '🌙';
-    btn?.addEventListener('click', () => {
-      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-    });
-  </script>
-
   <!-- ── i18n global ──────────────────────────────────────────── -->
+  <script define:vars={{ __placeNames: placeNamesData }}>
+    window.__place_names_i18n = __placeNames;
+  </script>
   <script>
     import translationsRaw from '../data/translations.json';
     import trainerClassesRaw from '../data/trainer-classes-i18n.json';
     const T  = translationsRaw  as Record<string, Record<string, string> | Record<string, Record<string,string>>>;
     const TC = trainerClassesRaw as Record<string, Record<string, string>>;
+    const PLACE_NAMES = (window as any).__place_names_i18n as Record<string, Record<string, string>> ?? {};
 
     const SUPPORTED = ['fr','en','de','es','ja','it','ko','zh-Hans','zh-Hant','pt-BR'] as const;
     type Lang = typeof SUPPORTED[number];
@@ -197,10 +173,20 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
       document.querySelectorAll<HTMLElement>('[data-i18n-ui]').forEach(el => {
         const key = el.dataset.i18nUi!;
         if (ui[key]) {
-          if (el.tagName === 'NAV' && key === 'nav.aria') {
+          if (el.tagName === 'NAV' && (key === 'nav.aria' || key === 'crumb.aria')) {
+            // aria-label uniquement, ne pas toucher le contenu
+            el.setAttribute('aria-label', ui[key]);
+          } else if (key === 'nav.random-title') {
+            // title + aria-label uniquement, ne pas écraser l'icône 🎲
+            el.setAttribute('title', ui[key]);
             el.setAttribute('aria-label', ui[key]);
           } else {
-            el.textContent = ui[key];
+            let text = ui[key];
+            if (el.dataset.count !== undefined) text = text.replace('{n}', el.dataset.count);
+            if (el.dataset.gameCount !== undefined) text = text.replace('{g}', el.dataset.gameCount);
+            if (el.dataset.trainerName !== undefined) text = text.replace('{name}', el.dataset.trainerName);
+            if (el.dataset.trainerGame !== undefined) text = text.replace('{game}', el.dataset.trainerGame);
+            el.textContent = text;
           }
         }
       });
@@ -211,6 +197,47 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         const fr = el.dataset.gameFr!;
         const translated = games[fr]?.[lang];
         if (translated) el.textContent = translated.replace('Pokémon ', '');
+      });
+
+      // Types Pokémon (data-type) — traduit le nom du type
+      const TYPE_I18N: Record<string, Record<string, string>> = {
+        fr: { fire:'Feu', water:'Eau', grass:'Plante', electric:'Électrik', ice:'Glace', fighting:'Combat', poison:'Poison', ground:'Sol', flying:'Vol', psychic:'Psy', bug:'Insecte', rock:'Roche', ghost:'Spectre', dragon:'Dragon', dark:'Ténèbres', steel:'Acier', fairy:'Fée', normal:'Normal' },
+        en: { fire:'Fire', water:'Water', grass:'Grass', electric:'Electric', ice:'Ice', fighting:'Fighting', poison:'Poison', ground:'Ground', flying:'Flying', psychic:'Psychic', bug:'Bug', rock:'Rock', ghost:'Ghost', dragon:'Dragon', dark:'Dark', steel:'Steel', fairy:'Fairy', normal:'Normal' },
+        de: { fire:'Feuer', water:'Wasser', grass:'Pflanze', electric:'Elektro', ice:'Eis', fighting:'Kampf', poison:'Gift', ground:'Boden', flying:'Flug', psychic:'Psycho', bug:'Käfer', rock:'Gestein', ghost:'Geist', dragon:'Drache', dark:'Unlicht', steel:'Stahl', fairy:'Fee', normal:'Normal' },
+        es: { fire:'Fuego', water:'Agua', grass:'Planta', electric:'Eléctrico', ice:'Hielo', fighting:'Lucha', poison:'Veneno', ground:'Tierra', flying:'Volador', psychic:'Psíquico', bug:'Bicho', rock:'Roca', ghost:'Fantasma', dragon:'Dragón', dark:'Siniestro', steel:'Acero', fairy:'Hada', normal:'Normal' },
+        ja: { fire:'ほのお', water:'みず', grass:'くさ', electric:'でんき', ice:'こおり', fighting:'かくとう', poison:'どく', ground:'じめん', flying:'ひこう', psychic:'エスパー', bug:'むし', rock:'いわ', ghost:'ゴースト', dragon:'ドラゴン', dark:'あく', steel:'はがね', fairy:'フェアリー', normal:'ノーマル' },
+        it: { fire:'Fuoco', water:'Acqua', grass:'Erba', electric:'Elettro', ice:'Ghiaccio', fighting:'Lotta', poison:'Veleno', ground:'Terra', flying:'Volante', psychic:'Psico', bug:'Coleottero', rock:'Roccia', ghost:'Spettro', dragon:'Drago', dark:'Buio', steel:'Acciaio', fairy:'Folletto', normal:'Normale' },
+        ko: { fire:'불꽃', water:'물', grass:'풀', electric:'전기', ice:'얼음', fighting:'격투', poison:'독', ground:'땅', flying:'비행', psychic:'에스퍼', bug:'벌레', rock:'바위', ghost:'고스트', dragon:'드래곤', dark:'악', steel:'강철', fairy:'페어리', normal:'노말' },
+        'zh-Hans': { fire:'火', water:'水', grass:'草', electric:'电', ice:'冰', fighting:'格斗', poison:'毒', ground:'地面', flying:'飞行', psychic:'超能力', bug:'虫', rock:'岩石', ghost:'幽灵', dragon:'龙', dark:'恶', steel:'钢', fairy:'妖精', normal:'一般' },
+        'zh-Hant': { fire:'火', water:'水', grass:'草', electric:'電', ice:'冰', fighting:'格鬥', poison:'毒', ground:'地面', flying:'飛行', psychic:'超能力', bug:'蟲', rock:'岩石', ghost:'幽靈', dragon:'龍', dark:'惡', steel:'鋼', fairy:'妖精', normal:'一般' },
+        'pt-BR': { fire:'Fogo', water:'Água', grass:'Planta', electric:'Elétrico', ice:'Gelo', fighting:'Lutador', poison:'Venenoso', ground:'Terra', flying:'Voador', psychic:'Psíquico', bug:'Inseto', rock:'Pedra', ghost:'Fantasma', dragon:'Dragão', dark:'Sombrio', steel:'Aço', fairy:'Fada', normal:'Normal' },
+      };
+      document.querySelectorAll<HTMLElement>('[data-type]').forEach(el => {
+        const type = el.dataset.type!;
+        const nameEl = el.classList.contains('type-name') ? el : (el.querySelector<HTMLElement>('.type-name') ?? el);
+        const translated = (TYPE_I18N[lang] ?? TYPE_I18N['fr'])[type];
+        if (translated) nameEl.textContent = translated;
+      });
+
+      // Génération Pokémon (data-generation) — ex: "I" → "Generation I"
+      document.querySelectorAll<HTMLElement>('[data-generation]').forEach(el => {
+        const roman = el.dataset.generation!; // ex: "I", "II", ...
+        const prefix = ui['gen-label'];
+        if (!prefix) return;
+        // Langues qui mettent le préfixe avant (la plupart)
+        // JA/ZH utilisent 第X世代, KO utilises X세대
+        if (lang === 'ja' || lang === 'zh-Hans' || lang === 'zh-Hant') {
+          // Convertit le chiffre romain en arabe
+          const romanMap: Record<string,number> = {I:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9};
+          const num = romanMap[roman] ?? roman;
+          el.textContent = `${prefix}${num}世代`;
+        } else if (lang === 'ko') {
+          const romanMap: Record<string,number> = {I:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9};
+          const num = romanMap[roman] ?? roman;
+          el.textContent = `${num}${prefix}`;
+        } else {
+          el.textContent = `${prefix} ${roman}`;
+        }
       });
 
       // Labels de rareté
@@ -244,12 +271,126 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
         if (twDesc) twDesc.setAttribute('content', descI18n[lang]);
       }
 
+      // ── Lore textes visibles de la fiche dresseur ─────────────
+      const loreI18n = (window as any).__page_lore_i18n as Record<string, { aboutTitle: string; lorePara: string; rarityText: string }> | undefined;
+      if (loreI18n?.[lang]) {
+        const { aboutTitle, lorePara, rarityText } = loreI18n[lang];
+        const h2El = document.getElementById('trainer-about-h2');
+        if (h2El && aboutTitle) h2El.textContent = aboutTitle;
+        // innerHTML pour préserver <strong> et <a> dans lorePara / rarityText
+        const loreEl = document.getElementById('trainer-lore-p');
+        if (loreEl && lorePara) {
+          loreEl.innerHTML = lorePara;
+          // Le lien jeu a data-game-fr → le retranscrire maintenant (applyLang a déjà tourné)
+          const gamesMap = T['games'] as Record<string, Record<string, string>>;
+          loreEl.querySelectorAll<HTMLElement>('[data-game-fr]').forEach(el => {
+            const fr = el.dataset.gameFr!;
+            const translated = gamesMap[fr]?.[lang];
+            if (translated) el.textContent = translated.replace('Pokémon ', '');
+          });
+        }
+        const rarityEl = document.getElementById('trainer-rarity-p');
+        if (rarityEl && rarityText) rarityEl.innerHTML = rarityText;
+      }
+
       // ── Classes de dresseurs ──────────────────────────────────
       document.querySelectorAll<HTMLElement>('[data-trainer-class]').forEach(el => {
         const frClass = el.dataset.trainerClass!;
         const translated = TC[frClass]?.[lang];
         if (translated) el.textContent = translated;
       });
+
+      // ── Prenom page dynamic content ──────────────────────────
+      const prenomI18n = (window as any).__prenom_i18n as Record<string, { rarityDesc: string; faqExistsA: string; faqTeamA: string | null }> | undefined;
+      if (prenomI18n?.[lang]) {
+        const { rarityDesc, faqExistsA, faqTeamA } = prenomI18n[lang];
+        const rdEl = document.getElementById('prenom-rarity-desc');
+        if (rdEl && rarityDesc) rdEl.textContent = rarityDesc;
+        const feEl = document.getElementById('prenom-faq-exists-a');
+        if (feEl && faqExistsA) feEl.textContent = faqExistsA;
+        const frEl = document.getElementById('prenom-faq-rare-a');
+        if (frEl && rarityDesc) frEl.textContent = rarityDesc;
+        const ftEl = document.getElementById('prenom-faq-team-a');
+        if (ftEl && faqTeamA) ftEl.textContent = faqTeamA;
+      }
+
+      // ── Noms Pokémon (badges d'équipe) ────────────────────────
+      // data-pkm-names = "en:Meowth|de:Mauzi|ja:ニャース|..."
+      document.querySelectorAll<HTMLElement>('[data-pkm-names]').forEach(el => {
+        const raw = el.dataset.pkmNames!;
+        // Parse the compact pipe-separated format
+        const map: Record<string, string> = {};
+        raw.split('|').forEach(pair => {
+          const idx = pair.indexOf(':');
+          if (idx > 0) map[pair.slice(0, idx)] = pair.slice(idx + 1);
+        });
+        const translated = map[lang] ?? map['en'];
+        if (translated) {
+          const nameSpan = el.querySelector<HTMLElement>('.pkm-badge__name');
+          if (nameSpan) nameSpan.textContent = translated;
+          else {
+            // fallback: set text of last text node
+            const img = el.querySelector('img');
+            const dot = el.querySelector('.pkm-badge__dot');
+            if (img || dot) {
+              // replace text node after img/dot
+              for (const node of Array.from(el.childNodes)) {
+                if (node.nodeType === Node.TEXT_NODE) { node.textContent = translated; break; }
+              }
+            } else {
+              el.textContent = translated;
+            }
+          }
+        }
+      });
+
+      // ── Noms de lieux (data-place-slug) ──────────────────────────
+      document.querySelectorAll<HTMLElement>('[data-place-slug]').forEach(el => {
+        const slug = el.dataset.placeSlug!;
+        const translated = PLACE_NAMES[slug]?.[lang];
+        if (translated) el.textContent = translated;
+      });
+
+      // ── Habitat Pokémon (data-i18n-habitat) ──────────────────────
+      const HABITAT_I18N: Record<string, Record<string, string>> = {
+        "Bord de l'eau": { en:"Waterfront", de:"Gewässer",   es:"Costa",               ja:"水辺",   it:"Riva dell'acqua", ko:"수변",   'zh-Hans':"水边",   'zh-Hant':"水邊",   'pt-BR':"Beira d'água" },
+        'Forêt':         { en:"Forest",     de:"Wald",       es:"Bosque",              ja:"森林",   it:"Foresta",         ko:"숲",     'zh-Hans':"森林",   'zh-Hant':"森林",   'pt-BR':"Floresta" },
+        'Grotte':        { en:"Cave",       de:"Höhle",      es:"Cueva",               ja:"洞穴",   it:"Grotta",          ko:"동굴",   'zh-Hans':"洞穴",   'zh-Hant':"洞穴",   'pt-BR':"Caverna" },
+        'Mer':           { en:"Sea",        de:"Meer",       es:"Mar",                 ja:"海",    it:"Mare",            ko:"바다",   'zh-Hans':"大海",   'zh-Hant':"大海",   'pt-BR':"Mar" },
+        'Montagne':      { en:"Mountain",   de:"Berg",       es:"Montaña",             ja:"山岳",   it:"Montagna",        ko:"산",     'zh-Hans':"山地",   'zh-Hant':"山地",   'pt-BR':"Montanha" },
+        'Prairie':       { en:"Grassland",  de:"Grasland",   es:"Pradera",             ja:"草原",   it:"Prato",           ko:"초원",   'zh-Hans':"草原",   'zh-Hant':"草原",   'pt-BR':"Pastagem" },
+        'Terrain accidenté': { en:"Rough terrain", de:"Unwegsamkeit", es:"Terreno escarpado", ja:"荒地", it:"Terreno accidentato", ko:"험한 지형", 'zh-Hans':"崎岖地", 'zh-Hant':"崎嶇地", 'pt-BR':"Terreno acidentado" },
+        'Urbain':        { en:"Urban",      de:"Urban",      es:"Urbano",              ja:"都市",   it:"Urbano",          ko:"도시",   'zh-Hans':"都市",   'zh-Hant':"都市",   'pt-BR':"Urbano" },
+      };
+      document.querySelectorAll<HTMLElement>('[data-i18n-habitat]').forEach(el => {
+        const frHabitat = el.dataset.i18nHabitat!;
+        const translated = HABITAT_I18N[frHabitat]?.[lang];
+        if (translated) el.textContent = translated;
+      });
+
+      // ── Breadcrumb type (data-i18n-type-crumb) ───────────────────
+      const TYPE_LABEL_PREFIX: Record<string, string> = {
+        en:'Type', de:'Typ', es:'Tipo', ja:'タイプ', it:'Tipo',
+        ko:'타입', 'zh-Hans':'属性', 'zh-Hant':'屬性', 'pt-BR':'Tipo',
+      };
+      document.querySelectorAll<HTMLElement>('[data-i18n-type-crumb]').forEach(el => {
+        const type = el.dataset.i18nTypeCrumb!;
+        const typeName = (TYPE_I18N[lang] ?? TYPE_I18N['fr'])[type] ?? type;
+        const prefix = TYPE_LABEL_PREFIX[lang] ?? 'Type';
+        el.textContent = `${prefix} ${typeName}`;
+      });
+
+      // ── Generic innerHTML i18n (window.__page_html_i18n) ──────
+      // Format: { elementId: { lang: htmlString } }
+      const htmlI18n = (window as any).__page_html_i18n as Record<string, Record<string, string>> | undefined;
+      if (htmlI18n) {
+        for (const [id, translations] of Object.entries(htmlI18n)) {
+          const el = document.getElementById(id);
+          if (el && translations[lang]) {
+            el.innerHTML = translations[lang];
+          }
+        }
+      }
     }
 
     // Init
@@ -334,11 +475,11 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
       </div>
       <div>
         <strong style="display:block;margin-bottom:8px;color:var(--text)" data-i18n-ui="footer.legal">Légal</strong>
-        <p><a href="/mentions-legales">Mentions légales</a></p>
-        <p><a href="/confidentialite">Confidentialité</a></p>
+        <p><a href="/mentions-legales" data-i18n-ui="footer.legal-mentions">Mentions légales</a></p>
+        <p><a href="/confidentialite" data-i18n-ui="footer.legal-privacy">Confidentialité</a></p>
         <p style="margin-top:8px;font-size:0.72rem;opacity:0.6">
           Pokémon © Nintendo / Game Freak / The Pokémon Company.<br />
-          Site fan-made non officiel.
+          <span data-i18n-ui="footer.fanmade">Site fan-made non officiel.</span>
         </p>
       </div>
     </div>
@@ -377,7 +518,7 @@ const ADSENSE_ID = 'ca-pub-6295830585093654';
   background: var(--bg2);
   border-top: 1px solid var(--border);
   padding: 1px 28px 1px 6px;
-  max-height: 36px;
+  max-height: 18px;
   overflow: hidden;
   display: flex;
   align-items: center;

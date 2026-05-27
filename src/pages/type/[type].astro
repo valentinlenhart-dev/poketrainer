@@ -55,20 +55,20 @@ const canonical = `https://pokenom.fr/type/${type}`;
   <main id="main" class="container">
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
-      { label: `Type ${typeFr}` },
+      { label: `Type ${typeFr}`, type: type },
     ]} />
 
     <header class="page-header">
-      <div class="type-badge"><img src={`/assets/types/${type}.svg`} alt="" width="22" height="22" style="vertical-align:middle;margin-right:6px;" /> Type</div>
-      <h1 class={`type-title type-title--${type}`}>{typeFr}</h1>
-      <p class="page-sub">{count} dresseurs utilisent des Pokémon de type {typeFr}</p>
+      <div class="type-badge"><img src={`/assets/types/${type}.svg`} alt="" width="22" height="22" style="vertical-align:middle;margin-right:6px;" /> <span data-i18n-ui="type-label">Type</span></div>
+      <h1 class={`type-title type-title--${type} type-name`} data-type={type}>{typeFr}</h1>
+      <p class="page-sub"><strong>{count}</strong> <span data-i18n-ui="type-page-sub">dresseurs utilisent des Pokémon de ce type</span></p>
     </header>
 
     <AdSlot slot="2896100570" format="auto" />
 
     <!-- Jeux représentés -->
     <section class="section-block">
-      <h2>Jeux représentés</h2>
+      <h2 data-i18n-ui="games-rep">Jeux représentés</h2>
       <div class="related-chips">
         {games.map((g: string) => {
           const gs = trainers.find((t: any) => t.game === g)?.game_slug ?? '';
@@ -95,7 +95,7 @@ const canonical = `https://pokenom.fr/type/${type}`;
 
     <!-- Dresseurs -->
     <section class="section-block">
-      <h2>Dresseurs avec des Pokémon de type {typeFr}</h2>
+      <h2><span data-i18n-ui="type-trainers-h2">Dresseurs avec des Pokémon de type</span> <span class="type-name" data-type={type}>{typeFr}</span></h2>
       <div class="cards-grid" style="margin-top:16px">
         {trainers.slice(0, 6).map((t: any) => <TrainerCard trainer={t} />)}
       </div>
@@ -179,6 +179,25 @@ const canonical = `https://pokenom.fr/type/${type}`;
 .type-chip--dark,.type-title--dark{color:#fff}
 .type-chip--dark{background:#705848}
 .type-chip--steel,.type-title--steel{color:#408080}
+.type-chip--steel{background:#b8b8d0}
+.type-chip--fairy,.type-title--fairy{color:#c04080}
+.type-chip--fairy{background:#ee99ac}
+.type-chip--normal,.type-title--normal{color:#707050}
+.type-chip--flying,.type-title--flying{color:#4060a0}
+.type-chip--flying{background:#a890f0}
+.type-chip--psychic,.type-title--psychic{color:#a0003c}
+.type-chip--psychic{background:#f85888}
+.type-chip--bug,.type-title--bug{color:#506008}
+.type-chip--bug{background:#a8b820}
+.type-chip--rock,.type-title--rock{color:#786028}
+.type-chip--rock{background:#b8a038}
+.type-chip--ghost,.type-title--ghost{color:#302860}
+.type-chip--ghost{background:#705898}
+.type-chip--dragon,.type-title--dragon{color:#3820b0}
+.type-chip--dragon{background:#7038f8}
+.type-chip--dark,.type-title--dark{color:#302010}
+.type-chip--dark{background:#705848}
+.type-chip--steel,.type-title--steel{color:#505870}
 .type-chip--steel{background:#b8b8d0}
 .type-chip--fairy,.type-title--fairy{color:#c04080}
 .type-chip--fairy{background:#ee99ac}

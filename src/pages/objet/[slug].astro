@@ -5,6 +5,14 @@ import AdSlot from '../../components/AdSlot.astro';
 import { toPokemonSlug } from '../../utils/slug';
 import '../../styles/global.css';
 
+// ── Traductions UI + jeux ──
+let translationsRaw: Record<string, any> = {};
+try {
+  const mod = await import('../../data/translations.json');
+  translationsRaw = mod.default as Record<string, any>;
+} catch {}
+const gamesMap: Record<string, Record<string, string>> = (translationsRaw['games'] ?? {}) as Record<string, Record<string, string>>;
+
 // ── Données items-meta.json (optionnel — lance fetch-items.py pour l'obtenir) ──
 let itemsMeta: Record<string, any> = {};
 try {
@@ -122,6 +130,8 @@ const itemI18nPayload = {
   flavors:      flavors,
   effect_en:    effectEn,
   effect_long_en: effectLongEn,
+  category:     category,
+  games_map:    gamesMap,
 };
 
 // SEO
@@ -140,9 +150,6 @@ const schema = {
 };
 ---
 
-<!-- Données i18n injectées pour le switch JS côté client -->
-<div id="item-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify(itemI18nPayload)} />
-
 <Base
   title={title}
   description={description}
@@ -150,6 +157,8 @@ const schema = {
   ogImage={spriteUrl ?? '/og-default.png'}
   schema={schema}
 >
+  <!-- Données i18n injectées pour le switch JS côté client — doit être DANS Base pour que meta charset soit lu avant -->
+  <div id="item-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify(itemI18nPayload)} />
   <main id="main" class="container">
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
@@ -174,7 +183,7 @@ const schema = {
       </div>
 
       <div class="item-header__info">
-        {categoryLabel && <p class="item-category-badge">{categoryLabel}</p>}
+        {categoryLabel && <p class="item-category-badge" id="item-category-badge" data-category={category}>{categoryLabel}</p>}
         <h1 id="item-name">{nameFr}</h1>
 
         <dl class="item-quick-facts">
@@ -305,27 +314,85 @@ const schema = {
     flavors: Record<string, Record<string, string>>;
     effect_en: string;
     effect_long_en: string;
+    category: string;
+    games_map: Record<string, Record<string, string>>;
   };
   try {
     data = JSON.parse(raw);
   } catch {
-    data = { names: {}, flavors: {}, effect_en: '', effect_long_en: '' };
+    data = { names: {}, flavors: {}, effect_en: '', effect_long_en: '', category: '', games_map: {} };
   }
+
+  // ── Catégories d'objets (toutes langues) ──────────────────────
+  const CATEGORY_I18N: Record<string, Record<string, string>> = {
+    'held-items':              { fr:'Objet tenu',         en:'Held item',           de:'Gehaltenes Item',       es:'Objeto equipado',         ja:'持ち物',         it:'Oggetto tenuto',        ko:'지닌 도구',      'zh-Hans':'携带道具',   'zh-Hant':'攜帶道具',   'pt-BR':'Item segurado'         },
+    'choice':                  { fr:'Choix',              en:'Choice item',          de:'Wahl-Item',             es:'Objeto de elección',      ja:'きのみ',         it:'Oggetto scelta',        ko:'선택 도구',      'zh-Hans':'选择道具',   'zh-Hant':'選擇道具',   'pt-BR':'Item de escolha'       },
+    'bad-held-items':          { fr:'Objet tenu négatif', en:'Bad held item',        de:'Negatives Item',        es:'Objeto perjudicial',      ja:'悪い持ち物',      it:'Oggetto negativo',      ko:'악성 도구',      'zh-Hans':'负面道具',   'zh-Hant':'負面道具',   'pt-BR':'Item prejudicial'      },
+    'type-enhancement':        { fr:'Boost de type',      en:'Type boost',           de:'Typ-Boost',             es:'Potenciador de tipo',     ja:'タイプ強化',      it:'Potenziamento tipo',    ko:'타입 강화',      'zh-Hans':'属性强化',   'zh-Hant':'屬性強化',   'pt-BR':'Boost de tipo'         },
+    'plates':                  { fr:'Plaques',             en:'Plates',               de:'Platten',               es:'Placas',                  ja:'プレート',        it:'Lastre',                ko:'플레이트',       'zh-Hans':'石板',       'zh-Hant':'石板',       'pt-BR':'Placas'                },
+    'memories':                { fr:'Mémoires',            en:'Memories',             de:'Speicher',              es:'Memorias',                ja:'メモリ',          it:'Memorie',               ko:'메모리',         'zh-Hans':'记忆碟',     'zh-Hant':'記憶碟',     'pt-BR':'Memórias'              },
+    'jewels':                  { fr:'Joyaux',              en:'Gems',                 de:'Juwelen',               es:'Gemas',                   ja:'ジュエル',        it:'Gemme',                 ko:'보석',           'zh-Hans':'宝石',       'zh-Hant':'寶石',       'pt-BR':'Gemas'                 },
+    'mega-stones':             { fr:'Méga-Gemmes',         en:'Mega Stones',          de:'Mega-Steine',           es:'Mega Piedras',            ja:'メガストーン',    it:'Megapietra',            ko:'메가돌',         'zh-Hans':'究极之石',   'zh-Hant':'究極之石',   'pt-BR':'Mega Pedras'           },
+    'z-crystals':              { fr:'Z-Cristaux',          en:'Z-Crystals',           de:'Z-Kristalle',           es:'Z-Cristales',             ja:'Zクリスタル',    it:'Z-Cristalli',           ko:'Z크리스탈',     'zh-Hans':'Z纯晶',      'zh-Hant':'Z純晶',      'pt-BR':'Z-Cristais'            },
+    'berries':                 { fr:'Baies',               en:'Berries',              de:'Beeren',                es:'Bayas',                   ja:'きのみ',          it:'Bacche',                ko:'열매',           'zh-Hans':'树果',       'zh-Hant':'樹果',       'pt-BR':'Frutas'                },
+    'in-a-pinch-berries':      { fr:'Baies de secours',   en:'Pinch berries',        de:'Notfall-Beeren',        es:'Bayas de emergencia',     ja:'ピンチのみ',      it:'Bacche emergenza',      ko:'위기 열매',      'zh-Hans':'危机树果',   'zh-Hant':'危機樹果',   'pt-BR':'Frutas emergência'     },
+    'picky-healing-berries':   { fr:'Baies de soin',      en:'Healing berries',      de:'Heil-Beeren',           es:'Bayas curativas',         ja:'回復のきのみ',    it:'Bacche curative',       ko:'회복 열매',      'zh-Hans':'恢复树果',   'zh-Hant':'恢復樹果',   'pt-BR':'Frutas curativas'      },
+    'type-protection-berries': { fr:'Baies de protection',en:'Protection berries',   de:'Schutz-Beeren',         es:'Bayas protectoras',       ja:'守りのきのみ',    it:'Bacche protettive',     ko:'방어 열매',      'zh-Hans':'防御树果',   'zh-Hant':'防禦樹果',   'pt-BR':'Frutas protetoras'     },
+    'effort-drop':             { fr:"Réducteur d'EV",     en:'EV reducer',           de:'EP-Reduzierer',         es:'Reductor de EV',          ja:'努力値下げ',      it:'Riduttore PS',          ko:'노력치 감소',    'zh-Hans':'努力值减少', 'zh-Hant':'努力值減少', 'pt-BR':'Redutor de EV'         },
+    'species-specific':        { fr:"Spécifique à l'espèce",en:'Species-specific',   de:'Artspezifisch',         es:'Específico de especie',   ja:'種族特有',        it:'Specifico specie',      ko:'종족 전용',      'zh-Hans':'种族专用',   'zh-Hant':'種族專用',   'pt-BR':'Específico de espécie' },
+    'loot':                    { fr:'Butin',               en:'Loot',                 de:'Beute',                 es:'Botín',                   ja:'落し物',          it:'Bottino',               ko:'전리품',         'zh-Hans':'战利品',     'zh-Hant':'戰利品',     'pt-BR':'Saque'                 },
+    'collectibles':            { fr:'Objet à vendre',     en:'Collectible',          de:'Sammelgegenstand',      es:'Coleccionable',           ja:'売りもの',        it:'Vendibile',             ko:'수집품',         'zh-Hans':'可售道具',   'zh-Hant':'可售道具',   'pt-BR':'Colecionável'          },
+    'medicine':                { fr:'Médecine',            en:'Medicine',             de:'Medizin',               es:'Medicina',                ja:'薬',              it:'Medicina',              ko:'의약품',         'zh-Hans':'药品',       'zh-Hant':'藥品',       'pt-BR':'Medicina'              },
+    'baked-goods':             { fr:'Pâtisseries',         en:'Baked goods',          de:'Backwaren',             es:'Productos horneados',     ja:'焼き菓子',        it:'Dolci',                 ko:'제과류',         'zh-Hans':'烘焙食品',   'zh-Hant':'烘焙食品',   'pt-BR':'Produtos de padaria'   },
+    'all-mail':                { fr:'Courrier',            en:'Mail',                 de:'Post',                  es:'Correo',                  ja:'メール',          it:'Posta',                 ko:'메일',           'zh-Hans':'邮件',       'zh-Hant':'郵件',       'pt-BR':'Correio'               },
+    'stat-boosts':             { fr:'Boost de statistique',en:'Stat boost',          de:'Stat-Boost',            es:'Potenciador de estadística',ja:'ステータス強化', it:'Potenziamento stat',    ko:'능력치 강화',    'zh-Hans':'能力强化',   'zh-Hant':'能力強化',   'pt-BR':'Boost de estatística'  },
+    'scarves':                 { fr:'Écharpes',            en:'Scarves',              de:'Schals',                es:'Bufandas',                ja:'バンダナ',        it:'Sciarpe',               ko:'스카프',         'zh-Hans':'围巾',       'zh-Hant':'圍巾',       'pt-BR':'Lenços'                },
+    'flutes':                  { fr:'Flûtes',              en:'Flutes',               de:'Flöten',                es:'Flautas',                 ja:'笛',              it:'Flauti',                ko:'피리',           'zh-Hans':'笛子',       'zh-Hant':'笛子',       'pt-BR':'Flautas'               },
+    'other':                   { fr:'Autre',               en:'Other',                de:'Sonstiges',             es:'Otro',                    ja:'その他',          it:'Altro',                 ko:'기타',           'zh-Hans':'其他',       'zh-Hant':'其他',       'pt-BR':'Outro'                 },
+  };
 
   // ── Détection de langue ────────────────────────────────────────
   function detectLang(): string {
-    const supported = ['fr', 'en', 'de', 'es', 'ja'];
+    const supported = ['fr', 'en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'];
     const saved = localStorage.getItem('pokenom_lang');
     if (saved && supported.includes(saved)) return saved;
     for (const l of (navigator.languages ?? [navigator.language])) {
-      const short = l.split('-')[0].toLowerCase();
-      if (supported.includes(short)) return short;
+      const lower = l.toLowerCase();
+      if (lower === 'zh-hant' || lower.startsWith('zh-tw') || lower.startsWith('zh-hk')) return 'zh-Hant';
+      if (lower.startsWith('zh')) return 'zh-Hans';
+      if (lower.startsWith('pt')) return 'pt-BR';
+      const short = lower.split('-')[0];
+      const match = supported.find(s => s.split('-')[0] === short);
+      if (match) return match;
     }
     return 'fr';
   }
 
+  // ── Traduit un nom de jeu (clé FR courte → langue cible) ────────
+  // Les clés flavors sont des noms courts ("X et Y") ; games_map a des clés longues ("Pokémon X et Y").
+  function translateGame(frName: string, lang: string): string {
+    if (lang === 'fr') return frName;
+    const gm = data.games_map ?? {};
+    // 1. Lookup direct (nom court déjà dans la map)
+    const direct = gm[frName]?.[lang] ?? gm[frName]?.['en'];
+    if (direct) return direct;
+    // 2. Essai avec préfixe "Pokémon " ; on retire le préfixe du résultat
+    const withPrefix = 'Pokémon ' + frName;
+    const withPfxResult = gm[withPrefix]?.[lang] ?? gm[withPrefix]?.['en'];
+    if (withPfxResult) return withPfxResult.replace(/^Pokémon\s+/, '');
+    // 3. Fallback : nom français tel quel
+    return frName;
+  }
+
   // ── Application de la langue ───────────────────────────────────
   function applyItemLang(lang: string) {
+    // Badge catégorie
+    const catBadge = document.getElementById('item-category-badge');
+    if (catBadge && data.category) {
+      const catLabel = CATEGORY_I18N[data.category]?.[lang] ?? CATEGORY_I18N[data.category]?.['fr'];
+      if (catLabel) catBadge.textContent = catLabel;
+    }
+
     // Nom de l'objet
     const nameEl = document.getElementById('item-name');
     if (nameEl && data.names[lang]) {
@@ -336,11 +403,15 @@ const schema = {
     const flavorsList = document.getElementById('item-flavors-list');
     if (flavorsList) {
       const langFlavors = data.flavors?.[lang] ?? data.flavors?.['fr'] ?? data.flavors?.['en'] ?? {};
+      // Les clés des flavors sont en FR — on traduit le nom du jeu
+      const sourceLang = data.flavors?.[lang] ? lang : (data.flavors?.['fr'] ? 'fr' : 'en');
       const entries = Object.entries(langFlavors);
       if (entries.length > 0) {
-        flavorsList.innerHTML = entries.map(([game, text]) =>
-          `<div class="flavor-entry"><dt class="flavor-game">${game}</dt><dd class="flavor-text">${text}</dd></div>`
-        ).join('');
+        flavorsList.innerHTML = entries.map(([game, text]) => {
+          // Si la source est FR, traduire le nom du jeu; sinon l'afficher tel quel
+          const gameLabel = sourceLang === 'fr' ? translateGame(game, lang) : game;
+          return `<div class="flavor-entry"><dt class="flavor-game">${gameLabel}</dt><dd class="flavor-text">${text}</dd></div>`;
+        }).join('');
       }
     }
 

@@ -2,9 +2,22 @@
 import Base from '../layouts/Base.astro';
 import Search from '../components/Search.tsx';
 import trainersRaw from '../data/trainers.json';
+import pokemonMetaRaw from '../data/pokemon-meta.json';
 import '../styles/global.css';
 
 const trainers = trainersRaw as any[];
+
+// Build Pokémon name i18n lookup for all Pokémon appearing in trainer teams
+const pokemonMeta = pokemonMetaRaw as Record<string, any>;
+const pkmNames: Record<string, Record<string, string>> = {};
+for (const t of trainers) {
+  for (const pkm of (t.team ?? [])) {
+    if (!pkmNames[pkm]) {
+      const m = pokemonMeta[pkm];
+      if (m?.names_intl) pkmNames[pkm] = m.names_intl;
+    }
+  }
+}
 
 const schema = {
   "@context": "https://schema.org",
@@ -33,18 +46,18 @@ const schema = {
         <div class="home-brand__ball" aria-hidden="true"></div>
         <span class="home-brand__name">PokéNom</span>
       </div>
-      <p class="home-tagline">Ton prénom existe-t-il chez un dresseur Pokémon ?</p>
+      <p class="home-tagline" data-i18n-ui="home.tagline">Ton prénom existe-t-il chez un dresseur Pokémon ?</p>
 
       <!-- Recherche -->
-      <Search client:load trainers={trainers} />
+      <Search client:load trainers={trainers} pkmNames={pkmNames} />
     </div>
 
     <!-- Section discrète en bas -->
     <footer class="home-footer">
-      <a href="/top/legendaires" class="home-link">🏆 Prénoms légendaires</a>
-      <a href="/top/repandus"    class="home-link">🔥 Prénoms populaires</a>
+      <a href="/top/legendaires" class="home-link" data-i18n-ui="home.footer-legendary">🏆 Prénoms légendaires</a>
+      <a href="/top/repandus"    class="home-link" data-i18n-ui="home.footer-popular">🔥 Prénoms populaires</a>
       <span class="home-footer__sep">·</span>
-      <span class="home-footer__info">4 728 dresseurs · 17 jeux</span>
+      <span class="home-footer__info" data-i18n-ui="home.stats" data-count="4728">4 728 dresseurs · 17 jeux</span>
     </footer>
 
   </main>

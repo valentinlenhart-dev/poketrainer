@@ -1,0 +1,2468 @@
+{
+  "acajou": {
+    "de": "Mahagonia City",
+    "en": "Mahogany Town"
+  },
+  "agualcanal": {
+    "de": "Wasserweg",
+    "en": "Water Path"
+  },
+  "aire-de-combat": {
+    "en": "Battle Area",
+    "de": "Kampfzone",
+    "es": "Zona de Combate",
+    "ja": "バトルゾーン",
+    "it": "Zona Battaglia",
+    "ko": "배틀 존",
+    "zh-Hans": "对决区",
+    "zh-Hant": "對決區",
+    "pt-BR": "Área de Batalha"
+  },
+  "aire-de-detente": {
+    "de": "Erholungsareal",
+    "en": "Resort Area"
+  },
+  "alforneira": {
+    "de": "Asarilla",
+    "en": "Alfornada"
+  },
+  "algatia": {
+    "ko": "이끼시티",
+    "de": "Moosbach City",
+    "es": "Ciudad Algaria",
+    "it": "Verdeazzupoli",
+    "en": "Mossdeep City"
+  },
+  "amaillide": {
+    "de": "Dausing",
+    "en": "Floccesy Town"
+  },
+  "antre-entrainement": {
+    "en": "Training Lowlands",
+    "de": "Trainingsgelände",
+    "es": "Territorio de Entrenamiento",
+    "ja": "トレーニングのあなぐら",
+    "it": "Campo di Allenamento",
+    "ko": "훈련소",
+    "zh-Hans": "训练场",
+    "zh-Hant": "訓練場",
+    "pt-BR": "Planícies de Treinamento"
+  },
+  "antredudragon": {
+    "de": "Drachenhöhle",
+    "en": "Dragon's Den"
+  },
+  "aquaria": {
+    "en": "Mossdeep City",
+    "de": "Blaugrasum City",
+    "es": "Ciudad Cobalión",
+    "ja": "トクサネシティ",
+    "it": "Tersopoli",
+    "ko": "싱아시티",
+    "zh-Hans": "琉璃市",
+    "zh-Hant": "琉璃市",
+    "pt-BR": "Cidade Polipeiro"
+  },
+  "arabelle": {
+    "de": "Gavina",
+    "en": "Accumula Town"
+  },
+  "arbre-de-combat": {
+    "en": "Battle Tree",
+    "de": "Kampfbaum",
+    "es": "Árbol de Batalla",
+    "ja": "バトルツリー",
+    "it": "Albero della Lotta",
+    "ko": "배틀 트리",
+    "zh-Hans": "对决大树",
+    "zh-Hant": "對決大樹",
+    "pt-BR": "Árvore de Batalha"
+  },
+  "argenta": {
+    "en": "Pewter City",
+    "de": "Marmoria City",
+    "es": "Ciudad Plateada",
+    "ja": "ニビシティ",
+    "it": "Plumbeopoli",
+    "ko": "회색시티",
+    "zh-Hans": "深灰市",
+    "zh-Hant": "深灰市",
+    "pt-BR": "Cidade Prateada"
+  },
+  "atalanopolis": {
+    "ko": "루네시티",
+    "de": "Xeneroville",
+    "es": "Arrecípolis",
+    "it": "Ceneride",
+    "en": "Sootopolis City"
+  },
+  "auffrac-les-congeres": {
+    "ko": "이설시티",
+    "de": "Fractalia City",
+    "es": "Ciudad Fractal",
+    "it": "Fractalopoli",
+    "en": "Snowbelle City"
+  },
+  "autel-abondance": {
+    "de": "Schrein der Ernte",
+    "en": "Abundant Shrine"
+  },
+  "azuria": {
+    "en": "Cerulean City",
+    "de": "Azuria City",
+    "es": "Ciudad Celeste",
+    "ja": "ハナダシティ",
+    "it": "Azzurropoli",
+    "ko": "물의도시",
+    "zh-Hans": "华蓝市",
+    "zh-Hant": "華藍市",
+    "pt-BR": "Cidade Cerúlea"
+  },
+  "baie-azur": {
+    "ko": "아쥐르만",
+    "de": "Azurbucht",
+    "es": "Bahía Azul",
+    "it": "Baia Azzurra",
+    "en": "Azure Bay"
+  },
+  "baie-vaguelone": {
+    "de": "Bucht von Ondula",
+    "en": "Undella Bay"
+  },
+  "batiment-galaxie": {
+    "en": "Galactic HQ",
+    "de": "Galaktik-HQ",
+    "es": "Cuartel General Galaxia",
+    "ja": "ギンガ団アジト",
+    "it": "HQ Galassia",
+    "ko": "갤럭시단 본부",
+    "zh-Hans": "银河队总部",
+    "zh-Hant": "銀河隊總部",
+    "pt-BR": "QG Galáxia"
+  },
+  "batiment-galaxie-voilaroc": {
+    "en": "Galactic HQ (Veilstone)",
+    "de": "Galaktik-HQ (Votlenstein)",
+    "es": "QG Galaxia (Rocavelo)",
+    "ja": "ギンガ団アジト（ミオシティ）",
+    "it": "HQ Galassia (Celestopoli)",
+    "ko": "갤럭시단 본부(분석시티)",
+    "zh-Hans": "银河队总部（幕岩市）",
+    "zh-Hant": "銀河隊總部（幕岩市）",
+    "pt-BR": "QG Galáxia (Veilstone)"
+  },
+  "bois-clementi": {
+    "ko": "등화숲",
+    "de": "Blütenburgwald",
+    "es": "Bosque Petalia",
+    "it": "Bosco Petalo",
+    "en": "Petalburg Woods"
+  },
+  "bois-des-illusions": {
+    "de": "Hain der Täuschung",
+    "en": "Lostlorn Forest"
+  },
+  "boisauxchenes": {
+    "de": "Steineichenwald",
+    "en": "Ilex Forest"
+  },
+  "bosquet-tague": {
+    "de": "Schmierhain",
+    "en": "Tagtree Thicket"
+  },
+  "bourg-palette": {
+    "en": "Pallet Town",
+    "de": "Alabastia",
+    "es": "Pueblo Paleta",
+    "ja": "マサラタウン",
+    "it": "Biancavilla",
+    "ko": "태초마을",
+    "zh-Hans": "真新镇",
+    "zh-Hant": "真新鎮",
+    "pt-BR": "Vila Paleta"
+  },
+  "brasswick": {
+    "de": "Brassbury",
+    "en": "Wedgehurst"
+  },
+  "camp-de-vacances": {
+    "de": "Ferienparadies",
+    "en": "Resort Gorgeous"
+  },
+  "canyon-sesor": {
+    "de": "7-Schatzschlucht",
+    "en": "Sevault Canyon"
+  },
+  "carmin-sur-mer": {
+    "de": "Orania City",
+    "en": "Vermilion City"
+  },
+  "carminsurmer": {
+    "de": "Orania City",
+    "en": "Vermilion City"
+  },
+  "caverne-coda": {
+    "ko": "엔드케이브",
+    "de": "Finalhöhle",
+    "es": "Gruta Desenlace",
+    "it": "Caverna Climax",
+    "en": "Resolution Cave"
+  },
+  "caverne-fondmer": {
+    "ko": "해저동굴",
+    "de": "Tiefseehöhle",
+    "es": "Caverna Abisal",
+    "it": "Antro Abissale",
+    "en": "Seafloor Cavern"
+  },
+  "caverne-gelee": {
+    "ko": "프로스트케이브",
+    "de": "Frosthöhle",
+    "es": "Gruta Helada",
+    "it": "Caverna Gelata",
+    "en": "Frost Cavern"
+  },
+  "cavesjumelles": {
+    "de": "Einheitstunnel",
+    "en": "Union Cave"
+  },
+  "celadopole": {
+    "en": "Cerulean City",
+    "de": "Azuria City",
+    "es": "Ciudad Celeste",
+    "ja": "ハナダシティ",
+    "it": "Azzurropoli",
+    "ko": "물의도시",
+    "zh-Hans": "华蓝市",
+    "zh-Hant": "華藍市",
+    "pt-BR": "Cidade Cerúlea"
+  },
+  "celestia": {
+    "de": "Elyses",
+    "en": "Celestic Town"
+  },
+  "centrale-de-kalos": {
+    "ko": "칼로스발전소",
+    "de": "Kalos-Kraftwerk",
+    "es": "Central de Kalos",
+    "it": "Centrale di Kalos",
+    "en": "Kalos Power Plant"
+  },
+  "centre-commercial": {
+    "de": "Kaufhaus 9",
+    "en": "Shopping Mall"
+  },
+  "champ-de-baies": {
+    "ko": "나무열매 밭",
+    "de": "Beerenfelder",
+    "es": "Huerto de Bayas",
+    "it": "Orto delle Bacche",
+    "en": "Berry Fields"
+  },
+  "charbourg": {
+    "de": "Erzelingen",
+    "en": "Oreburgh City"
+  },
+  "chateau-enfoui": {
+    "de": "Alter Palast",
+    "en": "Relic Castle"
+  },
+  "chateau-rocket": {
+    "de": "Rocket-Schloss",
+    "en": "Team Rocket's Castle"
+  },
+  "chemin-du-defi": {
+    "ko": "포니험로",
+    "de": "Beschwerlicher Pfad",
+    "es": "Pendiente de Poni",
+    "it": "Erta di Poni",
+    "en": "Poni Gauntlet"
+  },
+  "chemin-enfoui": {
+    "de": "Alter Fluchtweg",
+    "en": "Relic Passage"
+  },
+  "chenal-105": {
+    "en": "Route 105",
+    "de": "Route 105",
+    "es": "Ruta 105",
+    "ja": "105番水道",
+    "it": "Rotta 105",
+    "ko": "105번 수로",
+    "zh-Hans": "105号水路",
+    "zh-Hant": "105號水路",
+    "pt-BR": "Rota 105"
+  },
+  "chenal-106": {
+    "en": "Route 106",
+    "de": "Route 106",
+    "es": "Ruta 106",
+    "ja": "106番水道",
+    "it": "Rotta 106",
+    "ko": "106번 수로",
+    "zh-Hans": "106号水路",
+    "zh-Hant": "106號水路",
+    "pt-BR": "Rota 106"
+  },
+  "chenal-107": {
+    "en": "Route 107",
+    "de": "Route 107",
+    "es": "Ruta 107",
+    "ja": "107番水道",
+    "it": "Rotta 107",
+    "ko": "107번 수로",
+    "zh-Hans": "107号水路",
+    "zh-Hant": "107號水路",
+    "pt-BR": "Rota 107"
+  },
+  "chenal-108": {
+    "en": "Route 108",
+    "de": "Route 108",
+    "es": "Ruta 108",
+    "ja": "108番水道",
+    "it": "Rotta 108",
+    "ko": "108번 수로",
+    "zh-Hans": "108号水路",
+    "zh-Hant": "108號水路",
+    "pt-BR": "Rota 108"
+  },
+  "chenal-109": {
+    "en": "Route 109",
+    "de": "Route 109",
+    "es": "Ruta 109",
+    "ja": "109番水道",
+    "it": "Rotta 109",
+    "ko": "109번 수로",
+    "zh-Hans": "109号水路",
+    "zh-Hant": "109號水路",
+    "pt-BR": "Rota 109"
+  },
+  "chenal-124": {
+    "en": "Route 124",
+    "de": "Route 124",
+    "es": "Ruta 124",
+    "ja": "124番水道",
+    "it": "Rotta 124",
+    "ko": "124번 수로",
+    "zh-Hans": "124号水路",
+    "zh-Hant": "124號水路",
+    "pt-BR": "Rota 124"
+  },
+  "chenal-125": {
+    "en": "Route 125",
+    "de": "Route 125",
+    "es": "Ruta 125",
+    "ja": "125番水道",
+    "it": "Rotta 125",
+    "ko": "125번 수로",
+    "zh-Hans": "125号水路",
+    "zh-Hant": "125號水路",
+    "pt-BR": "Rota 125"
+  },
+  "chenal-126": {
+    "en": "Route 126",
+    "de": "Route 126",
+    "es": "Ruta 126",
+    "ja": "126番水道",
+    "it": "Rotta 126",
+    "ko": "126번 수로",
+    "zh-Hans": "126号水路",
+    "zh-Hant": "126號水路",
+    "pt-BR": "Rota 126"
+  },
+  "chenal-127": {
+    "en": "Route 127",
+    "de": "Route 127",
+    "es": "Ruta 127",
+    "ja": "127番水道",
+    "it": "Rotta 127",
+    "ko": "127번 수로",
+    "zh-Hans": "127号水路",
+    "zh-Hant": "127號水路",
+    "pt-BR": "Rota 127"
+  },
+  "chenal-128": {
+    "en": "Route 128",
+    "de": "Route 128",
+    "es": "Ruta 128",
+    "ja": "128番水道",
+    "it": "Rotta 128",
+    "ko": "128번 수로",
+    "zh-Hans": "128号水路",
+    "zh-Hant": "128號水路",
+    "pt-BR": "Rota 128"
+  },
+  "chenal-129": {
+    "en": "Route 129",
+    "de": "Route 129",
+    "es": "Ruta 129",
+    "ja": "129番水道",
+    "it": "Rotta 129",
+    "ko": "129번 수로",
+    "zh-Hans": "129号水路",
+    "zh-Hant": "129號水路",
+    "pt-BR": "Rota 129"
+  },
+  "chenal-130": {
+    "en": "Route 130",
+    "de": "Route 130",
+    "es": "Ruta 130",
+    "ja": "130番水道",
+    "it": "Rotta 130",
+    "ko": "130번 수로",
+    "zh-Hans": "130号水路",
+    "zh-Hant": "130號水路",
+    "pt-BR": "Rota 130"
+  },
+  "chenal-131": {
+    "en": "Route 131",
+    "de": "Route 131",
+    "es": "Ruta 131",
+    "ja": "131番水道",
+    "it": "Rotta 131",
+    "ko": "131번 수로",
+    "zh-Hans": "131号水路",
+    "zh-Hant": "131號水路",
+    "pt-BR": "Rota 131"
+  },
+  "chenal-132": {
+    "en": "Route 132",
+    "de": "Route 132",
+    "es": "Ruta 132",
+    "ja": "132番水道",
+    "it": "Rotta 132",
+    "ko": "132번 수로",
+    "zh-Hans": "132号水路",
+    "zh-Hant": "132號水路",
+    "pt-BR": "Rota 132"
+  },
+  "chenal-133": {
+    "en": "Route 133",
+    "de": "Route 133",
+    "es": "Ruta 133",
+    "ja": "133番水道",
+    "it": "Rotta 133",
+    "ko": "133번 수로",
+    "zh-Hans": "133号水路",
+    "zh-Hant": "133號水路",
+    "pt-BR": "Rota 133"
+  },
+  "chenal-134": {
+    "en": "Route 134",
+    "de": "Route 134",
+    "es": "Ruta 134",
+    "ja": "134番水道",
+    "it": "Rotta 134",
+    "ko": "134번 수로",
+    "zh-Hans": "134号水路",
+    "zh-Hant": "134號水路",
+    "pt-BR": "Rota 134"
+  },
+  "chenal-17": {
+    "en": "Route 17",
+    "de": "Route 17",
+    "es": "Ruta 17",
+    "ja": "17番水道",
+    "it": "Rotta 17",
+    "ko": "17번 수로",
+    "zh-Hans": "17号水路",
+    "zh-Hant": "17號水路",
+    "pt-BR": "Rota 17"
+  },
+  "chenal-19": {
+    "en": "Route 19",
+    "de": "Route 19",
+    "es": "Ruta 19",
+    "ja": "19番水道",
+    "it": "Rotta 19",
+    "ko": "19번 수로",
+    "zh-Hans": "19号水路",
+    "zh-Hant": "19號水路",
+    "pt-BR": "Rota 19"
+  },
+  "chenal-20": {
+    "en": "Route 20",
+    "de": "Route 20",
+    "es": "Ruta 20",
+    "ja": "20番水道",
+    "it": "Rotta 20",
+    "ko": "20번 수로",
+    "zh-Hans": "20号水路",
+    "zh-Hant": "20號水路",
+    "pt-BR": "Rota 20"
+  },
+  "chenal-21": {
+    "en": "Route 21",
+    "de": "Route 21",
+    "es": "Ruta 21",
+    "ja": "21番水道",
+    "it": "Rotta 21",
+    "ko": "21번 수로",
+    "zh-Hans": "21号水路",
+    "zh-Hant": "21號水路",
+    "pt-BR": "Rota 21"
+  },
+  "chenal-220": {
+    "en": "Route 220",
+    "de": "Route 220",
+    "es": "Ruta 220",
+    "ja": "220番水道",
+    "it": "Rotta 220",
+    "ko": "220번 수로",
+    "zh-Hans": "220号水路",
+    "zh-Hant": "220號水路",
+    "pt-BR": "Rota 220"
+  },
+  "chenal-223": {
+    "en": "Route 223",
+    "de": "Route 223",
+    "es": "Ruta 223",
+    "ja": "223番水道",
+    "it": "Rotta 223",
+    "ko": "223번 수로",
+    "zh-Hans": "223号水路",
+    "zh-Hant": "223號水路",
+    "pt-BR": "Rota 223"
+  },
+  "chenal-226": {
+    "en": "Route 226",
+    "de": "Route 226",
+    "es": "Ruta 226",
+    "ja": "226番水道",
+    "it": "Rotta 226",
+    "ko": "226번 수로",
+    "zh-Hans": "226号水路",
+    "zh-Hant": "226號水路",
+    "pt-BR": "Rota 226"
+  },
+  "chenal-230": {
+    "en": "Route 230",
+    "de": "Route 230",
+    "es": "Ruta 230",
+    "ja": "230番水道",
+    "it": "Rotta 230",
+    "ko": "230번 수로",
+    "zh-Hans": "230号水路",
+    "zh-Hant": "230號水路",
+    "pt-BR": "Rota 230"
+  },
+  "chenal-40": {
+    "en": "Route 40",
+    "de": "Route 40",
+    "es": "Ruta 40",
+    "ja": "40番水道",
+    "it": "Rotta 40",
+    "ko": "40번 수로",
+    "zh-Hans": "40号水路",
+    "zh-Hant": "40號水路",
+    "pt-BR": "Rota 40"
+  },
+  "chenal-41": {
+    "en": "Route 41",
+    "de": "Route 41",
+    "es": "Ruta 41",
+    "ja": "41番水道",
+    "it": "Rotta 41",
+    "ko": "41번 수로",
+    "zh-Hans": "41号水路",
+    "zh-Hant": "41號水路",
+    "pt-BR": "Rota 41"
+  },
+  "chenal220": {
+    "de": "Route 220",
+    "en": "Sea Route 220"
+  },
+  "chenal223": {
+    "de": "Route 223",
+    "en": "Sea Route 223"
+  },
+  "chenal226": {
+    "de": "Route 226",
+    "en": "Sea Route 226"
+  },
+  "chenal230": {
+    "de": "Route 230",
+    "en": "Sea Route 230"
+  },
+  "cimetronelle": {
+    "ko": "검방울시티",
+    "de": "Baumhausen City",
+    "es": "Ciudad Arborada",
+    "it": "Forestopoli",
+    "en": "Fortree City"
+  },
+  "clementi-ville": {
+    "ko": "등화도시",
+    "de": "Blütenburg City",
+    "es": "Ciudad Petalia",
+    "it": "Petalipoli",
+    "en": "Petalburg City"
+  },
+  "club-hano-hano": {
+    "ko": "하노하노리조트",
+    "de": "Hanohano-Resort",
+    "es": "Resort Hanohano",
+    "it": "Resort Hanu Hanu",
+    "en": "Hano Grand Resort"
+  },
+  "colline-clapotis": {
+    "ko": "잔잔한물가언덕",
+    "de": "Plätscherhügel",
+    "es": "Colina Saltagua",
+    "it": "Collina Scrosciante",
+    "en": "Brooklet Hill"
+  },
+  "colline-memento": {
+    "ko": "메모리얼힐",
+    "de": "Hügel des Gedenkens",
+    "es": "Colina del Recuerdo",
+    "it": "Colle della Memoria",
+    "en": "Memorial Hill"
+  },
+  "colonnes-lances": {
+    "de": "Speersäule",
+    "en": "Spear Pillar"
+  },
+  "corrifey": {
+    "de": "Fairballey",
+    "en": "Ballonlea"
+  },
+  "cote-de-poni": {
+    "ko": "포니해안",
+    "de": "Küste von Poni",
+    "es": "Costa de Poni",
+    "it": "Costa di Poni",
+    "en": "Poni Coast"
+  },
+  "cote-sauvage": {
+    "ko": "울라울라 뒤쪽 해안",
+    "de": "Küste von Ula-Ula",
+    "es": "Playa Menor",
+    "it": "Lido di Ula Ula",
+    "en": "Secluded Shore"
+  },
+  "cramoisile": {
+    "de": "Zinnoberinsel",
+    "en": "Cinnabar Island"
+  },
+  "cuencia": {
+    "de": "Bolardin",
+    "en": "Artazon"
+  },
+  "desert-delassant": {
+    "de": "Wüstenresort",
+    "en": "Desert Resort"
+  },
+  "desert-rotissable": {
+    "de": "Brutzelwüste",
+    "en": "Asado Desert"
+  },
+  "doublonville": {
+    "de": "Dukatia City",
+    "en": "Goldenrod City"
+  },
+  "ebenelle": {
+    "de": "Ebenholz City",
+    "en": "Blackthorn City"
+  },
+  "ecole-dresseurs": {
+    "de": "Trainerschule",
+    "en": "Trainers’ School"
+  },
+  "ecorcia": {
+    "de": "Azalea City",
+    "en": "Azalea Town"
+  },
+  "ekaeka": {
+    "de": "Hauholi City",
+    "en": "Hau'oli City"
+  },
+  "entree-charbourg": {
+    "de": "Erzelingen-Tor",
+    "en": "Oreburgh Gate"
+  },
+  "entrelasque": {
+    "de": "Tessera",
+    "en": "Lacunosa Town"
+  },
+  "epave": {
+    "de": "Schiffswrack",
+    "en": "Abandoned Ship"
+  },
+  "feli-cite": {
+    "de": "Jubelstadt",
+    "en": "Jubilife City"
+  },
+  "flocombe": {
+    "de": "Nevaio City",
+    "en": "Icirrus City"
+  },
+  "flusselles": {
+    "ko": "향전시티",
+    "de": "Fluxia City",
+    "es": "Ciudad Fluxus",
+    "it": "Fluxopoli",
+    "en": "Anistar City"
+  },
+  "forbuissons": {
+    "de": "Musterbuschwald",
+    "en": "Pattern Bush"
+  },
+  "foret-de-jade": {
+    "de": "Vertania-Wald",
+    "en": "Viridian Forest"
+  },
+  "foret-de-poni": {
+    "ko": "포니수림",
+    "de": "Wald von Poni",
+    "es": "Bosque de Poni",
+    "it": "Foresta di Poni",
+    "en": "Poni Grove"
+  },
+  "foret-toastee": {
+    "de": "Knusperwaldweg",
+    "en": "Socarrat Trail"
+  },
+  "foret-vestigion": {
+    "de": "Ewigwald",
+    "en": "Eterna Forest"
+  },
+  "forge-fuego": {
+    "de": "Feurio-Hütte",
+    "en": "Fuego Ironworks"
+  },
+  "fregate-plasma": {
+    "de": "Plasma-Fregatte",
+    "en": "Plasma Frigate"
+  },
+  "frigao": {
+    "de": "Frigomonta",
+    "en": "Montenevera"
+  },
+  "frimapic": {
+    "de": "Blizzach",
+    "en": "Snowpoint City"
+  },
+  "grand-canyon-de-poni": {
+    "ko": "포니대협곡",
+    "de": "Canyon von Poni",
+    "es": "Cañón de Poni",
+    "it": "Canyon di Poni",
+    "en": "Vast Poni Canyon"
+  },
+  "greenbury": {
+    "de": "Turffield",
+    "en": "Turffield"
+  },
+  "grotte": {
+    "de": "Felstunnel",
+    "en": "Rock Tunnel"
+  },
+  "grotte-coda": {
+    "ko": "끝의 동굴",
+    "de": "Omega-Höhle",
+    "es": "Cueva Desenlace",
+    "it": "Grotta Climax",
+    "en": "Terminus Cave"
+  },
+  "grotte-cyclopeenne": {
+    "de": "Riesengrotte",
+    "en": "Giant Chasm"
+  },
+  "grotte-des-egares": {
+    "de": "Bizarre Höhle",
+    "en": "Wayward Cave"
+  },
+  "grotte-electrolithe": {
+    "de": "Elektrolithhöhle",
+    "en": "Chargestone Cave"
+  },
+  "grotte-granite": {
+    "ko": "바위 동굴",
+    "de": "Granithöhle",
+    "es": "Cueva Granito",
+    "it": "Grotta Pietrosa",
+    "en": "Granite Cave"
+  },
+  "grotte-littorale": {
+    "de": "Strandgrotte",
+    "en": "Seaside Cave"
+  },
+  "grotte-miroitante": {
+    "ko": "비춤의 동굴",
+    "de": "Spiegelhöhle",
+    "es": "Cueva Reflejos",
+    "it": "Grotta dei Riflessi",
+    "en": "Reflection Cave"
+  },
+  "grotte-parsemille": {
+    "de": "Panaero-Höhle",
+    "en": "Mistralton Cave"
+  },
+  "grotte-perdue": {
+    "de": "Verlorene Höhle",
+    "en": "Lost Cave"
+  },
+  "grotte-reveche": {
+    "de": "Bizarre Höhle",
+    "en": "Wayward Cave"
+  },
+  "grotte-verlamer": {
+    "ko": "바다연결동굴",
+    "de": "Meereshöhle",
+    "es": "Gruta Unemar",
+    "it": "Grotta Pratomare",
+    "en": "Seaward Cave"
+  },
+  "hangar-frigorifique": {
+    "de": "Tiefkühlcontainer",
+    "en": "Cold Storage"
+  },
+  "hotel-desolation": {
+    "ko": "황폐해진 호텔",
+    "de": "Hotelruine",
+    "es": "Hotel Desolación",
+    "it": "Albergo Diroccato",
+    "en": "Lost Hotel"
+  },
+  "ile-de-fer": {
+    "de": "Eiseninsel",
+    "en": "Iron Island"
+  },
+  "ile-du-lointain": {
+    "de": "Fern-Eiland",
+    "en": "Outcast Island"
+  },
+  "iles-ecume": {
+    "de": "Seeschauminseln",
+    "en": "Seafoam Islands"
+  },
+  "ilesecume": {
+    "de": "Seeschauminseln",
+    "en": "Seafoam Islands"
+  },
+  "irisia": {
+    "de": "Anemonia City",
+    "en": "Cianwood City"
+  },
+  "jadielle": {
+    "en": "Viridian City",
+    "de": "Vertania City",
+    "es": "Ciudad Verdania",
+    "ja": "トキワシティ",
+    "it": "Verdevia",
+    "ko": "상록시티",
+    "zh-Hans": "常磐市",
+    "zh-Hant": "常磐市",
+    "pt-BR": "Cidade Viridiana"
+  },
+  "janusia": {
+    "de": "Twindrake City",
+    "en": "Opelucid City"
+  },
+  "jarramanca": {
+    "de": "Garrafosa City",
+    "en": "Cascarrafa"
+  },
+  "joliberges": {
+    "de": "Fleetburg",
+    "en": "Canalave City"
+  },
+  "kickenham": {
+    "de": "Claw City",
+    "en": "Hammerlocke"
+  },
+  "kokohio": {
+    "ko": "포마을",
+    "de": "Po’u",
+    "es": "Pueblo Po",
+    "it": "Poh",
+    "en": "Po Town"
+  },
+  "konikoni": {
+    "ko": "코니코니시티",
+    "de": "Konikoni City",
+    "es": "Ciudad Konikoni",
+    "it": "Konikoni",
+    "en": "Konikoni City"
+  },
+  "labo-p2": {
+    "de": "P2-Labor",
+    "en": "P2 Laboratory"
+  },
+  "laboratoire-mysterieux": {
+    "en": "Sea Mauville",
+    "de": "Meeresmauville",
+    "es": "Mauvile Marina",
+    "ja": "うみのきちく",
+    "it": "Mauville Marina",
+    "ko": "바다의 폐허",
+    "zh-Hans": "海洋地标",
+    "zh-Hant": "海洋地標",
+    "pt-BR": "Sea Mauville"
+  },
+  "labos-lysandre": {
+    "ko": "플라드리 래버러토리",
+    "de": "Labor von Flordelis",
+    "es": "Laboratorios Lysson",
+    "it": "Laboratori Elisio",
+    "en": "Lysandre Labs"
+  },
+  "lac-asrol": {
+    "de": "Caldero-See",
+    "en": "Casseroya Lake"
+  },
+  "lac-courage": {
+    "en": "Lake Valor",
+    "de": "See der Tapferkeit",
+    "es": "Lago Valor",
+    "ja": "いさむりのみずうみ",
+    "it": "Lago del Valore",
+    "ko": "용기의 호수",
+    "zh-Hans": "勇气湖",
+    "zh-Hant": "勇氣湖",
+    "pt-BR": "Lago Valor"
+  },
+  "laccolere": {
+    "de": "See des Zorns",
+    "en": "Lake of Rage"
+  },
+  "lavandia": {
+    "ko": "보라시티",
+    "de": "Malvenfroh City",
+    "es": "Ciudad Malvalona",
+    "it": "Ciclamipoli",
+    "en": "Mauville City"
+  },
+  "lavandia-sea": {
+    "ko": "씨보라",
+    "de": "Seewoge Malvenfroh",
+    "es": "Malvamar",
+    "it": "Ciclamare",
+    "en": "Sea Mauville"
+  },
+  "lavanville": {
+    "de": "Lavandia",
+    "en": "Lavender Town"
+  },
+  "le-marina": {
+    "ko": "타이드립호",
+    "de": "MS Tide",
+    "es": "S.S. Marea",
+    "it": "Motonave Marea",
+    "en": "S.S. Tidal"
+  },
+  "levalendura": {
+    "de": "Fermanca City",
+    "en": "Levincia"
+  },
+  "ligue-pokemon": {
+    "de": "Pokémon-Liga",
+    "en": "Pokémon League"
+  },
+  "littorella": {
+    "de": "Sandgemme",
+    "en": "Sandgem Town"
+  },
+  "ludester": {
+    "de": "Circhester",
+    "en": "Circhester"
+  },
+  "maillard": {
+    "de": "Septerna City",
+    "en": "Nacrene City"
+  },
+  "malie": {
+    "de": "Malihe City",
+    "en": "Malie City"
+  },
+  "manoir-chelou": {
+    "ko": "수상한 저택",
+    "de": "Lottervilla",
+    "es": "Mansión Misteriosa",
+    "it": "Villa Losca",
+    "en": "Shady House"
+  },
+  "manoir-pokemon": {
+    "de": "Pokémon-Villa",
+    "en": "Pokémon Mansion"
+  },
+  "mauville": {
+    "de": "Viola City",
+    "en": "Violet City"
+  },
+  "meanville": {
+    "de": "Rayono City",
+    "en": "Nimbasa City"
+  },
+  "memorial": {
+    "de": "Gedenksäule",
+    "en": "Memorial Pillar"
+  },
+  "mer-de-mele-mele": {
+    "ko": "멜레멜레해",
+    "de": "Meer von Mele-Mele",
+    "es": "Mar de Melemele",
+    "it": "Mare di Mele Mele",
+    "en": "Melemele Sea"
+  },
+  "merouville": {
+    "ko": "금탄도시",
+    "de": "Metarost City",
+    "es": "Ciudad Férrica",
+    "it": "Ferrugipoli",
+    "en": "Rustboro City"
+  },
+  "mesaledo": {
+    "de": "Mesalona City",
+    "en": "Mesagoza"
+  },
+  "mezclamora": {
+    "de": "Mesclarra",
+    "en": "Medali"
+  },
+  "mine-charbourg": {
+    "de": "Erzelingen-Mine",
+    "en": "Oreburgh Mine"
+  },
+  "mont-abrupt": {
+    "en": "Mt. Mortar",
+    "de": "Mörtelberg",
+    "es": "Monte Mórtar",
+    "ja": "ボロのとうげ",
+    "it": "Monte Malta",
+    "ko": "험준산",
+    "zh-Hans": "砂岩山",
+    "zh-Hant": "砂岩山",
+    "pt-BR": "Monte Argamassa"
+  },
+  "mont-braise": {
+    "de": "Glutberg",
+    "en": "Mt. Ember"
+  },
+  "mont-chimnee": {
+    "ko": "굴뚝산",
+    "de": "Schlotberg",
+    "es": "Monte Cenizo",
+    "it": "Monte Camino",
+    "en": "Mt. Chimney"
+  },
+  "mont-fore": {
+    "de": "Wendelberg",
+    "en": "Twist Mountain"
+  },
+  "mont-hokulani": {
+    "ko": "호쿠라니큰산",
+    "de": "Hokulani-Berg",
+    "es": "Pico Hokulani",
+    "it": "Picco Hokulani",
+    "en": "Mount Hokulani"
+  },
+  "mont-lanakila": {
+    "ko": "라나키라마운틴",
+    "de": "Mount Lanakila",
+    "es": "Monte Lanakila",
+    "it": "Monte Lanakila",
+    "en": "Mount Lanakila"
+  },
+  "mont-memoria": {
+    "ko": "송화산",
+    "de": "Pyroberg",
+    "es": "Monte Pírico",
+    "it": "Monte Pira",
+    "en": "Mt. Pyre"
+  },
+  "mont-nappe": {
+    "de": "Montanata",
+    "en": "Glaseado Mountain"
+  },
+  "mont-renenvers": {
+    "de": "Janusberg",
+    "en": "Reversal Mountain"
+  },
+  "mont-selenite": {
+    "de": "Mondberg",
+    "en": "Mt. Moon"
+  },
+  "montcreuset": {
+    "de": "Kesselberg",
+    "en": "Mt. Mortar"
+  },
+  "motorby": {
+    "de": "Engine City",
+    "en": "Motostoke"
+  },
+  "neuvartault": {
+    "ko": "백단시티",
+    "de": "Nouvaria City",
+    "es": "Ciudad Novarte",
+    "it": "Novartopoli",
+    "en": "Santalune City"
+  },
+  "ogoesse": {
+    "de": "Orion City",
+    "en": "Striaton City"
+  },
+  "old-chister": {
+    "de": "Passbeck",
+    "en": "Stow-on-Side"
+  },
+  "oliville": {
+    "de": "Oliviana City",
+    "en": "Olivine City"
+  },
+  "ondes-sur-mer": {
+    "de": "Vapydro City",
+    "en": "Virbank City"
+  },
+  "palais-de-n": {
+    "de": "Schloss von N",
+    "en": "N's Castle"
+  },
+  "papeloa": {
+    "de": "Abidaya City",
+    "en": "Humilau City"
+  },
+  "parc-de-malie": {
+    "ko": "말리에 정원",
+    "de": "Malihe-Ziergarten",
+    "es": "Parque de Malíe",
+    "it": "Giardino di Malie",
+    "en": "Malie Garden"
+  },
+  "parc-volcanique": {
+    "ko": "벨라화산공원",
+    "de": "Wela-Vulkanpark",
+    "es": "Área Volcánica Wela",
+    "it": "Parco Vulcano Wela",
+    "en": "Wela Volcano Park"
+  },
+  "parcnaturel": {
+    "de": "Nationalpark",
+    "en": "National Park"
+  },
+  "parmanie": {
+    "en": "Cianwood City",
+    "de": "Aquana City",
+    "es": "Ciudad Porcelana",
+    "ja": "タンバシティ",
+    "it": "Grigiomar",
+    "ko": "금빛시티",
+    "zh-Hans": "褐色市",
+    "zh-Hant": "褐色市",
+    "pt-BR": "Cidade Cianita"
+  },
+  "parsemille": {
+    "de": "Panaero City",
+    "en": "Mistralton City"
+  },
+  "pavonnay": {
+    "de": "Eventura City",
+    "en": "Aspertia City"
+  },
+  "phare": {
+    "de": "Leuchtturm",
+    "en": "Lighthouse"
+  },
+  "phenacit": {
+    "en": "Phenac City",
+    "de": "Phenac City",
+    "es": "Ciudad Fénax",
+    "ja": "フェナスシティ",
+    "it": "Phenac City",
+    "ko": "페낙 시티",
+    "zh-Hans": "费纳克市",
+    "zh-Hant": "費納克市",
+    "pt-BR": "Phenac City"
+  },
+  "plage-hano-hano": {
+    "ko": "하노하노비치",
+    "de": "Hanohano-Strand",
+    "es": "Playa de Hanohano",
+    "it": "Spiaggia Hanu Hanu",
+    "en": "Hano Beach"
+  },
+  "plaine-de-poni": {
+    "ko": "포니광야",
+    "de": "Ebene von Poni",
+    "es": "Llanura de Poni",
+    "it": "Prateria di Poni",
+    "en": "Poni Plains"
+  },
+  "planque-aqua": {
+    "ko": "아쿠아단아지트",
+    "de": "Team Aquas Versteck",
+    "es": "Guarida Aqua",
+    "it": "Rifugio Idro",
+    "en": "Team Aqua Hideout"
+  },
+  "plateauindigo": {
+    "de": "Indigo-Plateau",
+    "en": "Indigo Plateau"
+  },
+  "poivressel": {
+    "ko": "잿빛도시",
+    "de": "Graphitport City",
+    "es": "Ciudad Portual",
+    "it": "Porto Selcepoli",
+    "en": "Slateport City"
+  },
+  "pont-du-hameau": {
+    "de": "Dorfbrücke",
+    "en": "Village Bridge"
+  },
+  "pont-du-lien": {
+    "de": "Bundbrücke",
+    "en": "Bond Bridge"
+  },
+  "pont-ferroviaire": {
+    "de": "Zylinderbrücke",
+    "en": "Tubeline Bridge"
+  },
+  "port-temperes": {
+    "ko": "비익시티",
+    "de": "Tempera City",
+    "es": "Ciudad Témpera",
+    "it": "Temperopoli",
+    "en": "Coumarine City"
+  },
+  "port-yoneuve": {
+    "de": "Marea City",
+    "en": "Driftveil City"
+  },
+  "porto-marinada": {
+    "de": "Puerto Marinedo",
+    "en": "Porto Marinada"
+  },
+  "prairie-de-poni": {
+    "ko": "포니들판",
+    "de": "Wildnis von Poni",
+    "es": "Prado de Poni",
+    "it": "Piana di Poni",
+    "en": "Poni Wilds"
+  },
+  "puitsramoloss": {
+    "de": "Flegmon-Brunnen",
+    "en": "Slowpoke Well"
+  },
+  "pyrite": {
+    "en": "Pyrite Town",
+    "de": "Pyrite Town",
+    "es": "Pyrite Town",
+    "ja": "パイライタウン",
+    "it": "Pyrite Town",
+    "ko": "파이라이트 타운",
+    "zh-Hans": "黄铁镇",
+    "zh-Hant": "黃鐵鎮",
+    "pt-BR": "Pyrite Town"
+  },
+  "qg-galaxie": {
+    "de": "Team Galaktik Zentrale",
+    "en": "Galactic HQ"
+  },
+  "ranch-ohana": {
+    "ko": "오하나목장",
+    "de": "Ohana-Farm",
+    "es": "Rancho Ohana",
+    "it": "Fattoria Ohana",
+    "en": "Paniola Ranch"
+  },
+  "recif-de-poni": {
+    "ko": "포니의 거친 해안",
+    "de": "Felsenküste von Poni",
+    "es": "Arrecife de Poni",
+    "it": "Scogliera di Poni",
+    "en": "Poni Breaker Coast"
+  },
+  "relifac-le-haut": {
+    "ko": "삼채시티",
+    "de": "Relievera City",
+    "es": "Ciudad Relieve",
+    "it": "Altoripoli",
+    "en": "Cyllage City"
+  },
+  "repaire-team-flare": {
+    "ko": "플레어단 비밀기지",
+    "de": "Flare-Geheimbasis",
+    "es": "Guarida Team Flare",
+    "it": "Covo del Team Flare",
+    "en": "Team Flare Secret HQ"
+  },
+  "rivamar": {
+    "de": "Sonnewik",
+    "en": "Sunyshore City"
+  },
+  "rive-lac-courage": {
+    "en": "Lake of Rage",
+    "de": "See der Wut",
+    "es": "Lago Furia",
+    "ja": "いかりのみずうみ",
+    "it": "Lago della Collera",
+    "ko": "분노의 호수",
+    "zh-Hans": "愤怒湖",
+    "zh-Hant": "憤怒湖",
+    "pt-BR": "Lago da Raiva"
+  },
+  "romant-sous-bois": {
+    "ko": "후늬시티",
+    "de": "Romantia City",
+    "es": "Ciudad Romantis",
+    "it": "Romantopoli",
+    "en": "Laverre City"
+  },
+  "rosalia": {
+    "de": "Teak City",
+    "en": "Ecruteak City"
+  },
+  "route-01": {
+    "en": "Route 01",
+    "de": "Route 01",
+    "es": "Route 01",
+    "ja": "Route 01",
+    "it": "Route 01",
+    "ko": "Route 01",
+    "zh-Hans": "Route 01",
+    "zh-Hant": "Route 01",
+    "pt-BR": "Route 01"
+  },
+  "route-02": {
+    "en": "Route 02",
+    "de": "Route 02",
+    "es": "Route 02",
+    "ja": "Route 02",
+    "it": "Route 02",
+    "ko": "Route 02",
+    "zh-Hans": "Route 02",
+    "zh-Hant": "Route 02",
+    "pt-BR": "Route 02"
+  },
+  "route-03": {
+    "en": "Route 03",
+    "de": "Route 03",
+    "es": "Route 03",
+    "ja": "Route 03",
+    "it": "Route 03",
+    "ko": "Route 03",
+    "zh-Hans": "Route 03",
+    "zh-Hant": "Route 03",
+    "pt-BR": "Route 03"
+  },
+  "route-04": {
+    "en": "Route 04",
+    "de": "Route 04",
+    "es": "Route 04",
+    "ja": "Route 04",
+    "it": "Route 04",
+    "ko": "Route 04",
+    "zh-Hans": "Route 04",
+    "zh-Hant": "Route 04",
+    "pt-BR": "Route 04"
+  },
+  "route-06": {
+    "en": "Route 06",
+    "de": "Route 06",
+    "es": "Route 06",
+    "ja": "Route 06",
+    "it": "Route 06",
+    "ko": "Route 06",
+    "zh-Hans": "Route 06",
+    "zh-Hant": "Route 06",
+    "pt-BR": "Route 06"
+  },
+  "route-08": {
+    "en": "Route 08",
+    "de": "Route 08",
+    "es": "Route 08",
+    "ja": "Route 08",
+    "it": "Route 08",
+    "ko": "Route 08",
+    "zh-Hans": "Route 08",
+    "zh-Hant": "Route 08",
+    "pt-BR": "Route 08"
+  },
+  "route-09": {
+    "en": "Route 09",
+    "de": "Route 09",
+    "es": "Route 09",
+    "ja": "Route 09",
+    "it": "Route 09",
+    "ko": "Route 09",
+    "zh-Hans": "Route 09",
+    "zh-Hant": "Route 09",
+    "pt-BR": "Route 09"
+  },
+  "route-1": {
+    "en": "Route 1",
+    "de": "Route 1",
+    "es": "Route 1",
+    "ja": "Route 1",
+    "it": "Route 1",
+    "ko": "Route 1",
+    "zh-Hans": "Route 1",
+    "zh-Hant": "Route 1",
+    "pt-BR": "Route 1"
+  },
+  "route-10": {
+    "en": "Route 10",
+    "de": "Route 10",
+    "es": "Route 10",
+    "ja": "Route 10",
+    "it": "Route 10",
+    "ko": "Route 10",
+    "zh-Hans": "Route 10",
+    "zh-Hant": "Route 10",
+    "pt-BR": "Route 10"
+  },
+  "route-102": {
+    "en": "Route 102",
+    "de": "Route 102",
+    "es": "Route 102",
+    "ja": "Route 102",
+    "it": "Route 102",
+    "ko": "Route 102",
+    "zh-Hans": "Route 102",
+    "zh-Hant": "Route 102",
+    "pt-BR": "Route 102"
+  },
+  "route-103": {
+    "en": "Route 103",
+    "de": "Route 103",
+    "es": "Route 103",
+    "ja": "Route 103",
+    "it": "Route 103",
+    "ko": "Route 103",
+    "zh-Hans": "Route 103",
+    "zh-Hant": "Route 103",
+    "pt-BR": "Route 103"
+  },
+  "route-104": {
+    "en": "Route 104",
+    "de": "Route 104",
+    "es": "Route 104",
+    "ja": "Route 104",
+    "it": "Route 104",
+    "ko": "Route 104",
+    "zh-Hans": "Route 104",
+    "zh-Hant": "Route 104",
+    "pt-BR": "Route 104"
+  },
+  "route-105": {
+    "en": "Route 105",
+    "de": "Route 105",
+    "es": "Route 105",
+    "ja": "Route 105",
+    "it": "Route 105",
+    "ko": "Route 105",
+    "zh-Hans": "Route 105",
+    "zh-Hant": "Route 105",
+    "pt-BR": "Route 105"
+  },
+  "route-106": {
+    "en": "Route 106",
+    "de": "Route 106",
+    "es": "Route 106",
+    "ja": "Route 106",
+    "it": "Route 106",
+    "ko": "Route 106",
+    "zh-Hans": "Route 106",
+    "zh-Hant": "Route 106",
+    "pt-BR": "Route 106"
+  },
+  "route-107": {
+    "en": "Route 107",
+    "de": "Route 107",
+    "es": "Route 107",
+    "ja": "Route 107",
+    "it": "Route 107",
+    "ko": "Route 107",
+    "zh-Hans": "Route 107",
+    "zh-Hant": "Route 107",
+    "pt-BR": "Route 107"
+  },
+  "route-108": {
+    "en": "Route 108",
+    "de": "Route 108",
+    "es": "Route 108",
+    "ja": "Route 108",
+    "it": "Route 108",
+    "ko": "Route 108",
+    "zh-Hans": "Route 108",
+    "zh-Hant": "Route 108",
+    "pt-BR": "Route 108"
+  },
+  "route-109": {
+    "en": "Route 109",
+    "de": "Route 109",
+    "es": "Route 109",
+    "ja": "Route 109",
+    "it": "Route 109",
+    "ko": "Route 109",
+    "zh-Hans": "Route 109",
+    "zh-Hant": "Route 109",
+    "pt-BR": "Route 109"
+  },
+  "route-11": {
+    "en": "Route 11",
+    "de": "Route 11",
+    "es": "Route 11",
+    "ja": "Route 11",
+    "it": "Route 11",
+    "ko": "Route 11",
+    "zh-Hans": "Route 11",
+    "zh-Hant": "Route 11",
+    "pt-BR": "Route 11"
+  },
+  "route-110": {
+    "en": "Route 110",
+    "de": "Route 110",
+    "es": "Route 110",
+    "ja": "Route 110",
+    "it": "Route 110",
+    "ko": "Route 110",
+    "zh-Hans": "Route 110",
+    "zh-Hant": "Route 110",
+    "pt-BR": "Route 110"
+  },
+  "route-111": {
+    "en": "Route 111",
+    "de": "Route 111",
+    "es": "Route 111",
+    "ja": "Route 111",
+    "it": "Route 111",
+    "ko": "Route 111",
+    "zh-Hans": "Route 111",
+    "zh-Hant": "Route 111",
+    "pt-BR": "Route 111"
+  },
+  "route-112": {
+    "en": "Route 112",
+    "de": "Route 112",
+    "es": "Route 112",
+    "ja": "Route 112",
+    "it": "Route 112",
+    "ko": "Route 112",
+    "zh-Hans": "Route 112",
+    "zh-Hant": "Route 112",
+    "pt-BR": "Route 112"
+  },
+  "route-113": {
+    "en": "Route 113",
+    "de": "Route 113",
+    "es": "Route 113",
+    "ja": "Route 113",
+    "it": "Route 113",
+    "ko": "Route 113",
+    "zh-Hans": "Route 113",
+    "zh-Hant": "Route 113",
+    "pt-BR": "Route 113"
+  },
+  "route-114": {
+    "en": "Route 114",
+    "de": "Route 114",
+    "es": "Route 114",
+    "ja": "Route 114",
+    "it": "Route 114",
+    "ko": "Route 114",
+    "zh-Hans": "Route 114",
+    "zh-Hant": "Route 114",
+    "pt-BR": "Route 114"
+  },
+  "route-115": {
+    "en": "Route 115",
+    "de": "Route 115",
+    "es": "Route 115",
+    "ja": "Route 115",
+    "it": "Route 115",
+    "ko": "Route 115",
+    "zh-Hans": "Route 115",
+    "zh-Hant": "Route 115",
+    "pt-BR": "Route 115"
+  },
+  "route-116": {
+    "en": "Route 116",
+    "de": "Route 116",
+    "es": "Route 116",
+    "ja": "Route 116",
+    "it": "Route 116",
+    "ko": "Route 116",
+    "zh-Hans": "Route 116",
+    "zh-Hant": "Route 116",
+    "pt-BR": "Route 116"
+  },
+  "route-117": {
+    "en": "Route 117",
+    "de": "Route 117",
+    "es": "Route 117",
+    "ja": "Route 117",
+    "it": "Route 117",
+    "ko": "Route 117",
+    "zh-Hans": "Route 117",
+    "zh-Hant": "Route 117",
+    "pt-BR": "Route 117"
+  },
+  "route-118": {
+    "en": "Route 118",
+    "de": "Route 118",
+    "es": "Route 118",
+    "ja": "Route 118",
+    "it": "Route 118",
+    "ko": "Route 118",
+    "zh-Hans": "Route 118",
+    "zh-Hant": "Route 118",
+    "pt-BR": "Route 118"
+  },
+  "route-119": {
+    "en": "Route 119",
+    "de": "Route 119",
+    "es": "Route 119",
+    "ja": "Route 119",
+    "it": "Route 119",
+    "ko": "Route 119",
+    "zh-Hans": "Route 119",
+    "zh-Hant": "Route 119",
+    "pt-BR": "Route 119"
+  },
+  "route-12": {
+    "en": "Route 12",
+    "de": "Route 12",
+    "es": "Route 12",
+    "ja": "Route 12",
+    "it": "Route 12",
+    "ko": "Route 12",
+    "zh-Hans": "Route 12",
+    "zh-Hant": "Route 12",
+    "pt-BR": "Route 12"
+  },
+  "route-120": {
+    "en": "Route 120",
+    "de": "Route 120",
+    "es": "Route 120",
+    "ja": "Route 120",
+    "it": "Route 120",
+    "ko": "Route 120",
+    "zh-Hans": "Route 120",
+    "zh-Hant": "Route 120",
+    "pt-BR": "Route 120"
+  },
+  "route-121": {
+    "en": "Route 121",
+    "de": "Route 121",
+    "es": "Route 121",
+    "ja": "Route 121",
+    "it": "Route 121",
+    "ko": "Route 121",
+    "zh-Hans": "Route 121",
+    "zh-Hant": "Route 121",
+    "pt-BR": "Route 121"
+  },
+  "route-123": {
+    "en": "Route 123",
+    "de": "Route 123",
+    "es": "Route 123",
+    "ja": "Route 123",
+    "it": "Route 123",
+    "ko": "Route 123",
+    "zh-Hans": "Route 123",
+    "zh-Hant": "Route 123",
+    "pt-BR": "Route 123"
+  },
+  "route-125": {
+    "en": "Route 125",
+    "de": "Route 125",
+    "es": "Ruta 125",
+    "ja": "125番水道",
+    "it": "Rotta 125",
+    "ko": "125번 수로",
+    "zh-Hans": "125号水路",
+    "zh-Hant": "125號水路",
+    "pt-BR": "Rota 125"
+  },
+  "route-126": {
+    "en": "Route 126",
+    "de": "Route 126",
+    "es": "Ruta 126",
+    "ja": "126番水道",
+    "it": "Rotta 126",
+    "ko": "126번 수로",
+    "zh-Hans": "126号水路",
+    "zh-Hant": "126號水路",
+    "pt-BR": "Rota 126"
+  },
+  "route-127": {
+    "en": "Route 127",
+    "de": "Route 127",
+    "es": "Ruta 127",
+    "ja": "127番水道",
+    "it": "Rotta 127",
+    "ko": "127번 수로",
+    "zh-Hans": "127号水路",
+    "zh-Hant": "127號水路",
+    "pt-BR": "Rota 127"
+  },
+  "route-128": {
+    "en": "Route 128",
+    "de": "Route 128",
+    "es": "Ruta 128",
+    "ja": "128番水道",
+    "it": "Rotta 128",
+    "ko": "128번 수로",
+    "zh-Hans": "128号水路",
+    "zh-Hant": "128號水路",
+    "pt-BR": "Rota 128"
+  },
+  "route-129": {
+    "en": "Route 129",
+    "de": "Route 129",
+    "es": "Ruta 129",
+    "ja": "129番水道",
+    "it": "Rotta 129",
+    "ko": "129번 수로",
+    "zh-Hans": "129号水路",
+    "zh-Hant": "129號水路",
+    "pt-BR": "Rota 129"
+  },
+  "route-13": {
+    "ko": "13번도로",
+    "de": "Route 13",
+    "es": "Ruta 13",
+    "it": "Percorso 13",
+    "en": "Route 13",
+    "ja": "１３番道路"
+  },
+  "route-130": {
+    "en": "Route 130",
+    "de": "Route 130",
+    "es": "Ruta 130",
+    "ja": "130番水道",
+    "it": "Rotta 130",
+    "ko": "130번 수로",
+    "zh-Hans": "130号水路",
+    "zh-Hant": "130號水路",
+    "pt-BR": "Rota 130"
+  },
+  "route-131": {
+    "en": "Route 131",
+    "de": "Route 131",
+    "es": "Ruta 131",
+    "ja": "131番水道",
+    "it": "Rotta 131",
+    "ko": "131번 수로",
+    "zh-Hans": "131号水路",
+    "zh-Hant": "131號水路",
+    "pt-BR": "Rota 131"
+  },
+  "route-132": {
+    "en": "Route 132",
+    "de": "Route 132",
+    "es": "Ruta 132",
+    "ja": "132番水道",
+    "it": "Rotta 132",
+    "ko": "132번 수로",
+    "zh-Hans": "132号水路",
+    "zh-Hant": "132號水路",
+    "pt-BR": "Rota 132"
+  },
+  "route-133": {
+    "en": "Route 133",
+    "de": "Route 133",
+    "es": "Ruta 133",
+    "ja": "133番水道",
+    "it": "Rotta 133",
+    "ko": "133번 수로",
+    "zh-Hans": "133号水路",
+    "zh-Hant": "133號水路",
+    "pt-BR": "Rota 133"
+  },
+  "route-134": {
+    "en": "Route 134",
+    "de": "Route 134",
+    "es": "Ruta 134",
+    "ja": "134番水道",
+    "it": "Rotta 134",
+    "ko": "134번 수로",
+    "zh-Hans": "134号水路",
+    "zh-Hant": "134號水路",
+    "pt-BR": "Rota 134"
+  },
+  "route-14": {
+    "ko": "14번도로",
+    "de": "Route 14",
+    "es": "Ruta 14",
+    "it": "Percorso 14",
+    "en": "Route 14",
+    "ja": "１４番道路"
+  },
+  "route-15": {
+    "ko": "15번수로",
+    "de": "Route 15 (Wasserweg)",
+    "es": "Ruta 15",
+    "it": "Percorso 15",
+    "en": "Route 15",
+    "ja": "１５番水道"
+  },
+  "route-16": {
+    "ko": "16번도로",
+    "de": "Route 16",
+    "es": "Ruta 16",
+    "it": "Percorso 16",
+    "en": "Route 16",
+    "ja": "１６番道路"
+  },
+  "route-17": {
+    "ko": "17번도로",
+    "de": "Route 17",
+    "es": "Ruta 17",
+    "it": "Percorso 17",
+    "en": "Route 17",
+    "ja": "１７番道路"
+  },
+  "route-18": {
+    "ko": "18번도로",
+    "de": "Route 18",
+    "es": "Ruta 18",
+    "it": "Percorso 18",
+    "en": "Route 18",
+    "ja": "１８番道路"
+  },
+  "route-2": {
+    "de": "Route 2",
+    "en": "Route 2"
+  },
+  "route-20": {
+    "ko": "20번도로",
+    "de": "Route 20",
+    "es": "Ruta 20",
+    "it": "Percorso 20",
+    "en": "Route 20",
+    "ja": "２０番道路"
+  },
+  "route-201": {
+    "de": "Route 201",
+    "en": "Route 201"
+  },
+  "route-202": {
+    "de": "Route 202",
+    "en": "Route 202"
+  },
+  "route-203": {
+    "de": "Route 203",
+    "en": "Route 203"
+  },
+  "route-204": {
+    "de": "Route 204",
+    "en": "Route 204"
+  },
+  "route-205": {
+    "de": "Route 205",
+    "en": "Route 205"
+  },
+  "route-206": {
+    "de": "Route 206",
+    "en": "Route 206"
+  },
+  "route-207": {
+    "de": "Route 207",
+    "en": "Route 207"
+  },
+  "route-208": {
+    "de": "Route 208",
+    "en": "Route 208"
+  },
+  "route-209": {
+    "de": "Route 209",
+    "en": "Route 209"
+  },
+  "route-21": {
+    "ko": "21번도로",
+    "de": "Route 21",
+    "es": "Ruta 21",
+    "it": "Percorso 21",
+    "en": "Route 21",
+    "ja": "２１番道路"
+  },
+  "route-210": {
+    "de": "Route 210",
+    "en": "Route 210"
+  },
+  "route-211": {
+    "de": "Route 211",
+    "en": "Route 211"
+  },
+  "route-212": {
+    "de": "Route 212",
+    "en": "Route 212"
+  },
+  "route-213": {
+    "de": "Route 213",
+    "en": "Route 213"
+  },
+  "route-214": {
+    "de": "Route 214",
+    "en": "Route 214"
+  },
+  "route-215": {
+    "de": "Route 215",
+    "en": "Route 215"
+  },
+  "route-216": {
+    "de": "Route 216",
+    "en": "Route 216"
+  },
+  "route-217": {
+    "de": "Route 217",
+    "en": "Route 217"
+  },
+  "route-218": {
+    "de": "Route 218",
+    "en": "Route 218"
+  },
+  "route-219": {
+    "de": "Route 219",
+    "en": "Route 219"
+  },
+  "route-22": {
+    "ko": "22번도로",
+    "de": "Route 22",
+    "es": "Ruta 22",
+    "it": "Percorso 22",
+    "en": "Route 22",
+    "ja": "２２番道路"
+  },
+  "route-221": {
+    "de": "Route 221",
+    "en": "Route 221"
+  },
+  "route-222": {
+    "de": "Route 222",
+    "en": "Route 222"
+  },
+  "route-224": {
+    "de": "Route 224",
+    "en": "Route 224"
+  },
+  "route-225": {
+    "de": "Route 225",
+    "en": "Route 225"
+  },
+  "route-227": {
+    "de": "Route 227",
+    "en": "Route 227"
+  },
+  "route-228": {
+    "de": "Route 228",
+    "en": "Route 228"
+  },
+  "route-229": {
+    "de": "Route 229",
+    "en": "Route 229"
+  },
+  "route-23": {
+    "de": "Route 23",
+    "en": "Route 23"
+  },
+  "route-24": {
+    "de": "Route 24",
+    "en": "Route 24"
+  },
+  "route-25": {
+    "de": "Route 25",
+    "en": "Route 25"
+  },
+  "route-26": {
+    "de": "Route 26",
+    "en": "Route 26"
+  },
+  "route-27": {
+    "de": "Route 27",
+    "en": "Route 27"
+  },
+  "route-3": {
+    "de": "Route 3",
+    "en": "Route 3"
+  },
+  "route-30": {
+    "de": "Route 30",
+    "en": "Route 30"
+  },
+  "route-31": {
+    "de": "Route 31",
+    "en": "Route 31"
+  },
+  "route-32": {
+    "de": "Route 32",
+    "en": "Route 32"
+  },
+  "route-33": {
+    "de": "Route 33",
+    "en": "Route 33"
+  },
+  "route-34": {
+    "de": "Route 34",
+    "en": "Route 34"
+  },
+  "route-35": {
+    "de": "Route 35",
+    "en": "Route 35"
+  },
+  "route-36": {
+    "de": "Route 36",
+    "en": "Route 36"
+  },
+  "route-37": {
+    "de": "Route 37",
+    "en": "Route 37"
+  },
+  "route-38": {
+    "de": "Route 38",
+    "en": "Route 38"
+  },
+  "route-39": {
+    "de": "Route 39",
+    "en": "Route 39"
+  },
+  "route-4": {
+    "de": "Route 4",
+    "en": "Route 4"
+  },
+  "route-42": {
+    "de": "Route 42",
+    "en": "Route 42"
+  },
+  "route-43": {
+    "de": "Route 43",
+    "en": "Route 43"
+  },
+  "route-44": {
+    "de": "Route 44",
+    "en": "Route 44"
+  },
+  "route-45": {
+    "de": "Route 45",
+    "en": "Route 45"
+  },
+  "route-46": {
+    "de": "Route 46",
+    "en": "Route 46"
+  },
+  "route-5": {
+    "de": "Route 5",
+    "en": "Route 5"
+  },
+  "route-6": {
+    "de": "Route 6",
+    "en": "Route 6"
+  },
+  "route-7": {
+    "de": "Route 7",
+    "en": "Route 7"
+  },
+  "route-8": {
+    "de": "Route 8",
+    "en": "Route 8"
+  },
+  "route-9": {
+    "de": "Route 9",
+    "en": "Route 9"
+  },
+  "route-bardane": {
+    "de": "Turner-Pfad",
+    "en": "Clay Tunnel"
+  },
+  "route-de-cuchalaga": {
+    "de": "Cucharico-Pfad",
+    "en": "Poco Path"
+  },
+  "route-tison": {
+    "de": "Glühweg",
+    "en": "Kindle Road"
+  },
+  "route-victoire": {
+    "ko": "챔피언로드",
+    "de": "Siegesstraße",
+    "es": "Calle Victoria",
+    "it": "Via Vittoria",
+    "en": "Victory Road",
+    "ja": "チャンピオンロード"
+  },
+  "route10": {
+    "de": "Route 10",
+    "en": "Route 10"
+  },
+  "route11": {
+    "ko": "11번도로",
+    "de": "Route 11",
+    "es": "Ruta 11",
+    "it": "Percorso 11",
+    "en": "Route 11",
+    "ja": "１１番道路"
+  },
+  "route12": {
+    "ko": "12번도로",
+    "de": "Route 12",
+    "es": "Ruta 12",
+    "it": "Percorso 12",
+    "en": "Route 12",
+    "ja": "１２番道路"
+  },
+  "route14": {
+    "ko": "14번도로",
+    "de": "Route 14",
+    "es": "Ruta 14",
+    "it": "Percorso 14",
+    "en": "Route 14",
+    "ja": "１４番道路"
+  },
+  "route15": {
+    "ko": "15번수로",
+    "de": "Route 15 (Wasserweg)",
+    "es": "Ruta 15",
+    "it": "Percorso 15",
+    "en": "Route 15",
+    "ja": "１５番水道"
+  },
+  "route16": {
+    "ko": "16번도로",
+    "de": "Route 16",
+    "es": "Ruta 16",
+    "it": "Percorso 16",
+    "en": "Route 16",
+    "ja": "１６番道路"
+  },
+  "route18": {
+    "ko": "18번도로",
+    "de": "Route 18",
+    "es": "Ruta 18",
+    "it": "Percorso 18",
+    "en": "Route 18",
+    "ja": "１８番道路"
+  },
+  "route19": {
+    "ko": "19번도로",
+    "de": "Route 19",
+    "es": "Ruta 19",
+    "it": "Percorso 19",
+    "en": "Route 19",
+    "ja": "１９番道路"
+  },
+  "route20": {
+    "ko": "20번도로",
+    "de": "Route 20",
+    "es": "Ruta 20",
+    "it": "Percorso 20",
+    "en": "Route 20",
+    "ja": "２０番道路"
+  },
+  "route202": {
+    "de": "Route 202",
+    "en": "Route 202"
+  },
+  "route203": {
+    "de": "Route 203",
+    "en": "Route 203"
+  },
+  "route204": {
+    "de": "Route 204",
+    "en": "Route 204"
+  },
+  "route205": {
+    "de": "Route 205",
+    "en": "Route 205"
+  },
+  "route206": {
+    "de": "Route 206",
+    "en": "Route 206"
+  },
+  "route207": {
+    "de": "Route 207",
+    "en": "Route 207"
+  },
+  "route208": {
+    "de": "Route 208",
+    "en": "Route 208"
+  },
+  "route209": {
+    "de": "Route 209",
+    "en": "Route 209"
+  },
+  "route21": {
+    "ko": "21번도로",
+    "de": "Route 21",
+    "es": "Ruta 21",
+    "it": "Percorso 21",
+    "en": "Route 21",
+    "ja": "２１番道路"
+  },
+  "route210": {
+    "de": "Route 210",
+    "en": "Route 210"
+  },
+  "route211": {
+    "de": "Route 211",
+    "en": "Route 211"
+  },
+  "route212": {
+    "de": "Route 212",
+    "en": "Route 212"
+  },
+  "route213": {
+    "de": "Route 213",
+    "en": "Route 213"
+  },
+  "route214": {
+    "de": "Route 214",
+    "en": "Route 214"
+  },
+  "route215": {
+    "de": "Route 215",
+    "en": "Route 215"
+  },
+  "route216": {
+    "de": "Route 216",
+    "en": "Route 216"
+  },
+  "route217": {
+    "de": "Route 217",
+    "en": "Route 217"
+  },
+  "route218": {
+    "de": "Route 218",
+    "en": "Route 218"
+  },
+  "route219": {
+    "de": "Route 219",
+    "en": "Route 219"
+  },
+  "route22": {
+    "ko": "22번도로",
+    "de": "Route 22",
+    "es": "Ruta 22",
+    "it": "Percorso 22",
+    "en": "Route 22",
+    "ja": "２２番道路"
+  },
+  "route221": {
+    "de": "Route 221",
+    "en": "Route 221"
+  },
+  "route222": {
+    "de": "Route 222",
+    "en": "Route 222"
+  },
+  "route224": {
+    "de": "Route 224",
+    "en": "Route 224"
+  },
+  "route225": {
+    "de": "Route 225",
+    "en": "Route 225"
+  },
+  "route227": {
+    "de": "Route 227",
+    "en": "Route 227"
+  },
+  "route228": {
+    "de": "Route 228",
+    "en": "Route 228"
+  },
+  "route229": {
+    "de": "Route 229",
+    "en": "Route 229"
+  },
+  "ruines-tanoby": {
+    "de": "Tanibo-Ruinen",
+    "en": "Tanoby Ruins"
+  },
+  "ruinesdalpha": {
+    "de": "Alph-Ruinen",
+    "en": "Ruins of Alph"
+  },
+  "safrania": {
+    "en": "Saffron City",
+    "de": "Saffronopolis",
+    "es": "Ciudad Azafrán",
+    "ja": "ヤマブキシティ",
+    "it": "Zafferanopoli",
+    "ko": "사프란시티",
+    "zh-Hans": "紫苑市",
+    "zh-Hant": "紫苑市",
+    "pt-BR": "Cidade Açafrão"
+  },
+  "sentier-sinuroc": {
+    "ko": "울퉁불퉁 산길",
+    "de": "Steilpass",
+    "es": "Desfiladero",
+    "it": "Passo Selvaggio",
+    "en": "Jagged Pass",
+    "ja": "デコボコ山道"
+  },
+  "sevaro": {
+    "de": "Moldrid",
+    "en": "Cortondo"
+  },
+  "site-meteore": {
+    "ko": "유성의 폭포",
+    "de": "Meteorfälle",
+    "es": "Cascada Meteoro",
+    "it": "Cascate Meteora",
+    "en": "Meteor Falls",
+    "ja": "流星の滝"
+  },
+  "skifford": {
+    "de": "Keelton",
+    "en": "Hulbury"
+  },
+  "smashings": {
+    "de": "Spikeford",
+    "en": "Spikemuth"
+  },
+  "sylphe-sarl": {
+    "en": "Silph Co.",
+    "de": "Silph AG",
+    "es": "Silph S.A.",
+    "ja": "シルフカンパニー",
+    "it": "Silph S.p.A.",
+    "ko": "실프 주식회사",
+    "zh-Hans": "松果公司",
+    "zh-Hant": "松果公司",
+    "pt-BR": "Silph Ltda."
+  },
+  "tour-des-cieux": {
+    "de": "Turm des Himmels",
+    "en": "Celestial Tower"
+  },
+  "tour-dragospire": {
+    "de": "Drachenstiege",
+    "en": "Dragonspiral Tower"
+  },
+  "tour-perdue": {
+    "de": "Turm der Ruhenden",
+    "en": "Lost Tower"
+  },
+  "tour-pokemon": {
+    "de": "Pokémon-Turm",
+    "en": "Pokémon Tower"
+  },
+  "tourbiere-flocombe": {
+    "de": "Moor von Nevaio",
+    "en": "Moor of Icirrus"
+  },
+  "tourcendree": {
+    "de": "Turmruine",
+    "en": "Burned Tower"
+  },
+  "tourchetiflor": {
+    "de": "Knofensa-Turm",
+    "en": "Sprout Tower"
+  },
+  "tunnel-merazon": {
+    "ko": "금잔터널",
+    "de": "Metaflurtunnel",
+    "es": "Túnel Fervergal",
+    "it": "Tunnel Menferro",
+    "en": "Rusturf Tunnel",
+    "ja": "カナシダトンネル"
+  },
+  "tunnel-mezcla-pincho": {
+    "de": "Mesclores-Passage",
+    "en": "Dalizapa Passage"
+  },
+  "tunnel-taupiqueur": {
+    "ko": "디그다터널",
+    "de": "Digda-Tunnel",
+    "es": "Túnel Diglett",
+    "it": "Tunnel Diglett",
+    "en": "Diglett’s Tunnel",
+    "ja": "ディグダトンネル"
+  },
+  "ultra-dimension": {
+    "ko": "울트라스페이스",
+    "de": "Ultradimension",
+    "es": "Ultraespacio",
+    "it": "Ultramondo",
+    "en": "Ultra Space",
+    "ja": "ウルトラスペース"
+  },
+  "unionpolis": {
+    "de": "Herzhofen",
+    "en": "Hearthome City"
+  },
+  "vaguelone": {
+    "de": "Ondula",
+    "en": "Undella Town"
+  },
+  "vallee-ruine": {
+    "de": "Ruinental",
+    "en": "Ruin Valley"
+  },
+  "veine-souterraine": {
+    "de": "Grundwassersenke",
+    "en": "Wellspring Cave"
+  },
+  "verchamps": {
+    "de": "Weideburg",
+    "en": "Pastoria City"
+  },
+  "vermilava": {
+    "ko": "용암마을",
+    "de": "Bad Lavastadt",
+    "es": "Pueblo Lavacalda",
+    "it": "Cuordilava",
+    "en": "Lavaridge Town",
+    "ja": "フエンタウン"
+  },
+  "vestiges-du-reve": {
+    "de": "Traumbrache",
+    "en": "Dreamyard"
+  },
+  "vestigion": {
+    "de": "Ewigenau",
+    "en": "Eterna City"
+  },
+  "vieille-route": {
+    "ko": "포니옛길",
+    "de": "Alter Pfad von Poni",
+    "es": "Antiguo Paso de Poni",
+    "it": "Via Antica di Poni",
+    "en": "Ancient Poni Path",
+    "ja": "ポニの古道"
+  },
+  "village-flottant": {
+    "ko": "바다민족의 마을",
+    "de": "Dorf des Seevolkes",
+    "es": "Aldea Marina",
+    "it": "Villaggio del Mare",
+    "en": "Seafolk Village",
+    "ja": "海の民の村"
+  },
+  "voilaroc": {
+    "de": "Schleiede",
+    "en": "Veilstone City"
+  },
+  "volucite": {
+    "en": "Violet City",
+    "de": "Violettenstadt",
+    "es": "Ciudad Violeta",
+    "ja": "キキョウシティ",
+    "it": "Violetropoli",
+    "ko": "바이올렛시티",
+    "zh-Hans": "紫木市",
+    "zh-Hant": "紫木市",
+    "pt-BR": "Cidade Violeta"
+  },
+  "winscor": {
+    "de": "Score City",
+    "en": "Wyndon"
+  },
+  "yantreizh": {
+    "ko": "사라시티",
+    "de": "Yantara City",
+    "es": "Ciudad Yantra",
+    "it": "Yantaropoli",
+    "en": "Shalour City",
+    "ja": "シャラシティ"
+  },
+  "zone-zero": {
+    "de": "Zone Null",
+    "en": "Area Zero"
+  }
+}

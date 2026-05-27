@@ -61,9 +61,9 @@ const schema = {
     ]} />
 
     <header class="top-header">
-      <div class="top-header__label">🔥 Classement</div>
-      <h1>Prénoms les plus répandus</h1>
-      <p class="top-header__sub">
+      <div class="top-header__label" data-i18n-ui="top.repandus-label">🔥 Classement</div>
+      <h1 data-i18n-ui="top.repandus-title">Prénoms les plus répandus</h1>
+      <p class="top-header__sub" data-i18n-ui="top.repandus-sub">
         Les 100 prénoms les plus portés par les dresseurs Pokémon dans toute la saga.
         Combien partagent le tien ?
       </p>
@@ -81,7 +81,7 @@ const schema = {
             <span class="podium__medal">{medals[i]}</span>
             <span class="podium__rank">#{i + 1}</span>
             <span class="podium__name">{n.name}</span>
-            <span class="podium__count">{n.count} dresseurs</span>
+            <span class="podium__count" data-i18n-ui="top.podium-count" data-count={n.count}>{n.count} dresseurs</span>
           </a>
         );
       })}
@@ -107,7 +107,7 @@ const schema = {
 
     <!-- Lien croisé -->
     <div class="crosslink">
-      <a href="/top/legendaires" class="crosslink__btn">
+      <a href="/top/legendaires" class="crosslink__btn" data-i18n-ui="top.crosslink-legendaires">
         🏆 Voir les prénoms légendaires (uniques) →
       </a>
     </div>

@@ -6,6 +6,7 @@ import TrainerCard from '../../components/TrainerCard.astro';
 import trainersRaw from '../../data/trainers.json';
 import pokemonMetaRaw from '../../data/pokemon-meta.json';
 import classSpritesRaw from '../../data/trainer-class-sprites.json';
+import placeNamesRaw from '../../data/place-names-i18n.json';
 import { toPokemonSlug, placeLabel } from '../../utils/slug';
 import I18nScript from '../../components/I18nScript.astro';
 import '../../styles/global.css';
@@ -41,7 +42,32 @@ const { trainer: t } = Astro.props as { trainer: any };
 const gameName    = t.game.replace('Pokémon ', '');
 const placeText   = t.place ? placeLabel(t.place) : null;
 const teamText    = (t.team ?? []).join(', ');
+
+// Noms de lieu traduits par langue (pour les paragraphes lore)
+const placeNames  = placeNamesRaw as Record<string, Record<string, string>>;
+const placeByLang: Record<string, string | null> = {};
+if (t.place) {
+  const translations = placeNames[t.place] ?? {};
+  for (const lang of ['en','de','es','ja','it','ko','zh-Hans','zh-Hant','pt-BR']) {
+    placeByLang[lang] = translations[lang] ?? placeText;
+  }
+}
 const classSprite = classSprites[t.class] ?? null;
+
+// Traductions des noms Pokémon de l'équipe par langue
+const TEAM_LANGS = ['en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'] as const;
+const teamIntl: Record<string, string> = {};
+if ((t.team ?? []).length > 0) {
+  for (const lang of TEAM_LANGS) {
+    const names = (t.team as string[]).map((frName: string) => {
+      const pm = pokemonMeta[frName] as any;
+      if (!pm) return frName;
+      const intl = (pm.names_intl ?? {}) as Record<string, string>;
+      return intl[lang] ?? pm.name_en ?? frName;
+    });
+    teamIntl[lang] = names.join(', ');
+  }
+}
 
 // Dresseurs proches : même lieu d'abord, puis même jeu
 const allTrainers = trainersRaw as any[];
@@ -52,6 +78,25 @@ const nearbyGame  = allTrainers
   .filter(x => x.slug !== t.slug && x.game === t.game && !nearbyPlace.find(n => n.slug === x.slug))
   .slice(0, 4 - nearbyPlace.length > 0 ? 4 - nearbyPlace.length : 4);
 const nearby = [...nearbyPlace, ...nearbyGame].slice(0, 6);
+
+// Pré-calcul des données d'équipe (dans le frontmatter pour éviter les generics TS dans le JSX)
+interface TeamPkmData {
+  pkm: string; pSlug: string; sprite: string | null;
+  types: string[]; nameEn: string; namesData: string;
+}
+const teamData: TeamPkmData[] = (t.team ?? []).map((pkm: string) => {
+  const pMeta  = pokemonMeta[pkm] ?? null;
+  const sprite = (pMeta?.sprite ?? null) as string | null;
+  const types  = (pMeta?.types ?? []) as string[];
+  const nameEn = (pMeta?.name_en ?? '') as string;
+  const intl   = (pMeta?.names_intl ?? {}) as Record<string, string>;
+  const en2    = intl['en'] ?? nameEn;
+  const namesData = Object.entries({ en: en2, ...intl })
+    .filter(([, v]) => v)
+    .map(([k, v]) => `${k}:${v}`)
+    .join('|');
+  return { pkm, pSlug: toPokemonSlug(pkm), sprite, types, nameEn, namesData };
+});
 
 const title = `${t.class} ${t.name} — ${gameName} | PokéNom`;
 const description = placeText
@@ -70,38 +115,183 @@ const schema = {
 ---
 
 <!-- Descriptions multilingues (mises à jour côté client via Base.astro applyLang) -->
-<script define:vars={{ trainerName: t.name, trainerClass: t.class, trainerGame: t.game, trainerPlace: placeText, trainerTeam: teamText }}>
+<script define:vars={{ trainerName: t.name, trainerClass: t.class, trainerGame: t.game, trainerPlace: placeText, placeByLang, trainerTeam: teamText, teamIntl, trainerRarityKey: t.rarity_key, trainerNameCount: t.name_count, trainerGameSlug: t.game_slug, trainerNameSlug: t.name_slug }}>
   // define:vars = JS pur (pas de TypeScript)
-  const templates = {
-    fr: (c,n,g,p,tm) => p
-      ? `${c} ${n} est un dresseur Pokémon rencontré ${p} dans ${g}. Son équipe : ${tm||'inconnue'}.`
-      : `${c} ${n} est un dresseur Pokémon de ${g}. Son équipe : ${tm||'inconnue'}.`,
-    en: (c,n,g,p,tm) => p
-      ? `${c} ${n} is a Pokémon Trainer encountered ${p} in ${g}. Team: ${tm||'unknown'}.`
-      : `${c} ${n} is a Pokémon Trainer from ${g}. Team: ${tm||'unknown'}.`,
-    de: (c,n,g,p,tm) => p
-      ? `${c} ${n} ist ein Pokémon-Trainer, dem du ${p} in ${g} begegnest. Team: ${tm||'unbekannt'}.`
-      : `${c} ${n} ist ein Pokémon-Trainer aus ${g}. Team: ${tm||'unbekannt'}.`,
-    es: (c,n,g,p,tm) => p
-      ? `${c} ${n} es un Entrenador Pokémon que se encuentra ${p} en ${g}. Equipo: ${tm||'desconocido'}.`
-      : `${c} ${n} es un Entrenador Pokémon de ${g}. Equipo: ${tm||'desconocido'}.`,
-    it: (c,n,g,p,tm) => p
-      ? `${c} ${n} è un Allenatore Pokémon incontrato ${p} in ${g}. Squadra: ${tm||'sconosciuta'}.`
-      : `${c} ${n} è un Allenatore Pokémon di ${g}. Squadra: ${tm||'sconosciuta'}.`,
-    'pt-BR': (c,n,g,p,tm) => p
-      ? `${c} ${n} é um Treinador Pokémon encontrado ${p} em ${g}. Time: ${tm||'desconhecido'}.`
-      : `${c} ${n} é um Treinador Pokémon de ${g}. Time: ${tm||'desconhecido'}.`,
-    ko: (c,n,g,p,tm) => `${g}의 포켓몬 트레이너 ${n}. 파티: ${tm||'알 수 없음'}.`,
-    ja: (c,n,g,p,tm) => `${g}のポケモントレーナー、${n}。パーティ: ${tm||'不明'}.`,
-    'zh-Hans': (c,n,g,p,tm) => `${g}中的宝可梦训练师${n}。队伍: ${tm||'未知'}.`,
-    'zh-Hant': (c,n,g,p,tm) => `${g}中的寶可夢訓練師${n}。隊伍: ${tm||'未知'}.`,
-  };
 
+  // ── Échappement HTML minimal (évite XSS dans innerHTML) ──────
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Blocs HTML réutilisables ──────────────────────────────────
+  // Le lien jeu conserve data-game-fr pour être retraduit après injection
+  const gameLink  = `<a href="/jeu/${esc(trainerGameSlug)}" data-game-fr="${esc(trainerGame)}">${esc(trainerGame)}</a>`;
+  const nameLink  = `<a href="/prenom/${esc(trainerNameSlug)}">${esc(trainerName)}</a>`;
+  const boldName  = `<strong>${esc(trainerClass)} ${esc(trainerName)}</strong>`;
+  const teamStr   = trainerTeam ? esc(trainerTeam) : '';
+  const placeStr  = trainerPlace ? esc(trainerPlace) : '';
+  // Helper: retourne le nom de lieu traduit pour une langue donnée (fallback au FR)
+  function ps(lang) {
+    const raw = placeByLang && placeByLang[lang];
+    return raw ? esc(raw) : placeStr;
+  }
+
+  // Helper : retourne le texte d'équipe traduit pour une langue donnée
+  function ts(lang) {
+    const raw = teamIntl[lang];
+    return raw ? esc(raw) : teamStr;
+  }
+
+  // ── Descriptions meta (SEO, texte brut) ──────────────────────
+  const metaTemplates = {
+    fr: (p,tm) => p
+      ? `${trainerClass} ${trainerName} est un dresseur Pokémon rencontré ${p} dans ${trainerGame}. Équipe : ${tm||'inconnue'}.`
+      : `${trainerClass} ${trainerName} est un dresseur Pokémon de ${trainerGame}. Équipe : ${tm||'inconnue'}.`,
+    en: (p,tm) => p
+      ? `${trainerClass} ${trainerName} is a Pokémon Trainer encountered ${p} in ${trainerGame}. Team: ${tm||'unknown'}.`
+      : `${trainerClass} ${trainerName} is a Pokémon Trainer from ${trainerGame}. Team: ${tm||'unknown'}.`,
+    de: (p,tm) => p
+      ? `${trainerClass} ${trainerName} ist ein Pokémon-Trainer, dem du ${p} in ${trainerGame} begegnest. Team: ${tm||'unbekannt'}.`
+      : `${trainerClass} ${trainerName} ist ein Pokémon-Trainer aus ${trainerGame}. Team: ${tm||'unbekannt'}.`,
+    es: (p,tm) => p
+      ? `${trainerClass} ${trainerName} es un Entrenador Pokémon que se encuentra ${p} en ${trainerGame}. Equipo: ${tm||'desconocido'}.`
+      : `${trainerClass} ${trainerName} es un Entrenador Pokémon de ${trainerGame}. Equipo: ${tm||'desconocido'}.`,
+    it: (p,tm) => p
+      ? `${trainerClass} ${trainerName} è un Allenatore Pokémon incontrato ${p} in ${trainerGame}. Squadra: ${tm||'sconosciuta'}.`
+      : `${trainerClass} ${trainerName} è un Allenatore Pokémon di ${trainerGame}. Squadra: ${tm||'sconosciuta'}.`,
+    'pt-BR': (p,tm) => p
+      ? `${trainerClass} ${trainerName} é um Treinador Pokémon encontrado ${p} em ${trainerGame}. Time: ${tm||'desconhecido'}.`
+      : `${trainerClass} ${trainerName} é um Treinador Pokémon de ${trainerGame}. Time: ${tm||'desconhecido'}.`,
+    ko: (p,tm) => `${trainerGame}의 포켓몬 트레이너 ${trainerName}. 파티: ${tm||'알 수 없음'}.`,
+    ja: (p,tm) => `${trainerGame}のポケモントレーナー、${trainerName}。パーティ: ${tm||'不明'}.`,
+    'zh-Hans': (p,tm) => `${trainerGame}中的宝可梦训练师${trainerName}。队伍: ${tm||'未知'}.`,
+    'zh-Hant': (p,tm) => `${trainerGame}中的寶可夢訓練師${trainerName}。隊伍: ${tm||'未知'}.`,
+  };
   const desc = {};
-  for (const [lang, fn] of Object.entries(templates)) {
-    desc[lang] = fn(trainerClass, trainerName, trainerGame, trainerPlace, trainerTeam);
+  for (const [lang, fn] of Object.entries(metaTemplates)) {
+    // Utilise le nom d'équipe et le nom de lieu traduits pour la meta description
+    const tmForLang = teamIntl[lang] || trainerTeam;
+    const placeForLang = (placeByLang && placeByLang[lang]) || trainerPlace;
+    desc[lang] = fn(placeForLang, tmForLang);
   }
   window.__page_desc_i18n = desc;
+
+  // ── Paragraphes HTML avec liens (innerHTML) ───────────────────
+  // gameLink a data-game-fr → retraduit par applyLang après injection
+  const loreParagraphs = {
+    fr: placeStr
+      ? `${boldName} est un dresseur Pokémon que l'on rencontre ${placeStr} dans ${gameLink}.${teamStr ? ` Son équipe est composée de ${teamStr}.` : ''}`
+      : `${boldName} est un dresseur Pokémon de ${gameLink}.${teamStr ? ` Son équipe est composée de ${teamStr}.` : ''}`,
+    en: ps('en')
+      ? `${boldName} is a Pokémon Trainer encountered ${ps('en')} in ${gameLink}.${ts('en') ? ` Team: ${ts('en')}.` : ''}`
+      : `${boldName} is a Pokémon Trainer from ${gameLink}.${ts('en') ? ` Team: ${ts('en')}.` : ''}`,
+    de: ps('de')
+      ? `${boldName} ist ein Pokémon-Trainer, dem du ${ps('de')} in ${gameLink} begegnest.${ts('de') ? ` Team: ${ts('de')}.` : ''}`
+      : `${boldName} ist ein Pokémon-Trainer aus ${gameLink}.${ts('de') ? ` Team: ${ts('de')}.` : ''}`,
+    es: ps('es')
+      ? `${boldName} es un Entrenador Pokémon que se encuentra ${ps('es')} en ${gameLink}.${ts('es') ? ` Equipo: ${ts('es')}.` : ''}`
+      : `${boldName} es un Entrenador Pokémon de ${gameLink}.${ts('es') ? ` Equipo: ${ts('es')}.` : ''}`,
+    it: ps('it')
+      ? `${boldName} è un Allenatore Pokémon incontrato ${ps('it')} in ${gameLink}.${ts('it') ? ` Squadra: ${ts('it')}.` : ''}`
+      : `${boldName} è un Allenatore Pokémon di ${gameLink}.${ts('it') ? ` Squadra: ${ts('it')}.` : ''}`,
+    'pt-BR': ps('pt-BR')
+      ? `${boldName} é um Treinador Pokémon encontrado ${ps('pt-BR')} em ${gameLink}.${ts('pt-BR') ? ` Time: ${ts('pt-BR')}.` : ''}`
+      : `${boldName} é um Treinador Pokémon de ${gameLink}.${ts('pt-BR') ? ` Time: ${ts('pt-BR')}.` : ''}`,
+    ko: ps('ko')
+      ? `${boldName}은(는) ${ps('ko')}에서 만나는 ${gameLink}의 포켓몬 트레이너.${ts('ko') ? ` 파티: ${ts('ko')}.` : ''}`
+      : `${boldName}은(는) ${gameLink}의 포켓몬 트레이너.${ts('ko') ? ` 파티: ${ts('ko')}.` : ''}`,
+    ja: ps('ja')
+      ? `${boldName} は ${ps('ja')} で出会える ${gameLink} のポケモントレーナー。${ts('ja') ? `パーティ: ${ts('ja')}。` : ''}`
+      : `${boldName} は ${gameLink} のポケモントレーナー。${ts('ja') ? `パーティ: ${ts('ja')}。` : ''}`,
+    'zh-Hans': ps('zh-Hans')
+      ? `${boldName} 是在 ${ps('zh-Hans')} 的 ${gameLink} 中遇到的宝可梦训练家。${ts('zh-Hans') ? `队伍: ${ts('zh-Hans')}。` : ''}`
+      : `${boldName} 是 ${gameLink} 中的宝可梦训练家。${ts('zh-Hans') ? `队伍: ${ts('zh-Hans')}。` : ''}`,
+    'zh-Hant': ps('zh-Hant')
+      ? `${boldName} 是在 ${ps('zh-Hant')} 的 ${gameLink} 中遇到的寶可夢訓練家。${ts('zh-Hant') ? `隊伍: ${ts('zh-Hant')}。` : ''}`
+      : `${boldName} 是 ${gameLink} 中的寶可夢訓練家。${ts('zh-Hant') ? `隊伍: ${ts('zh-Hant')}。` : ''}`,
+  };
+
+  const rarityParagraphs = {
+    fr: {
+      legendaire: `Le prénom ${nameLink} est légendaire dans Pokémon — c'est le seul dresseur à le porter !`,
+      rare:       `Le prénom ${nameLink} est rare dans l'univers Pokémon, avec seulement ${trainerNameCount} dresseurs.`,
+      common:     `Le prénom ${nameLink} est porté par ${trainerNameCount} dresseurs dans la base.`,
+    },
+    en: {
+      legendaire: `The name ${nameLink} is legendary in Pokémon — the only trainer to carry it!`,
+      rare:       `The name ${nameLink} is rare in the Pokémon universe, with only ${trainerNameCount} trainers.`,
+      common:     `The name ${nameLink} is used by ${trainerNameCount} trainers in the database.`,
+    },
+    de: {
+      legendaire: `Der Name ${nameLink} ist legendär in Pokémon — der einzige Trainer mit diesem Namen!`,
+      rare:       `Der Name ${nameLink} ist selten im Pokémon-Universum, mit nur ${trainerNameCount} Trainern.`,
+      common:     `Der Name ${nameLink} wird von ${trainerNameCount} Trainern in der Datenbank getragen.`,
+    },
+    es: {
+      legendaire: `¡El nombre ${nameLink} es legendario en Pokémon — el único entrenador que lo lleva!`,
+      rare:       `El nombre ${nameLink} es raro en el universo Pokémon, con solo ${trainerNameCount} entrenadores.`,
+      common:     `El nombre ${nameLink} lo llevan ${trainerNameCount} entrenadores en la base de datos.`,
+    },
+    it: {
+      legendaire: `Il nome ${nameLink} è leggendario in Pokémon — l'unico allenatore a portarlo!`,
+      rare:       `Il nome ${nameLink} è raro nell'universo Pokémon, con solo ${trainerNameCount} allenatori.`,
+      common:     `Il nome ${nameLink} è portato da ${trainerNameCount} allenatori nel database.`,
+    },
+    'pt-BR': {
+      legendaire: `O nome ${nameLink} é lendário em Pokémon — o único treinador a carregá-lo!`,
+      rare:       `O nome ${nameLink} é raro no universo Pokémon, com apenas ${trainerNameCount} treinadores.`,
+      common:     `O nome ${nameLink} é usado por ${trainerNameCount} treinadores na base de dados.`,
+    },
+    ko: {
+      legendaire: `${nameLink}라는 이름은 포켓몬에서 전설입니다 — 이 이름을 가진 유일한 트레이너!`,
+      rare:       `${nameLink}라는 이름은 포켓몬 세계에서 희귀하며, ${trainerNameCount}명의 트레이너만 사용합니다.`,
+      common:     `${nameLink}라는 이름은 데이터베이스의 ${trainerNameCount}명의 트레이너가 사용합니다.`,
+    },
+    ja: {
+      legendaire: `${nameLink} という名前はポケモンで伝説的 — このトレーナーだけが持っています！`,
+      rare:       `${nameLink} という名前はポケモンの世界で珍しく、${trainerNameCount} 人のトレーナーしかいません。`,
+      common:     `${nameLink} という名前はデータベースの ${trainerNameCount} 人のトレーナーが持っています。`,
+    },
+    'zh-Hans': {
+      legendaire: `${nameLink} 这个名字在宝可梦中是传奇的 — 唯一拥有此名字的训练家！`,
+      rare:       `${nameLink} 这个名字在宝可梦世界中很罕见，只有 ${trainerNameCount} 位训练家。`,
+      common:     `${nameLink} 这个名字被数据库中的 ${trainerNameCount} 位训练家使用。`,
+    },
+    'zh-Hant': {
+      legendaire: `${nameLink} 這個名字在寶可夢中是傳奇的 — 唯一擁有此名字的訓練家！`,
+      rare:       `${nameLink} 這個名字在寶可夢世界中很罕見，只有 ${trainerNameCount} 位訓練家。`,
+      common:     `${nameLink} 這個名字被資料庫中的 ${trainerNameCount} 位訓練家使用。`,
+    },
+  };
+
+  // ── Titres "À propos de" ──────────────────────────────────────
+  const aboutTitles = {
+    fr: `À propos de ${trainerClass} ${trainerName}`,
+    en: `About ${trainerClass} ${trainerName}`,
+    de: `Über ${trainerClass} ${trainerName}`,
+    es: `Acerca de ${trainerClass} ${trainerName}`,
+    it: `A proposito di ${trainerClass} ${trainerName}`,
+    'pt-BR': `Sobre ${trainerClass} ${trainerName}`,
+    ko: `${trainerClass} ${trainerName}에 대하여`,
+    ja: `${trainerClass} ${trainerName} について`,
+    'zh-Hans': `关于 ${trainerClass} ${trainerName}`,
+    'zh-Hant': `關於 ${trainerClass} ${trainerName}`,
+  };
+
+  // ── Assemblage window.__page_lore_i18n ────────────────────────
+  const lore = {};
+  const rarityKey = trainerRarityKey === 'legendaire' ? 'legendaire'
+                  : trainerRarityKey === 'rare'       ? 'rare'
+                  : 'common';
+  for (const lang of Object.keys(aboutTitles)) {
+    const rp = rarityParagraphs[lang] ?? rarityParagraphs['fr'];
+    lore[lang] = {
+      aboutTitle: aboutTitles[lang],
+      lorePara:   loreParagraphs[lang] ?? loreParagraphs['fr'],
+      rarityText: rp[rarityKey] ?? (rarityParagraphs['fr'][rarityKey] || ''),
+    };
+  }
+  window.__page_lore_i18n = lore;
 </script>
 
 <Base
@@ -128,7 +318,7 @@ const schema = {
               onerror="this.style.display='none'" loading="eager" />
           )}
           <div>
-            <div class="trainer-page__class">{t.class}</div>
+            <div class="trainer-page__class" data-trainer-class={t.class}>{t.class}</div>
             <h1 class="trainer-page__name">{t.name}</h1>
           </div>
         </div>
@@ -141,7 +331,7 @@ const schema = {
           {placeText && (
             <div class="meta-item">
               <span class="meta-item__icon"><img src="/assets/meta/place.svg" alt="" width="18" height="18" /></span>
-              <a href={`/lieu/${t.place_slug}`}>{placeText}</a>
+              <a href={`/lieu/${t.place_slug}`} data-place-slug={t.place_slug}>{placeText}</a>
             </div>
           )}
           <div class="meta-item">
@@ -156,52 +346,45 @@ const schema = {
       <AdSlot slot="4268967971" format="fluid" layout="in-article" />
 
       <!-- Équipe Pokémon -->
-      {(t.team ?? []).length > 0 && (
+      {teamData.length > 0 && (
         <section class="team-section" aria-label="Équipe Pokémon">
           <h2 data-i18n-ui="trainer-team">Équipe Pokémon</h2>
           <ul class="team-list" role="list">
-            {t.team.map((pkm: string) => {
-              const pSlug  = toPokemonSlug(pkm);
-              const pMeta  = pokemonMeta[pkm] ?? null;
-              const sprite = pMeta?.sprite ?? null;
-              const types  = (pMeta?.types ?? []) as string[];
-              const nameEn = pMeta?.name_en ?? '';
-              return (
-                <li>
-                  <div class="team-pkm">
-                    <a href={`/pokemon/${pSlug}`} class="team-pkm__overlay" aria-label={`Voir ${pkm}`}></a>
-                    <div class="team-pkm__visual">
-                      {sprite
-                        ? <img src={sprite} alt={pkm} width="48" height="48" class="team-pkm__sprite" loading="lazy" />
-                        : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
-                      }
-                    </div>
-                    <div class="team-pkm__info">
-                      <span class="team-pkm__name">{pkm}</span>
-                      {nameEn && nameEn !== pkm && <span class="team-pkm__en">{nameEn}</span>}
-                      {types.length > 0 && (
-                        <div class="team-pkm__types">
-                          {types.map((type: string) => (
-                            <a href={`/type/${type}`} class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`} data-type={type}>
-                              <span class="type-name">{TYPE_FR[type] ?? type}</span>
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <span class="team-pkm__arrow">→</span>
+            {teamData.map(({ pkm, pSlug, sprite, types, nameEn, namesData }) => (
+              <li>
+                <div class="team-pkm">
+                  <a href={`/pokemon/${pSlug}`} class="team-pkm__overlay" aria-label={`Voir ${pkm}`}></a>
+                  <div class="team-pkm__visual">
+                    {sprite
+                      ? <img src={sprite} alt={pkm} width="48" height="48" class="team-pkm__sprite" loading="lazy" />
+                      : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                    }
                   </div>
-                </li>
-              );
-            })}
+                  <div class="team-pkm__info">
+                    <span class="team-pkm__name" data-pkm-name-fr={pkm} data-pkm-names={namesData || undefined}>{pkm}</span>
+                    {nameEn && <span class="team-pkm__en">{nameEn}</span>}
+                    {types.length > 0 && (
+                      <div class="team-pkm__types">
+                        {types.map(type => (
+                          <a href={`/type/${type}`} class="team-type-badge" style={`background:${TYPE_COLORS[type] ?? '#888'}`} data-type={type}>
+                            <span class="type-name">{TYPE_FR[type] ?? type}</span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <span class="team-pkm__arrow">→</span>
+                </div>
+              </li>
+            ))}
           </ul>
         </section>
       )}
 
       <!-- Description naturelle (pour LLM + SEO) -->
       <section class="trainer-page__lore">
-        <h2>À propos de {t.class} {t.name}</h2>
-        <p>
+        <h2 id="trainer-about-h2">À propos de {t.class} {t.name}</h2>
+        <p id="trainer-lore-p">
           <strong>{t.class} {t.name}</strong> est un dresseur Pokémon
           {placeText ? ` que l'on rencontre ${placeText}` : ''} dans
           <a href={`/jeu/${t.game_slug}`}>{t.game}</a>.
@@ -209,7 +392,7 @@ const schema = {
             ` Son équipe est composée de ${teamText}.`
           )}
         </p>
-        <p>
+        <p id="trainer-rarity-p">
           Le prénom <a href={`/prenom/${t.name_slug}`}>{t.name}</a> est
           {t.rarity_key === 'legendaire'
             ? ` légendaire dans Pokémon — c'est le seul dresseur à le porter !`
@@ -233,18 +416,19 @@ const schema = {
       <aside class="trainer-page__related">
         <h2 data-i18n-ui="trainer-explore">Explorer</h2>
         <div class="related-links">
-          <a href={`/prenom/${t.name_slug}`} class="related-link">
+          <a href={`/prenom/${t.name_slug}`} class="related-link"
+            data-i18n-ui="trainer-all-named" data-trainer-name={t.name}>
             👤 Tous les dresseurs nommés {t.name}
           </a>
           <a href={`/jeu/${t.game_slug}`} class="related-link">
-            <img src="/assets/meta/game.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> Tous les dresseurs de {gameName}
+            <img src="/assets/meta/game.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /><span data-i18n-ui="trainer-all-in-game" data-trainer-game={gameName}>Tous les dresseurs de {gameName}</span>
           </a>
           {t.place && (
             <a href={`/lieu/${t.place_slug}`} class="related-link">
-              <img src="/assets/meta/place.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /> Dresseurs au même endroit
+              <img src="/assets/meta/place.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" /><span data-i18n-ui="trainer-same-place">Dresseurs au même endroit</span>
             </a>
           )}
-          <a href="/" class="related-link">
+          <a href="/" class="related-link" data-i18n-ui="trainer-home">
             🏠 Accueil PokéNom
           </a>
         </div>
@@ -253,7 +437,7 @@ const schema = {
       <!-- Dresseurs proches -->
       {nearby.length > 0 && (
         <section class="nearby-section">
-          <h2>Dresseurs similaires</h2>
+          <h2 data-i18n-ui="trainer-nearby">Dresseurs similaires</h2>
           <div class="cards-grid">
             {nearby.map((n: any) => (
               <TrainerCard trainer={n} />

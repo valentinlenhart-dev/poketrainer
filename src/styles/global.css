@@ -36,44 +36,6 @@
   --c-partout:   #c2410c;
 }
 
-/* ─── Dark mode ─────────────────────────────────────────────────── */
-[data-theme="dark"] {
-  --text:         #e2e2f2;
-  --text-mid:     #a4a4c4;
-  --text-soft:    #68688c;
-
-  --bg:           #0d0d1a;
-  --bg2:          #14142a;
-  --surface:      #14142a;
-  --border:       #252540;
-  --border-focus: #5050a0;
-
-  --red-soft:     #3a1010;
-
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
-  --shadow:     0 2px 10px rgba(0,0,0,0.4);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,0.5);
-
-  color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) {
-    --text:         #e2e2f2;
-    --text-mid:     #a4a4c4;
-    --text-soft:    #68688c;
-    --bg:           #0d0d1a;
-    --bg2:          #14142a;
-    --surface:      #14142a;
-    --border:       #252540;
-    --border-focus: #5050a0;
-    --red-soft:     #3a1010;
-    --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
-    --shadow:     0 2px 10px rgba(0,0,0,0.4);
-    --shadow-lg:  0 8px 32px rgba(0,0,0,0.5);
-    color-scheme: dark;
-  }
-}
 
 /* ─── Base ──────────────────────────────────────────────────────── */
 html { scroll-behavior: smooth; font-size: 16px; }
@@ -368,6 +330,34 @@ a:hover { text-decoration: underline; }
   transition: background 0.15s;
 }
 .btn-red:hover { background: var(--red-dark); text-decoration: none; color: #fff; }
+
+/* ─── Sticky ad bar ────────────────────────────────────────────── */
+.sticky-ad {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-height: 28px;
+  overflow: hidden;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+}
+.sticky-ad--hidden { display: none !important; }
+.sticky-ad__close {
+  position: absolute;
+  top: 1px; right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  opacity: 0.5;
+  padding: 2px 4px;
+  line-height: 1;
+  color: var(--text);
+}
+.sticky-ad__close:hover { opacity: 1; }
+.sticky-ad ins { flex: 1; max-height: 25px !important; }
 
 /* ─── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 640px) {
