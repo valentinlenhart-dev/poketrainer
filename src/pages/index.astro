@@ -22,29 +22,29 @@ for (const t of trainers) {
 const schema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "PokéNom",
-  "url": "https://pokenom.fr",
+  "name": "Le Dresseur en Moi",
+  "url": "https://ledresseurenmoi.com",
   "description": "Découvre si ton prénom existe chez un dresseur Pokémon.",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://pokenom.fr/prenom/{search_term_string}",
+    "target": "https://ledresseurenmoi.com/prenom/{search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };
 ---
 
 <Base
-  title="PokéNom — Trouve ton dresseur Pokémon"
+  title="Le Dresseur en Moi — Trouve ton dresseur Pokémon"
   description="Tape ton prénom et découvre si un dresseur Pokémon le porte. 4 728 dresseurs issus de 17 jeux officiels."
   schema={schema}
 >
   <main id="main" class="home-main">
-
+    <span id="page-title-i18n-static" style="display:none" data-key="title.home" />
     <div class="home-center">
       <!-- Logo / titre -->
       <div class="home-brand">
         <div class="home-brand__ball" aria-hidden="true"></div>
-        <span class="home-brand__name">PokéNom</span>
+        <span class="home-brand__name">Le Dresseur en Moi</span>
       </div>
       <p class="home-tagline" data-i18n-ui="home.tagline">Ton prénom existe-t-il chez un dresseur Pokémon ?</p>
 
@@ -157,6 +157,8 @@ const schema = {
   flex-shrink: 0;
 }
 :global(.search-btn:hover) { background: var(--red-dark); }
+:global(.search-btn__icon) { display: none; }
+:global(.search-btn__label) { display: inline; }
 
 /* Hints */
 :global(.search-hints) {
@@ -289,6 +291,12 @@ const schema = {
   .home-footer { position: static; margin-top: 40px; flex-wrap: wrap; justify-content: center; }
   :global(.search-input-wrap) { border-radius: var(--radius); }
   :global(.search-input) { border-radius: var(--radius) 0 0 var(--radius); }
-  :global(.search-btn) { border-radius: var(--radius-xs); }
+  :global(.search-btn) {
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
+    flex-shrink: 0;
+  }
+  :global(.search-btn__label) { display: none; }
+  :global(.search-btn__icon) { display: block; }
 }
 </style>

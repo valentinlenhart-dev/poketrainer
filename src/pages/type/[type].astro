@@ -46,13 +46,14 @@ const count = trainers.length;
 // Jeux représentés
 const games = [...new Set(trainers.map((t: any) => t.game))] as string[];
 
-const title = `Dresseurs ${typeFr} (${count}) — Pokémon de type ${typeFr} | PokéNom`;
+const title = `Dresseurs ${typeFr} (${count}) — Pokémon de type ${typeFr} | Le Dresseur en Moi`;
 const description = `${count} dresseurs Pokémon qui utilisent des Pokémon de type ${typeFr}. Découvrez leurs prénoms, équipes et jeux d'origine.`;
-const canonical = `https://pokenom.fr/type/${type}`;
+const canonical = `https://ledresseurenmoi.com/type/${type}`;
 ---
 
 <Base title={title} description={description} canonical={canonical}>
   <main id="main" class="container">
+    <span id="page-title-i18n" style="display:none" data-name-fr={typeFr} data-suffix-key="title.suffix.type" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: `Type ${typeFr}`, type: type },

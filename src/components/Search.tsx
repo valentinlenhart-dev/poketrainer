@@ -1,4 +1,6 @@
 /** Search.tsx — Island Preact — recherche client-side depuis le JSON statique */
+/// <reference types="preact" />
+import { h, Fragment } from 'preact';
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
 import trainerClassesRaw from '../data/trainer-classes-i18n.json';
 
@@ -22,7 +24,25 @@ interface SearchProps {
   pkmNames?: Record<string, Record<string, string>>;
 }
 
-const HINTS = ['Valentin', 'Pierre', 'Cynthia', 'Lance', 'Iris', 'Leon', 'Marie'];
+const ALL_HINTS = [
+  'Sacha', 'Pierre', 'Ondine', 'Brock', 'Cynthia', 'Lance', 'Iris', 'Leon',
+  'Marie', 'Lucas', 'Aurore', 'Ethan', 'Kris', 'Lyra', 'Rosa', 'Nate',
+  'Brendan', 'May', 'Wally', 'Steven', 'Wallace', 'Alder', 'Diantha',
+  'Calem', 'Serena', 'Hau', 'Lillie', 'Gladion', 'Victor', 'Gloria',
+  'Hop', 'Marnie', 'Bede', 'Nemona', 'Arven', 'Penny', 'Julien',
+  'Thomas', 'Sophie', 'Antoine', 'Emma', 'Camille', 'Nicolas', 'Clara',
+  'Hugo', 'Léa', 'Maxime', 'Chloé', 'Nathan', 'Alice',
+];
+function pickHints(n = 7): string[] {
+  const pool = [...ALL_HINTS];
+  const out: string[] = [];
+  while (out.length < n && pool.length) {
+    const i = Math.floor(Math.random() * pool.length);
+    out.push(pool.splice(i, 1)[0]);
+  }
+  return out;
+}
+const HINTS = pickHints();
 
 const MODAL_DURATION = 2600;
 const NAV_DURATION   = 1500;
@@ -31,7 +51,7 @@ const AD_PUB         = 'ca-pub-6295830585093654';
 // ── Détection de la langue (même logique que Base.astro) ─────────────────────
 function getLang(): string {
   if (typeof window === 'undefined') return 'fr';
-  const saved = localStorage.getItem('pokenom_lang');
+  const saved = localStorage.getItem('ldresseurenmoi_lang');
   if (saved) return saved;
   return document.documentElement.lang || 'fr';
 }
@@ -83,17 +103,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `1 seul dresseur légendaire s'appelle "${q}" !`,
     countN: (n, q) => `${n} dresseurs s'appellent "${q}"`,
     seeFullPage: 'Voir la page complète →',
-    shareBtn: '🎉 Partager mon résultat',
+    shareBtn: 'Partager mon résultat',
     seeAllTrainers: (n) => `Voir les ${n} dresseurs →`,
     shareLbl0: 'Prénom introuvable dans le monde Pokémon !',
     shareLbl1: '1 seul dresseur légendaire porte ce prénom',
     shareLblN: (n, lbl) => `${n} dresseurs portent ce prénom · ${lbl}`,
-    shareText0: (q) => `Mon prénom "${q}" n'existe chez aucun dresseur Pokémon — c'est unique ! 🌟 pokenom.fr`,
-    shareText1: (q) => `Mon prénom "${q}" n'appartient qu'à un seul dresseur légendaire ! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `Il y a ${n} dresseurs Pokémon qui s'appellent "${q}" ${e} pokenom.fr`,
-    copy: '📋 Copier',
-    copied: '✓ Copié !',
-    shareNative: '🔗 Partager',
+    shareText0: (q) => `Mon prénom "${q}" n'existe chez aucun dresseur Pokémon — c'est unique ! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `Mon prénom "${q}" n'appartient qu'à un seul dresseur légendaire ! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `Il y a ${n} dresseurs Pokémon qui s'appellent "${q}" ${e} ledresseurenmoi.com`,
+    copy: 'Copier',
+    copied: 'Copié !',
+    shareNative: 'Partager',
     viewPage: 'Voir la page →',
     rarityLabels: { unique:'Introuvable', legendaire:'Légendaire', rare:'Rare', repandu:'Répandu', partout:'Partout !' },
   },
@@ -113,17 +133,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `Only 1 legendary trainer is named "${q}"!`,
     countN: (n, q) => `${n} trainers are named "${q}"`,
     seeFullPage: 'View full page →',
-    shareBtn: '🎉 Share my result',
+    shareBtn: 'Share my result',
     seeAllTrainers: (n) => `View all ${n} trainers →`,
     shareLbl0: 'Name not found in the Pokémon world!',
     shareLbl1: 'Only 1 legendary trainer bears this name',
     shareLblN: (n, lbl) => `${n} trainers share this name · ${lbl}`,
-    shareText0: (q) => `My name "${q}" doesn't exist in any Pokémon trainer — it's unique! 🌟 pokenom.fr`,
-    shareText1: (q) => `My name "${q}" belongs to only one legendary trainer! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `There are ${n} Pokémon trainers named "${q}" ${e} pokenom.fr`,
-    copy: '📋 Copy',
-    copied: '✓ Copied!',
-    shareNative: '🔗 Share',
+    shareText0: (q) => `My name "${q}" doesn't exist in any Pokémon trainer — it's unique! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `My name "${q}" belongs to only one legendary trainer! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `There are ${n} Pokémon trainers named "${q}" ${e} ledresseurenmoi.com`,
+    copy: 'Copy',
+    copied: 'Copied!',
+    shareNative: 'Share',
     viewPage: 'View page →',
     rarityLabels: { unique:'Unfindable', legendaire:'Legendary', rare:'Rare', repandu:'Common', partout:'Everywhere!' },
   },
@@ -143,17 +163,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `Nur 1 legendärer Trainer heißt „${q}“!`,
     countN: (n, q) => `${n} Trainer heißen „${q}“`,
     seeFullPage: 'Vollständige Seite →',
-    shareBtn: '🎉 Ergebnis teilen',
+    shareBtn: 'Ergebnis teilen',
     seeAllTrainers: (n) => `Alle ${n} Trainer ansehen →`,
     shareLbl0: 'Name in der Pokémon-Welt nicht gefunden!',
     shareLbl1: 'Nur 1 legendärer Trainer trägt diesen Namen',
     shareLblN: (n, lbl) => `${n} Trainer tragen diesen Namen · ${lbl}`,
-    shareText0: (q) => `Mein Name „${q}“ gibt es bei keinem Pokémon-Trainer — einzigartig! 🌟 pokenom.fr`,
-    shareText1: (q) => `Mein Name „${q}“ gehört nur einem legendären Trainer! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `Es gibt ${n} Pokémon-Trainer namens „${q}“ ${e} pokenom.fr`,
-    copy: '📋 Kopieren',
-    copied: '✓ Kopiert!',
-    shareNative: '🔗 Teilen',
+    shareText0: (q) => `Mein Name „${q}“ gibt es bei keinem Pokémon-Trainer — einzigartig! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `Mein Name „${q}“ gehört nur einem legendären Trainer! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `Es gibt ${n} Pokémon-Trainer namens „${q}“ ${e} ledresseurenmoi.com`,
+    copy: 'Kopieren',
+    copied: 'Kopiert!',
+    shareNative: 'Teilen',
     viewPage: 'Seite ansehen →',
     rarityLabels: { unique:'Unbekannt', legendaire:'Legendär', rare:'Selten', repandu:'Verbreitet', partout:'Überall!' },
   },
@@ -173,17 +193,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `¡Solo 1 entrenador legendario se llama "${q}"!`,
     countN: (n, q) => `${n} entrenadores se llaman "${q}"`,
     seeFullPage: 'Ver página completa →',
-    shareBtn: '🎉 Compartir mi resultado',
+    shareBtn: 'Compartir mi resultado',
     seeAllTrainers: (n) => `Ver los ${n} entrenadores →`,
     shareLbl0: '¡Nombre no encontrado en el mundo Pokémon!',
     shareLbl1: 'Solo 1 entrenador legendario lleva este nombre',
     shareLblN: (n, lbl) => `${n} entrenadores tienen este nombre · ${lbl}`,
-    shareText0: (q) => `Mi nombre "${q}" no existe en ningún entrenador Pokémon — ¡es único! 🌟 pokenom.fr`,
-    shareText1: (q) => `¡Mi nombre "${q}" solo pertenece a un entrenador legendario! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `Hay ${n} entrenadores Pokémon llamados "${q}" ${e} pokenom.fr`,
-    copy: '📋 Copiar',
-    copied: '✓ ¡Copiado!',
-    shareNative: '🔗 Compartir',
+    shareText0: (q) => `Mi nombre "${q}" no existe en ningún entrenador Pokémon — ¡es único! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `¡Mi nombre "${q}" solo pertenece a un entrenador legendario! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `Hay ${n} entrenadores Pokémon llamados "${q}" ${e} ledresseurenmoi.com`,
+    copy: 'Copiar',
+    copied: '¡Copiado!',
+    shareNative: 'Compartir',
     viewPage: 'Ver página →',
     rarityLabels: { unique:'Inexistente', legendaire:'Legendario', rare:'Raro', repandu:'Común', partout:'¡En todas partes!' },
   },
@@ -203,17 +223,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `「${q}」という名前の伝説のトレーナーは1人だけ！`,
     countN: (n, q) => `「${q}」という名前のトレーナーが${n}人います`,
     seeFullPage: '詳細ページを見る →',
-    shareBtn: '🎉 結果をシェア',
+    shareBtn: '結果をシェア',
     seeAllTrainers: (n) => `${n}人のトレーナーを全員見る →`,
     shareLbl0: 'ポケモンの世界にない名前！',
     shareLbl1: 'この名前を持つ伝説のトレーナーは1人だけ',
     shareLblN: (n, lbl) => `この名前を持つトレーナーが${n}人 · ${lbl}`,
-    shareText0: (q) => `私の名前「${q}」はポケモントレーナーに存在しない — ユニーク！🌟 pokenom.fr`,
-    shareText1: (q) => `私の名前「${q}」は伝説のトレーナー1人だけのもの！🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `「${q}」という名前のポケモントレーナーが${n}人います ${e} pokenom.fr`,
-    copy: '📋 コピー',
-    copied: '✓ コピーしました！',
-    shareNative: '🔗 シェア',
+    shareText0: (q) => `私の名前「${q}」はポケモントレーナーに存在しない — ユニーク！🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `私の名前「${q}」は伝説のトレーナー1人だけのもの！🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `「${q}」という名前のポケモントレーナーが${n}人います ${e} ledresseurenmoi.com`,
+    copy: 'コピー',
+    copied: 'コピーしました！',
+    shareNative: 'シェア',
     viewPage: 'ページを見る →',
     rarityLabels: { unique:'存在しない', legendaire:'伝説', rare:'レア', repandu:'一般的', partout:'どこでも！' },
   },
@@ -233,17 +253,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `Solo 1 allenatore leggendario si chiama "${q}"!`,
     countN: (n, q) => `${n} allenatori si chiamano "${q}"`,
     seeFullPage: 'Vedi la pagina completa →',
-    shareBtn: '🎉 Condividi il risultato',
+    shareBtn: 'Condividi il risultato',
     seeAllTrainers: (n) => `Vedi tutti i ${n} allenatori →`,
     shareLbl0: 'Nome non trovato nel mondo Pokémon!',
     shareLbl1: 'Solo 1 allenatore leggendario porta questo nome',
     shareLblN: (n, lbl) => `${n} allenatori hanno questo nome · ${lbl}`,
-    shareText0: (q) => `Il mio nome "${q}" non esiste in nessun allenatore Pokémon — è unico! 🌟 pokenom.fr`,
-    shareText1: (q) => `Il mio nome "${q}" appartiene a un solo allenatore leggendario! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `Ci sono ${n} allenatori Pokémon chiamati "${q}" ${e} pokenom.fr`,
-    copy: '📋 Copia',
-    copied: '✓ Copiato!',
-    shareNative: '🔗 Condividi',
+    shareText0: (q) => `Il mio nome "${q}" non esiste in nessun allenatore Pokémon — è unico! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `Il mio nome "${q}" appartiene a un solo allenatore leggendario! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `Ci sono ${n} allenatori Pokémon chiamati "${q}" ${e} ledresseurenmoi.com`,
+    copy: 'Copia',
+    copied: 'Copiato!',
+    shareNative: 'Condividi',
     viewPage: 'Vedi la pagina →',
     rarityLabels: { unique:'Introvabile', legendaire:'Leggendario', rare:'Raro', repandu:'Comune', partout:'Ovunque!' },
   },
@@ -263,17 +283,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `"${q}"라는 이름의 전설적인 트레이너가 딱 1명 있어요!`,
     countN: (n, q) => `"${q}"라는 이름의 트레이너가 ${n}명 있어요`,
     seeFullPage: '전체 페이지 보기 →',
-    shareBtn: '🎉 결과 공유하기',
+    shareBtn: '결과 공유하기',
     seeAllTrainers: (n) => `${n}명 트레이너 모두 보기 →`,
     shareLbl0: '포켓몬 세계에서 찾을 수 없는 이름!',
     shareLbl1: '이 이름을 가진 전설적인 트레이너 단 1명',
     shareLblN: (n, lbl) => `이 이름을 가진 트레이너 ${n}명 · ${lbl}`,
-    shareText0: (q) => `내 이름 "${q}"은 어떤 포켓몬 트레이너에도 없어요 — 독보적! 🌟 pokenom.fr`,
-    shareText1: (q) => `내 이름 "${q}"은 단 한 명의 전설적인 트레이너의 것! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `"${q}"라는 이름의 포켓몬 트레이너가 ${n}명 있어요 ${e} pokenom.fr`,
-    copy: '📋 복사',
-    copied: '✓ 복사됨!',
-    shareNative: '🔗 공유',
+    shareText0: (q) => `내 이름 "${q}"은 어떤 포켓몬 트레이너에도 없어요 — 독보적! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `내 이름 "${q}"은 단 한 명의 전설적인 트레이너의 것! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `"${q}"라는 이름의 포켓몬 트레이너가 ${n}명 있어요 ${e} ledresseurenmoi.com`,
+    copy: '복사',
+    copied: '복사됨!',
+    shareNative: '공유',
     viewPage: '페이지 보기 →',
     rarityLabels: { unique:'존재 안 함', legendaire:'전설', rare:'희귀', repandu:'일반', partout:'어디든!' },
   },
@@ -293,17 +313,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `只有1位传奇训练师叫"${q}"！`,
     countN: (n, q) => `有${n}位训练师叫"${q}"`,
     seeFullPage: '查看完整页面 →',
-    shareBtn: '🎉 分享我的结果',
+    shareBtn: '分享我的结果',
     seeAllTrainers: (n) => `查看全部${n}位训练师 →`,
     shareLbl0: '在宝可梦世界中找不到这个名字！',
     shareLbl1: '只有1位传奇训练师拥有这个名字',
     shareLblN: (n, lbl) => `${n}位训练师有这个名字 · ${lbl}`,
-    shareText0: (q) => `我的名字"${q}"在所有宝可梦训练师中不存在 — 独一无二！🌟 pokenom.fr`,
-    shareText1: (q) => `我的名字"${q}"只属于一位传奇训练师！🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `有${n}位宝可梦训练师叫"${q}" ${e} pokenom.fr`,
-    copy: '📋 复制',
-    copied: '✓ 已复制！',
-    shareNative: '🔗 分享',
+    shareText0: (q) => `我的名字"${q}"在所有宝可梦训练师中不存在 — 独一无二！🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `我的名字"${q}"只属于一位传奇训练师！🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `有${n}位宝可梦训练师叫"${q}" ${e} ledresseurenmoi.com`,
+    copy: '复制',
+    copied: '已复制！',
+    shareNative: '分享',
     viewPage: '查看页面 →',
     rarityLabels: { unique:'不存在', legendaire:'传奇', rare:'稀有', repandu:'普通', partout:'随处可见！' },
   },
@@ -323,17 +343,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `只有1位傳奇訓練師叫「${q}」！`,
     countN: (n, q) => `有${n}位訓練師叫「${q}」`,
     seeFullPage: '查看完整頁面 →',
-    shareBtn: '🎉 分享我的結果',
+    shareBtn: '分享我的結果',
     seeAllTrainers: (n) => `查看全部${n}位訓練師 →`,
     shareLbl0: '在寶可夢世界中找不到這個名字！',
     shareLbl1: '只有1位傳奇訓練師擁有這個名字',
     shareLblN: (n, lbl) => `${n}位訓練師有這個名字 · ${lbl}`,
-    shareText0: (q) => `我的名字「${q}」在所有寶可夢訓練師中不存在 — 獨一無二！🌟 pokenom.fr`,
-    shareText1: (q) => `我的名字「${q}」只屬於一位傳奇訓練師！🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `有${n}位寶可夢訓練師叫「${q}」${e} pokenom.fr`,
-    copy: '📋 複製',
-    copied: '✓ 已複製！',
-    shareNative: '🔗 分享',
+    shareText0: (q) => `我的名字「${q}」在所有寶可夢訓練師中不存在 — 獨一無二！🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `我的名字「${q}」只屬於一位傳奇訓練師！🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `有${n}位寶可夢訓練師叫「${q}」${e} ledresseurenmoi.com`,
+    copy: '複製',
+    copied: '已複製！',
+    shareNative: '分享',
     viewPage: '查看頁面 →',
     rarityLabels: { unique:'不存在', legendaire:'傳奇', rare:'稀有', repandu:'普通', partout:'隨處可見！' },
   },
@@ -353,17 +373,17 @@ const SEARCH_I18N: Record<string, {
     count1: (q) => `Apenas 1 treinador lendário se chama "${q}"!`,
     countN: (n, q) => `${n} treinadores se chamam "${q}"`,
     seeFullPage: 'Ver página completa →',
-    shareBtn: '🎉 Compartilhar resultado',
+    shareBtn: ' Compartilhar resultado',
     seeAllTrainers: (n) => `Ver todos os ${n} treinadores →`,
     shareLbl0: 'Nome não encontrado no mundo Pokémon!',
     shareLbl1: 'Apenas 1 treinador lendário tem esse nome',
     shareLblN: (n, lbl) => `${n} treinadores têm esse nome · ${lbl}`,
-    shareText0: (q) => `Meu nome "${q}" não existe em nenhum treinador Pokémon — é único! 🌟 pokenom.fr`,
-    shareText1: (q) => `Meu nome "${q}" pertence a apenas um treinador lendário! 🏆 pokenom.fr`,
-    shareTextN: (n, q, e) => `Há ${n} treinadores Pokémon chamados "${q}" ${e} pokenom.fr`,
-    copy: '📋 Copiar',
-    copied: '✓ Copiado!',
-    shareNative: '🔗 Compartilhar',
+    shareText0: (q) => `Meu nome "${q}" não existe em nenhum treinador Pokémon — é único! 🌟 ledresseurenmoi.com`,
+    shareText1: (q) => `Meu nome "${q}" pertence a apenas um treinador lendário! 🏆 ledresseurenmoi.com`,
+    shareTextN: (n, q, e) => `Há ${n} treinadores Pokémon chamados "${q}" ${e} ledresseurenmoi.com`,
+    copy: 'Copiar',
+    copied: 'Copiado!',
+    shareNative: 'Compartilhar',
     viewPage: 'Ver página →',
     rarityLabels: { unique:'Inexistente', legendaire:'Lendário', rare:'Raro', repandu:'Comum', partout:'Em todo lugar!' },
   },
@@ -609,7 +629,7 @@ function ShareModal({
 
   const handleNative = () => {
     if (navigator.share) {
-      navigator.share({ text: shareText, url: `https://pokenom.fr/prenom/${normalize(query).replace(/\s+/g, '-')}` });
+      navigator.share({ text: shareText, url: `https://ledresseurenmoi.com/prenom/${normalize(query).replace(/\s+/g, '-')}` });
     } else {
       handleCopy();
     }
@@ -618,7 +638,7 @@ function ShareModal({
   return (
     <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label={i18n.ariaShare} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div class="share-card">
-        <button class="share-close" onClick={onClose} aria-label={i18n.ariaClose}>✕</button>
+        <button class="share-close" onClick={onClose} aria-label={i18n.ariaClose}><img src="/assets/icons/close.svg" alt="" width="14" height="14" /></button>
 
         <div class="share-rarity-big"><img src={`/assets/rarity/${rarityKey}.svg`} alt="" width="48" height="48" /></div>
         <p class="share-name">"{query}"</p>
@@ -642,11 +662,13 @@ function ShareModal({
             class={`share-btn share-btn--primary${copied ? ' share-btn--copied' : ''}`}
             onClick={handleCopy}
           >
-            {copied ? i18n.copied : i18n.copy}
+            {copied
+              ? <span><img src="/assets/icons/check.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" />{i18n.copied}</span>
+              : <span><img src="/assets/icons/copy.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" />{i18n.copy}</span>}
           </button>
           {typeof navigator !== 'undefined' && 'share' in navigator && (
             <button class="share-btn" onClick={handleNative}>
-              {i18n.shareNative}
+              <img src="/assets/icons/share.svg" alt="" width="14" height="14" style="vertical-align:middle;margin-right:4px;" />{i18n.shareNative}
             </button>
           )}
           {count > 0 && (
@@ -852,6 +874,7 @@ export default function Search({ trainers, pkmNames = {} }: SearchProps) {
             onFocus={() => { if (suggestions.length > 0) setShowSugg(true); }}
             onBlur={() => { blurTimer.current = setTimeout(() => setShowSugg(false), 150); }}
             placeholder={i18n.placeholder}
+            data-i18n-placeholder="search.placeholder"
             autocomplete="off"
             spellcheck={false}
             maxLength={40}
@@ -862,7 +885,8 @@ export default function Search({ trainers, pkmNames = {} }: SearchProps) {
             aria-controls="autocomplete-list"
           />
           <button type="submit" class="search-btn" aria-label={i18n.btnSearch}>
-            {i18n.btnSearch}
+            <img src="/assets/icons/search.svg" alt="" width="16" height="16" class="search-btn__icon" />
+            <span class="search-btn__label">{i18n.btnSearch}</span>
           </button>
 
           {showSugg && suggestions.length > 0 && (
@@ -939,7 +963,7 @@ export default function Search({ trainers, pkmNames = {} }: SearchProps) {
               style="font-size:0.8rem;"
               onClick={() => setShowShare(true)}
             >
-              {i18n.shareBtn}
+              <img src="/assets/icons/share.svg" alt="" width="13" height="13" style="vertical-align:middle;margin-right:4px;" />{i18n.shareBtn}
             </button>
           </div>
 
@@ -957,7 +981,7 @@ export default function Search({ trainers, pkmNames = {} }: SearchProps) {
                       <strong class="result-name">{t.name}</strong>
                     </div>
                     <div class="result-item__right">
-                      <span class="result-game">{translateGame(t.game, lang)}</span>
+                      <span class="result-game" data-game-fr={t.game}>{translateGame(t.game, lang)}</span>
                       {t.team && t.team.length > 0 && (
                         <span class="result-team">{translateTeam(t.team, lang, pkmNames)}</span>
                       )}
@@ -986,7 +1010,7 @@ export default function Search({ trainers, pkmNames = {} }: SearchProps) {
                       <strong class="result-name">{t.name}</strong>
                     </div>
                     <div class="result-item__right">
-                      <span class="result-game">{translateGame(t.game, lang)}</span>
+                      <span class="result-game" data-game-fr={t.game}>{translateGame(t.game, lang)}</span>
                       {t.team && t.team.length > 0 && (
                         <span class="result-team">{translateTeam(t.team, lang, pkmNames)}</span>
                       )}
@@ -1032,8 +1056,7 @@ function InlineAd() {
   return (
     <div
       ref={ref}
-      style="width:100%;min-height:60px;border-radius:var(--radius-sm,8px);overflow:hidden;background:var(--bg);border:1px dashed var(--border);"
-      aria-hidden="true"
+      style="width:100%;min-height:60px;border-radius:var(--radius-sm,8px);overflow:hidden"
     />
   );
 }

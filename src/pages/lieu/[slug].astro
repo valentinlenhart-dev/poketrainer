@@ -25,14 +25,15 @@ const displayPlace = placeLabel(placeName);
 const count = trainers.length;
 const games = [...new Set(trainers.map((t: any) => t.game))];
 
-const title = `Dresseurs à ${displayPlace} — ${count} dresseurs | PokéNom`;
+const title = `Dresseurs à ${displayPlace} — ${count} dresseurs | Le Dresseur en Moi`;
 const description = `${count} dresseur${count>1?'s':''} sur ${displayPlace} dans ${games.join(', ')}. Retrouvez leurs prénoms et leurs équipes Pokémon.`;
 ---
-<Base title={title} description={description} canonical={`https://pokenom.fr/lieu/${Astro.params.slug}`}>
+<Base title={title} description={description} canonical={`https://ledresseurenmoi.com/lieu/${Astro.params.slug}`}>
   <main id="main" class="container">
+    <span id="page-title-i18n" style="display:none" data-name-fr={displayPlace} data-suffix-key="title.suffix.location" />
     <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: displayPlace }]} />
     <header class="page-header">
-      <div class="game-badge">📍 <span data-i18n-ui="location-label">Lieu</span></div>
+      <div class="game-badge"><img src="/assets/icons/pin.svg" alt="" width="14" height="14" class="badge-icon" /> <span data-i18n-ui="location-label">Lieu</span></div>
       <h1>{displayPlace}</h1>
       <p class="page-sub">{count} dresseur{count>1?'s':''} · {games.map((g: string) => g.replace('Pokémon ','')).join(', ')}</p>
     </header>

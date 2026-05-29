@@ -31,7 +31,8 @@
     "de": "Moosbach City",
     "es": "Ciudad Algaria",
     "it": "Verdeazzupoli",
-    "en": "Mossdeep City"
+    "en": "Mossdeep City",
+    "ja": "トクサネシティ"
   },
   "amaillide": {
     "de": "Dausing",
@@ -94,14 +95,16 @@
     "de": "Xeneroville",
     "es": "Arrecípolis",
     "it": "Ceneride",
-    "en": "Sootopolis City"
+    "en": "Sootopolis City",
+    "ja": "ルネシティ"
   },
   "auffrac-les-congeres": {
     "ko": "이설시티",
     "de": "Fractalia City",
     "es": "Ciudad Fractal",
     "it": "Fractalopoli",
-    "en": "Snowbelle City"
+    "en": "Snowbelle City",
+    "ja": "エイセツシティ"
   },
   "autel-abondance": {
     "de": "Schrein der Ernte",
@@ -123,7 +126,8 @@
     "de": "Azurbucht",
     "es": "Bahía Azul",
     "it": "Baia Azzurra",
-    "en": "Azure Bay"
+    "en": "Azure Bay",
+    "ja": "アズール湾"
   },
   "baie-vaguelone": {
     "de": "Bucht von Ondula",
@@ -156,7 +160,8 @@
     "de": "Blütenburgwald",
     "es": "Bosque Petalia",
     "it": "Bosco Petalo",
-    "en": "Petalburg Woods"
+    "en": "Petalburg Woods",
+    "ja": "トウカの森"
   },
   "bois-des-illusions": {
     "de": "Hain der Täuschung",
@@ -206,21 +211,24 @@
     "de": "Finalhöhle",
     "es": "Gruta Desenlace",
     "it": "Caverna Climax",
-    "en": "Resolution Cave"
+    "en": "Resolution Cave",
+    "ja": "エンドケイブ"
   },
   "caverne-fondmer": {
     "ko": "해저동굴",
     "de": "Tiefseehöhle",
     "es": "Caverna Abisal",
     "it": "Antro Abissale",
-    "en": "Seafloor Cavern"
+    "en": "Seafloor Cavern",
+    "ja": "海底洞窟"
   },
   "caverne-gelee": {
     "ko": "프로스트케이브",
     "de": "Frosthöhle",
     "es": "Gruta Helada",
     "it": "Caverna Gelata",
-    "en": "Frost Cavern"
+    "en": "Frost Cavern",
+    "ja": "フロストケイブ"
   },
   "cavesjumelles": {
     "de": "Einheitstunnel",
@@ -246,7 +254,8 @@
     "de": "Kalos-Kraftwerk",
     "es": "Central de Kalos",
     "it": "Centrale di Kalos",
-    "en": "Kalos Power Plant"
+    "en": "Kalos Power Plant",
+    "ja": "カロス発電所"
   },
   "centre-commercial": {
     "de": "Kaufhaus 9",
@@ -257,7 +266,8 @@
     "de": "Beerenfelder",
     "es": "Huerto de Bayas",
     "it": "Orto delle Bacche",
-    "en": "Berry Fields"
+    "en": "Berry Fields",
+    "ja": "きのみ畑"
   },
   "charbourg": {
     "de": "Erzelingen",
@@ -276,7 +286,8 @@
     "de": "Beschwerlicher Pfad",
     "es": "Pendiente de Poni",
     "it": "Erta di Poni",
-    "en": "Poni Gauntlet"
+    "en": "Poni Gauntlet",
+    "ja": "ポニの険路"
   },
   "chemin-enfoui": {
     "de": "Alter Fluchtweg",
@@ -589,35 +600,40 @@
     "de": "Baumhausen City",
     "es": "Ciudad Arborada",
     "it": "Forestopoli",
-    "en": "Fortree City"
+    "en": "Fortree City",
+    "ja": "ヒワマキシティ"
   },
   "clementi-ville": {
     "ko": "등화도시",
     "de": "Blütenburg City",
     "es": "Ciudad Petalia",
     "it": "Petalipoli",
-    "en": "Petalburg City"
+    "en": "Petalburg City",
+    "ja": "トウカシティ"
   },
   "club-hano-hano": {
     "ko": "하노하노리조트",
     "de": "Hanohano-Resort",
     "es": "Resort Hanohano",
     "it": "Resort Hanu Hanu",
-    "en": "Hano Grand Resort"
+    "en": "Hano Grand Resort",
+    "ja": "ハノハノリゾート"
   },
   "colline-clapotis": {
     "ko": "잔잔한물가언덕",
     "de": "Plätscherhügel",
     "es": "Colina Saltagua",
     "it": "Collina Scrosciante",
-    "en": "Brooklet Hill"
+    "en": "Brooklet Hill",
+    "ja": "せせらぎの丘"
   },
   "colline-memento": {
     "ko": "메모리얼힐",
     "de": "Hügel des Gedenkens",
     "es": "Colina del Recuerdo",
     "it": "Colle della Memoria",
-    "en": "Memorial Hill"
+    "en": "Memorial Hill",
+    "ja": "メモリアルヒル"
   },
   "colonnes-lances": {
     "de": "Speersäule",
@@ -632,14 +648,16 @@
     "de": "Küste von Poni",
     "es": "Costa de Poni",
     "it": "Costa di Poni",
-    "en": "Poni Coast"
+    "en": "Poni Coast",
+    "ja": "ポニの海岸"
   },
   "cote-sauvage": {
     "ko": "울라울라 뒤쪽 해안",
     "de": "Küste von Ula-Ula",
     "es": "Playa Menor",
     "it": "Lido di Ula Ula",
-    "en": "Secluded Shore"
+    "en": "Secluded Shore",
+    "ja": "ウラウラ裏海岸"
   },
   "cramoisile": {
     "de": "Zinnoberinsel",
@@ -702,7 +720,8 @@
     "de": "Fluxia City",
     "es": "Ciudad Fluxus",
     "it": "Fluxopoli",
-    "en": "Anistar City"
+    "en": "Anistar City",
+    "ja": "ヒャッコクシティ"
   },
   "forbuissons": {
     "de": "Musterbuschwald",
@@ -717,7 +736,8 @@
     "de": "Wald von Poni",
     "es": "Bosque de Poni",
     "it": "Foresta di Poni",
-    "en": "Poni Grove"
+    "en": "Poni Grove",
+    "ja": "ポニの樹林"
   },
   "foret-toastee": {
     "de": "Knusperwaldweg",
@@ -748,7 +768,8 @@
     "de": "Canyon von Poni",
     "es": "Cañón de Poni",
     "it": "Canyon di Poni",
-    "en": "Vast Poni Canyon"
+    "en": "Vast Poni Canyon",
+    "ja": "ポニの大峡谷"
   },
   "greenbury": {
     "de": "Turffield",
@@ -763,7 +784,8 @@
     "de": "Omega-Höhle",
     "es": "Cueva Desenlace",
     "it": "Grotta Climax",
-    "en": "Terminus Cave"
+    "en": "Terminus Cave",
+    "ja": "終の洞窟"
   },
   "grotte-cyclopeenne": {
     "de": "Riesengrotte",
@@ -782,7 +804,8 @@
     "de": "Granithöhle",
     "es": "Cueva Granito",
     "it": "Grotta Pietrosa",
-    "en": "Granite Cave"
+    "en": "Granite Cave",
+    "ja": "石の洞窟"
   },
   "grotte-littorale": {
     "de": "Strandgrotte",
@@ -793,7 +816,8 @@
     "de": "Spiegelhöhle",
     "es": "Cueva Reflejos",
     "it": "Grotta dei Riflessi",
-    "en": "Reflection Cave"
+    "en": "Reflection Cave",
+    "ja": "映し身の洞窟"
   },
   "grotte-parsemille": {
     "de": "Panaero-Höhle",
@@ -812,7 +836,8 @@
     "de": "Meereshöhle",
     "es": "Gruta Unemar",
     "it": "Grotta Pratomare",
-    "en": "Seaward Cave"
+    "en": "Seaward Cave",
+    "ja": "海繋ぎの洞穴"
   },
   "hangar-frigorifique": {
     "de": "Tiefkühlcontainer",
@@ -823,7 +848,8 @@
     "de": "Hotelruine",
     "es": "Hotel Desolación",
     "it": "Albergo Diroccato",
-    "en": "Lost Hotel"
+    "en": "Lost Hotel",
+    "ja": "荒れ果てホテル"
   },
   "ile-de-fer": {
     "de": "Eiseninsel",
@@ -877,14 +903,16 @@
     "de": "Po’u",
     "es": "Pueblo Po",
     "it": "Poh",
-    "en": "Po Town"
+    "en": "Po Town",
+    "ja": "ポータウン"
   },
   "konikoni": {
     "ko": "코니코니시티",
     "de": "Konikoni City",
     "es": "Ciudad Konikoni",
     "it": "Konikoni",
-    "en": "Konikoni City"
+    "en": "Konikoni City",
+    "ja": "コニコシティ"
   },
   "labo-p2": {
     "de": "P2-Labor",
@@ -906,7 +934,8 @@
     "de": "Labor von Flordelis",
     "es": "Laboratorios Lysson",
     "it": "Laboratori Elisio",
-    "en": "Lysandre Labs"
+    "en": "Lysandre Labs",
+    "ja": "フラダリラボ"
   },
   "lac-asrol": {
     "de": "Caldero-See",
@@ -932,14 +961,16 @@
     "de": "Malvenfroh City",
     "es": "Ciudad Malvalona",
     "it": "Ciclamipoli",
-    "en": "Mauville City"
+    "en": "Mauville City",
+    "ja": "キンセツシティ"
   },
   "lavandia-sea": {
     "ko": "씨보라",
     "de": "Seewoge Malvenfroh",
     "es": "Malvamar",
     "it": "Ciclamare",
-    "en": "Sea Mauville"
+    "en": "Sea Mauville",
+    "ja": "シーキンセツ"
   },
   "lavanville": {
     "de": "Lavandia",
@@ -950,7 +981,8 @@
     "de": "MS Tide",
     "es": "S.S. Marea",
     "it": "Motonave Marea",
-    "en": "S.S. Tidal"
+    "en": "S.S. Tidal",
+    "ja": "タイドリップ号"
   },
   "levalendura": {
     "de": "Fermanca City",
@@ -981,7 +1013,8 @@
     "de": "Lottervilla",
     "es": "Mansión Misteriosa",
     "it": "Villa Losca",
-    "en": "Shady House"
+    "en": "Shady House",
+    "ja": "いかがわしき屋敷"
   },
   "manoir-pokemon": {
     "de": "Pokémon-Villa",
@@ -1004,14 +1037,16 @@
     "de": "Meer von Mele-Mele",
     "es": "Mar de Melemele",
     "it": "Mare di Mele Mele",
-    "en": "Melemele Sea"
+    "en": "Melemele Sea",
+    "ja": "メレメレ海"
   },
   "merouville": {
     "ko": "금탄도시",
     "de": "Metarost City",
     "es": "Ciudad Férrica",
     "it": "Ferrugipoli",
-    "en": "Rustboro City"
+    "en": "Rustboro City",
+    "ja": "カナズミシティ"
   },
   "mesaledo": {
     "de": "Mesalona City",
@@ -1045,7 +1080,8 @@
     "de": "Schlotberg",
     "es": "Monte Cenizo",
     "it": "Monte Camino",
-    "en": "Mt. Chimney"
+    "en": "Mt. Chimney",
+    "ja": "えんとつ山"
   },
   "mont-fore": {
     "de": "Wendelberg",
@@ -1056,21 +1092,24 @@
     "de": "Hokulani-Berg",
     "es": "Pico Hokulani",
     "it": "Picco Hokulani",
-    "en": "Mount Hokulani"
+    "en": "Mount Hokulani",
+    "ja": "ホクラニ岳"
   },
   "mont-lanakila": {
     "ko": "라나키라마운틴",
     "de": "Mount Lanakila",
     "es": "Monte Lanakila",
     "it": "Monte Lanakila",
-    "en": "Mount Lanakila"
+    "en": "Mount Lanakila",
+    "ja": "ラナキラマウンテン"
   },
   "mont-memoria": {
     "ko": "송화산",
     "de": "Pyroberg",
     "es": "Monte Pírico",
     "it": "Monte Pira",
-    "en": "Mt. Pyre"
+    "en": "Mt. Pyre",
+    "ja": "おくりび山"
   },
   "mont-nappe": {
     "de": "Montanata",
@@ -1097,7 +1136,8 @@
     "de": "Nouvaria City",
     "es": "Ciudad Novarte",
     "it": "Novartopoli",
-    "en": "Santalune City"
+    "en": "Santalune City",
+    "ja": "ハクダンシティ"
   },
   "ogoesse": {
     "de": "Orion City",
@@ -1128,14 +1168,16 @@
     "de": "Malihe-Ziergarten",
     "es": "Parque de Malíe",
     "it": "Giardino di Malie",
-    "en": "Malie Garden"
+    "en": "Malie Garden",
+    "ja": "マリエ庭園"
   },
   "parc-volcanique": {
     "ko": "벨라화산공원",
     "de": "Wela-Vulkanpark",
     "es": "Área Volcánica Wela",
     "it": "Parco Vulcano Wela",
-    "en": "Wela Volcano Park"
+    "en": "Wela Volcano Park",
+    "ja": "ヴェラ火山公園"
   },
   "parcnaturel": {
     "de": "Nationalpark",
@@ -1180,21 +1222,24 @@
     "de": "Hanohano-Strand",
     "es": "Playa de Hanohano",
     "it": "Spiaggia Hanu Hanu",
-    "en": "Hano Beach"
+    "en": "Hano Beach",
+    "ja": "ハノハノビーチ"
   },
   "plaine-de-poni": {
     "ko": "포니광야",
     "de": "Ebene von Poni",
     "es": "Llanura de Poni",
     "it": "Prateria di Poni",
-    "en": "Poni Plains"
+    "en": "Poni Plains",
+    "ja": "ポニの広野"
   },
   "planque-aqua": {
     "ko": "아쿠아단아지트",
     "de": "Team Aquas Versteck",
     "es": "Guarida Aqua",
     "it": "Rifugio Idro",
-    "en": "Team Aqua Hideout"
+    "en": "Team Aqua Hideout",
+    "ja": "アクア団アジト"
   },
   "plateauindigo": {
     "de": "Indigo-Plateau",
@@ -1205,7 +1250,8 @@
     "de": "Graphitport City",
     "es": "Ciudad Portual",
     "it": "Porto Selcepoli",
-    "en": "Slateport City"
+    "en": "Slateport City",
+    "ja": "カイナシティ"
   },
   "pont-du-hameau": {
     "de": "Dorfbrücke",
@@ -1224,7 +1270,8 @@
     "de": "Tempera City",
     "es": "Ciudad Témpera",
     "it": "Temperopoli",
-    "en": "Coumarine City"
+    "en": "Coumarine City",
+    "ja": "ヒヨクシティ"
   },
   "port-yoneuve": {
     "de": "Marea City",
@@ -1239,7 +1286,8 @@
     "de": "Wildnis von Poni",
     "es": "Prado de Poni",
     "it": "Piana di Poni",
-    "en": "Poni Wilds"
+    "en": "Poni Wilds",
+    "ja": "ポニの原野"
   },
   "puitsramoloss": {
     "de": "Flegmon-Brunnen",
@@ -1265,28 +1313,32 @@
     "de": "Ohana-Farm",
     "es": "Rancho Ohana",
     "it": "Fattoria Ohana",
-    "en": "Paniola Ranch"
+    "en": "Paniola Ranch",
+    "ja": "オハナ牧場"
   },
   "recif-de-poni": {
     "ko": "포니의 거친 해안",
     "de": "Felsenküste von Poni",
     "es": "Arrecife de Poni",
     "it": "Scogliera di Poni",
-    "en": "Poni Breaker Coast"
+    "en": "Poni Breaker Coast",
+    "ja": "ポニの荒磯"
   },
   "relifac-le-haut": {
     "ko": "삼채시티",
     "de": "Relievera City",
     "es": "Ciudad Relieve",
     "it": "Altoripoli",
-    "en": "Cyllage City"
+    "en": "Cyllage City",
+    "ja": "ショウヨウシティ"
   },
   "repaire-team-flare": {
     "ko": "플레어단 비밀기지",
     "de": "Flare-Geheimbasis",
     "es": "Guarida Team Flare",
     "it": "Covo del Team Flare",
-    "en": "Team Flare Secret HQ"
+    "en": "Team Flare Secret HQ",
+    "ja": "フレア団秘密基地"
   },
   "rivamar": {
     "de": "Sonnewik",
@@ -1308,7 +1360,8 @@
     "de": "Romantia City",
     "es": "Ciudad Romantis",
     "it": "Romantopoli",
-    "en": "Laverre City"
+    "en": "Laverre City",
+    "ja": "クノエシティ"
   },
   "rosalia": {
     "de": "Teak City",
@@ -2385,84 +2438,5 @@
   "unionpolis": {
     "de": "Herzhofen",
     "en": "Hearthome City"
-  },
-  "vaguelone": {
-    "de": "Ondula",
-    "en": "Undella Town"
-  },
-  "vallee-ruine": {
-    "de": "Ruinental",
-    "en": "Ruin Valley"
-  },
-  "veine-souterraine": {
-    "de": "Grundwassersenke",
-    "en": "Wellspring Cave"
-  },
-  "verchamps": {
-    "de": "Weideburg",
-    "en": "Pastoria City"
-  },
-  "vermilava": {
-    "ko": "용암마을",
-    "de": "Bad Lavastadt",
-    "es": "Pueblo Lavacalda",
-    "it": "Cuordilava",
-    "en": "Lavaridge Town",
-    "ja": "フエンタウン"
-  },
-  "vestiges-du-reve": {
-    "de": "Traumbrache",
-    "en": "Dreamyard"
-  },
-  "vestigion": {
-    "de": "Ewigenau",
-    "en": "Eterna City"
-  },
-  "vieille-route": {
-    "ko": "포니옛길",
-    "de": "Alter Pfad von Poni",
-    "es": "Antiguo Paso de Poni",
-    "it": "Via Antica di Poni",
-    "en": "Ancient Poni Path",
-    "ja": "ポニの古道"
-  },
-  "village-flottant": {
-    "ko": "바다민족의 마을",
-    "de": "Dorf des Seevolkes",
-    "es": "Aldea Marina",
-    "it": "Villaggio del Mare",
-    "en": "Seafolk Village",
-    "ja": "海の民の村"
-  },
-  "voilaroc": {
-    "de": "Schleiede",
-    "en": "Veilstone City"
-  },
-  "volucite": {
-    "en": "Violet City",
-    "de": "Violettenstadt",
-    "es": "Ciudad Violeta",
-    "ja": "キキョウシティ",
-    "it": "Violetropoli",
-    "ko": "바이올렛시티",
-    "zh-Hans": "紫木市",
-    "zh-Hant": "紫木市",
-    "pt-BR": "Cidade Violeta"
-  },
-  "winscor": {
-    "de": "Score City",
-    "en": "Wyndon"
-  },
-  "yantreizh": {
-    "ko": "사라시티",
-    "de": "Yantara City",
-    "es": "Ciudad Yantra",
-    "it": "Yantaropoli",
-    "en": "Shalour City",
-    "ja": "シャラシティ"
-  },
-  "zone-zero": {
-    "de": "Zone Null",
-    "en": "Area Zero"
   }
 }

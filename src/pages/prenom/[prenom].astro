@@ -51,7 +51,7 @@ const pokemonUsed = [...new Set(trainers.flatMap(t => t.team ?? []))];
 const gamesUsed = sortGamesByRelease([...new Set(trainers.map(t => t.game))]);
 
 // Meta
-const title       = `${displayName} — Dresseur${count > 1 ? 's' : ''} Pokémon (${rarityLabel}) | PokéNom`;
+const title       = `${displayName} — Dresseur${count > 1 ? 's' : ''} Pokémon (${rarityLabel}) | Le Dresseur en Moi`;
 const description = count === 1
   ? `Le dresseur ${first.class} ${displayName} est un dresseur Pokémon de ${first.game}. ${rarityDesc} Découvrez son équipe : ${(first.team ?? []).join(', ')}.`
   : `${count} dresseurs Pokémon s'appellent ${displayName}. ${rarityDesc} Retrouvez-les dans ${gamesUsed.slice(0,3).join(', ')}${gamesUsed.length > 3 ? '…' : ''}.`;
@@ -104,7 +104,7 @@ const schemaList = count > 0 ? {
       "@type": "Person",
       "name": `${t.class} ${t.name}`,
       "description": `Dresseur ${t.class} dans ${t.game}`,
-      "url": `https://pokenom.fr/dresseur/${t.slug}`
+      "url": `https://ledresseurenmoi.com/dresseur/${t.slug}`
     }
   }))
 } : null;
@@ -232,10 +232,11 @@ const schemaList = count > 0 ? {
 <Base
   title={title}
   description={description}
-  canonical={`https://pokenom.fr/prenom/${prenom}`}
+  canonical={`https://ledresseurenmoi.com/prenom/${prenom}`}
   schema={[schemaFAQ, ...(schemaList ? [schemaList] : [])]}
 >
   <main id="main" class="container">
+    <span id="page-title-i18n" style="display:none" data-name-fr={displayName} data-suffix-key="title.suffix.prenom" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: 'Prénoms', href: '/' },
@@ -277,7 +278,7 @@ const schemaList = count > 0 ? {
               const gs = toGameSlug(g);
               const cnt = trainers.filter(t => t.game === g).length;
               return (
-                <button class="game-filter__btn" data-filter={gs}>
+                <button class="game-filter__btn" data-filter={gs} data-game-fr={g} data-count={cnt}>
                   {gameLabel(g)} ({cnt})
                 </button>
               );
@@ -387,7 +388,12 @@ const schemaList = count > 0 ? {
         item.style.display = show ? '' : 'none';
         if (show) visible++;
       });
-
+      if (emptyMsg) emptyMsg.style.display = visible === 0 ? '' : 'none';
+    });
+  });
+</script>
+ visible++;
+      });
       if (emptyMsg) emptyMsg.style.display = visible === 0 ? '' : 'none';
     });
   });

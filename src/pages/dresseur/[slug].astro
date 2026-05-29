@@ -98,7 +98,7 @@ const teamData: TeamPkmData[] = (t.team ?? []).map((pkm: string) => {
   return { pkm, pSlug: toPokemonSlug(pkm), sprite, types, nameEn, namesData };
 });
 
-const title = `${t.class} ${t.name} — ${gameName} | PokéNom`;
+const title = `${t.class} ${t.name} — ${gameName} | Le Dresseur en Moi`;
 const description = placeText
   ? `${t.class} ${t.name} est un dresseur Pokémon rencontré ${placeText} dans ${t.game}. Son équipe : ${teamText || 'inconnue'}.`
   : `${t.class} ${t.name} est un dresseur Pokémon de ${t.game}. Son équipe : ${teamText || 'inconnue'}.`;
@@ -109,7 +109,7 @@ const schema = {
   "name": `${t.class} ${t.name}`,
   "jobTitle": t.class,
   "description": description,
-  "url": `https://pokenom.fr/dresseur/${t.slug}`,
+  "url": `https://ledresseurenmoi.com/dresseur/${t.slug}`,
   "knowsAbout": t.team ?? [],
 };
 ---
@@ -297,10 +297,12 @@ const schema = {
 <Base
   title={title}
   description={description}
-  canonical={`https://pokenom.fr/dresseur/${t.slug}`}
+  canonical={`https://ledresseurenmoi.com/dresseur/${t.slug}`}
+  ogImage="/img/pages/og-dresseur.png"
   schema={schema}
 >
   <main id="main" class="container">
+    <span id="page-title-i18n" style="display:none" data-name-fr={`${t.class} ${t.name}`} data-suffix-key="title.suffix.trainer" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: t.name, href: `/prenom/${t.name_slug}` },
@@ -357,7 +359,7 @@ const schema = {
                   <div class="team-pkm__visual">
                     {sprite
                       ? <img src={sprite} alt={pkm} width="48" height="48" class="team-pkm__sprite" loading="lazy" />
-                      : <span class="team-pkm__ball" aria-hidden="true">⚪</span>
+                      : <img src="/assets/icons/ball-empty.svg" alt="" width="48" height="48" class="team-pkm__ball-img" aria-hidden="true" />
                     }
                   </div>
                   <div class="team-pkm__info">
@@ -405,7 +407,7 @@ const schema = {
 
       <!-- Partager -->
       <div class="share-row">
-        <button class="share-btn" id="share-btn" data-url={`https://pokenom.fr/dresseur/${t.slug}`} data-title={`${t.class} ${t.name} — PokéNom`} data-text={description}>
+        <button class="share-btn" id="share-btn" data-url={`https://ledresseurenmoi.com/dresseur/${t.slug}`} data-title={`${t.class} ${t.name} — Le Dresseur en Moi`} data-text={description}>
           <span class="share-btn__icon">🔗</span>
           <span class="share-btn__label" data-i18n-ui="share.btn">Partager ce dresseur</span>
         </button>
@@ -429,7 +431,7 @@ const schema = {
             </a>
           )}
           <a href="/" class="related-link" data-i18n-ui="trainer-home">
-            🏠 Accueil PokéNom
+            🏠 Accueil Le Dresseur en Moi
           </a>
         </div>
       </aside>
@@ -461,7 +463,7 @@ const schema = {
       const title = btn.dataset.title ?? document.title;
       const text  = btn.dataset.text  ?? '';
       // Labels traduits (si dispo)
-      const lang = (window as any).__pokenom_lang ?? 'fr';
+      const lang = (window as any).__ldresseurenmoi_lang ?? 'fr';
       const T: Record<string,Record<string,string>> = (window as any).__pokenom_T ?? {};
       const ui = (T[lang] ?? {}) as Record<string, string>;
       const copied  = ui['share.copied']  ?? 'Lien copié !';

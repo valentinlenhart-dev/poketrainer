@@ -1,6 +1,6 @@
 ---
 export interface Props {
-  crumbs: { label: string; href?: string; type?: string }[];
+  crumbs: { label: string; href?: string; type?: string; pkmNames?: string; gameFr?: string }[];
 }
 const { crumbs } = Astro.props;
 
@@ -10,6 +10,8 @@ const CRUMB_KEYS: Record<string, string> = {
   'Top prénoms':  'crumb.top-names',
   'Légendaires':  'crumb.legendaries',
   'Prénoms':      'crumb.prenames',
+  'Objets':       'crumb.items',
+  'Pokémon':      'crumb.pokemon',
 };
 
 const schema = {
@@ -19,7 +21,7 @@ const schema = {
     "@type": "ListItem",
     "position": i + 1,
     "name": c.label,
-    ...(c.href ? { "item": `https://pokenom.fr${c.href}` } : {}),
+    ...(c.href ? { "item": `https://ledresseurenmoi.com${c.href}` } : {}),
   })),
 };
 ---
@@ -34,8 +36,12 @@ const schema = {
         {i > 0 && <span class="breadcrumb__sep" aria-hidden="true">›</span>}
         {c.href
           ? <a href={c.href} {...(i18nKey ? { 'data-i18n-ui': i18nKey } : {})}>{c.label}</a>
+          : c.gameFr
+          ? <span aria-current="page" data-game-fr={c.gameFr}>{c.label}</span>
           : c.type
           ? <span aria-current="page" data-i18n-type-crumb={c.type}>{c.label}</span>
+          : c.pkmNames
+          ? <span aria-current="page" data-pkm-names={c.pkmNames}>{c.label}</span>
           : <span aria-current="page" {...(i18nKey ? { 'data-i18n-ui': i18nKey } : {})}>{c.label}</span>
         }
       </>

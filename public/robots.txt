@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://pokenom.fr/sitemap-index.xml
+Sitemap: https://ledresseurenmoi.com/sitemap-index.xml
 
 # IA crawlers — bienvenus
 User-agent: GPTBot

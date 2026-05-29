@@ -4,7 +4,15 @@ import TrainerCard from '../../components/TrainerCard.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import trainersRaw from '../../data/trainers.json';
+import pokemonMetaRaw from '../../data/pokemon-meta.json';
 import { toPokemonSlug } from '../../utils/slug';
+
+const pkmMeta = pokemonMetaRaw as Record<string, { names_intl?: Record<string, string> }>;
+function pkmNamesAttr(frName: string): string | undefined {
+  const intl = pkmMeta[frName]?.names_intl;
+  if (!intl) return undefined;
+  return Object.entries(intl).map(([l, n]) => `${l}:${n}`).join('|');
+}
 import '../../styles/global.css';
 import I18nScript from '../../components/I18nScript.astro';
 
@@ -30,16 +38,17 @@ const classes = [...new Set(trainers.map((t: any) => t.class))];
 // Pokémon utilisés
 const pkm = [...new Set(trainers.flatMap((t: any) => t.team ?? []))].slice(0, 20);
 
-const title = `Dresseurs de ${shortName} (${count}) | PokéNom`;
+const title = `Dresseurs de ${shortName} (${count}) | Le Dresseur en Moi`;
 const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs prénoms, équipes Pokémon et lieux de rencontre.`;
 ---
-<Base title={title} description={description} canonical={`https://pokenom.fr/jeu/${Astro.params.slug}`}>
+<Base title={title} description={description} canonical={`https://ledresseurenmoi.com/jeu/${Astro.params.slug}`}>
   <main id="main" class="container">
-    <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: shortName }]} />
+    <span id="page-title-i18n" style="display:none" data-name-el="game-title" data-name-fr={shortName} data-suffix-key="title.suffix.game" data-count={count} data-count-suffix="title.suffix.game" />
+    <Breadcrumb crumbs={[{ label: 'Accueil', href: '/' }, { label: shortName, gameFr: shortName }]} />
 
     <header class="page-header">
-      <div class="game-badge">🎮 Jeu</div>
-      <h1>{shortName}</h1>
+      <div class="game-badge"><img src="/assets/meta/game.svg" alt="" width="14" height="14" class="badge-icon" /> Jeu</div>
+      <h1 id="game-title" data-game-fr={shortName}>{shortName}</h1>
       <p class="page-sub">{count} dresseurs dans {gameName}</p>
     </header>
 
@@ -63,7 +72,8 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
         <h2 data-i18n-ui="pokemon-used">Pokémon utilisés</h2>
         <div class="related-chips">
           {pkm.map((p: string) => {
-            return <a href={`/pokemon/${toPokemonSlug(p)}`} class="pkm-link">{p}</a>;
+            const names = pkmNamesAttr(p);
+            return <a href={`/pokemon/${toPokemonSlug(p)}`} class="pkm-link" data-pkm-names={names || undefined}>{p}</a>;
           })}
         </div>
       </section>
@@ -93,9 +103,3 @@ const description = `${count} dresseurs dans ${gameName}. Retrouvez tous leurs p
 .page-header { padding: 36px 0 28px; border-bottom: 1.5px solid var(--border); margin-bottom: 32px; }
 .game-badge { font-size:0.7rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:8px; }
 .page-sub { color:var(--soft); margin-top:8px; font-size:1rem; }
-.section-block { margin: 32px 0; }
-.section-block h2 { margin-bottom: 14px; }
-.related-chips { display:flex; flex-wrap:wrap; gap:8px; }
-.pkm-link { padding:6px 14px; background:var(--bg2); border:1.5px solid var(--border); border-radius:999px; font-size:0.85rem; font-weight:500; color:var(--mid); transition:border-color 0.15s,color 0.15s; }
-.pkm-link:hover { border-color:var(--red); color:var(--red); text-decoration:none; }
-</style>

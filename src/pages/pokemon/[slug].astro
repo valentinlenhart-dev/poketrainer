@@ -85,25 +85,30 @@ const evolvesTo      = (meta?.evolves_to ?? []) as string[];
 const abilities      = (meta?.abilities ?? []) as {name_fr:string; desc_fr:string; name_en?:string; desc_en?:string; name_de?:string; desc_de?:string; name_es?:string; desc_es?:string; name_ja?:string; desc_ja?:string; name_it?:string; desc_it?:string; name_ko?:string; desc_ko?:string; 'name_zh-Hans'?:string; 'desc_zh-Hans'?:string; is_hidden:boolean}[];
 
 // i18n — descriptions + noms par langue (injectés en JSON pour le switch JS)
-// Chaque langue hérite des descriptions FR pour les jeux manquants (même logique que categoryI18n)
+// Fallback chain : lang → EN → FR
 const _descsFr = (meta?.descriptions_fr ?? {}) as Record<string, string>;
-function _mergeDescsFr(langDescs: unknown): Record<string, string> {
+const _descsEn = (meta?.descriptions_en ?? {}) as Record<string, string>;
+// Base commune : FR pour toutes les clés, écrasé par EN quand disponible
+const _descsBase: Record<string, string> = { ..._descsFr };
+for (const [game, desc] of Object.entries(_descsEn)) { if (desc) _descsBase[game] = desc; }
+
+function _mergeDescs(langDescs: unknown): Record<string, string> {
   const d = (langDescs ?? {}) as Record<string, string>;
-  const result: Record<string, string> = { ..._descsFr };
+  const result: Record<string, string> = { ..._descsBase };
   for (const [game, desc] of Object.entries(d)) { if (desc) result[game] = desc; }
   return result;
 }
 const descriptionsI18n = {
   fr:         _descsFr,
-  en:         _mergeDescsFr(meta?.descriptions_en),
-  de:         _mergeDescsFr(meta?.descriptions_de),
-  es:         _mergeDescsFr(meta?.descriptions_es),
-  ja:         _mergeDescsFr(meta?.descriptions_ja),
-  it:         _mergeDescsFr(meta?.descriptions_it),
-  ko:         _mergeDescsFr(meta?.descriptions_ko),
-  'zh-Hans':  _mergeDescsFr(meta?.descriptions_zh),
-  'zh-Hant':  _mergeDescsFr(meta?.descriptions_zh_hant),
-  'pt-BR':    _mergeDescsFr(meta?.descriptions_pt),
+  en:         _descsBase,
+  de:         _mergeDescs(meta?.descriptions_de),
+  es:         _mergeDescs(meta?.descriptions_es),
+  ja:         _mergeDescs(meta?.descriptions_ja),
+  it:         _mergeDescs(meta?.descriptions_it),
+  ko:         _mergeDescs(meta?.descriptions_ko),
+  'zh-Hans':  _mergeDescs(meta?.descriptions_zh),
+  'zh-Hant':  _mergeDescs(meta?.descriptions_zh_hant),
+  'pt-BR':    _mergeDescs(meta?.descriptions_pt),
 } as Record<string, Record<string, string>>;
 
 const namesI18n = {
@@ -118,6 +123,17 @@ const namesI18n = {
   'zh-Hant':  (meta?.names_intl as any)?.['zh-Hant']  ?? pokemonName,
   'pt-BR':    (meta?.names_intl as any)?.['pt-BR']    ?? pokemonName,
 } as Record<string, string>;
+
+// Construit l'attribut data-pkm-names="en:X|de:Y|..." à partir des names_intl
+function buildPkmNamesAttr(frName: string): string | undefined {
+  const intl = (pokemonMeta as any)[frName]?.names_intl as Record<string, string> | undefined;
+  if (!intl) return undefined;
+  return Object.entries(intl).map(([l, n]) => `${l}:${n}`).join('|');
+}
+const currentPkmNamesAttr = Object.entries(namesI18n)
+  .filter(([l]) => l !== 'fr')
+  .map(([l, n]) => `${l}:${n}`)
+  .join('|') || undefined;
 const genderFr       = meta?.gender_fr ?? null;   // "Asexué" ou number (% femelle)
 const habitatFr      = (meta?.habitat_fr ?? null) as string | null;
 const baseHappiness  = meta?.base_happiness as number | null ?? null;
@@ -244,23 +260,23 @@ const TYPE_FR: Record<string, string> = {
   fairy:'Fée', normal:'Normal',
 };
 
-const title       = `${pokemonName} — ${trainerCount} dresseur${trainerCount>1?'s':''} l'utilisent | PokéNom`;
-const description = `${trainerCount} dresseurs Pokémon utilisent ${pokemonName} dans leur équipe${types.length ? ` (type ${types.map(t => TYPE_FR[t]??t).join('/')})` : ''}. Retrouvez-les tous sur PokéNom.`;
+const title       = `${pokemonName} — ${trainerCount} dresseur${trainerCount>1?'s':''} l'utilisent | Le Dresseur en Moi`;
+const description = `${trainerCount} dresseurs Pokémon utilisent ${pokemonName} dans leur équipe${types.length ? ` (type ${types.map(t => TYPE_FR[t]??t).join('/')})` : ''}. Retrouvez-les tous sur Le Dresseur en Moi.`;
 
 const schema = {
   "@context": "https://schema.org",
   "@type": "Thing",
   "name": pokemonName,
   "description": description,
-  "url": `https://pokenom.fr/pokemon/${slug}`,
+  "url": `https://ledresseurenmoi.com/pokemon/${slug}`,
 };
 ---
 
 <Base
   title={title}
   description={description}
-  canonical={`https://pokenom.fr/pokemon/${slug}`}
-  ogImage={spriteUrl ?? '/og-default.png'}
+  canonical={`https://ledresseurenmoi.com/pokemon/${slug}`}
+  ogImage={spriteUrl ?? '/img/pages/og-pokemon.png'}
   schema={schema}
 >
   <main id="main" class="container">
@@ -271,16 +287,29 @@ const schema = {
       categories:   categoryI18n,
       items:        Object.fromEntries(heldItems.map(h => [h.item, itemsI18n[h.item] ?? { fr: h.item, en: h.item, de: h.item, es: h.item, ja: h.item }])),
       descriptions: descriptionsI18n,
+      descriptionsRaw: {
+        fr:        _descsFr,
+        en:        _descsEn,
+        de:        (meta?.descriptions_de ?? {}) as Record<string, string>,
+        es:        (meta?.descriptions_es ?? {}) as Record<string, string>,
+        ja:        (meta?.descriptions_ja ?? {}) as Record<string, string>,
+        it:        (meta?.descriptions_it ?? {}) as Record<string, string>,
+        ko:        (meta?.descriptions_ko ?? {}) as Record<string, string>,
+        'zh-Hans': (meta?.descriptions_zh ?? {}) as Record<string, string>,
+        'zh-Hant': (meta?.descriptions_zh_hant ?? {}) as Record<string, string>,
+        'pt-BR':   (meta?.descriptions_pt ?? {}) as Record<string, string>,
+      },
       abilities:    abilities.map(ab => ({
         is_hidden: ab.is_hidden,
         names: { fr: ab.name_fr, en: ab.name_en??ab.name_fr, de: ab.name_de??ab.name_fr, es: ab.name_es??ab.name_fr, ja: ab.name_ja??ab.name_fr, it: ab.name_it??ab.name_fr, ko: ab.name_ko??ab.name_fr, 'zh-Hans': (ab as any)['name_zh-Hans']??ab.name_fr, 'zh-Hant': (ab as any)['name_zh-Hant']??ab.name_fr, 'pt-BR': (ab as any)['name_pt-BR']??ab.name_fr },
         descs: { fr: ab.desc_fr, en: ab.desc_en??ab.desc_fr, de: ab.desc_de??ab.desc_fr, es: ab.desc_es??ab.desc_fr, ja: ab.desc_ja??ab.desc_fr, it: ab.desc_it??ab.desc_fr, ko: ab.desc_ko??ab.desc_fr, 'zh-Hans': (ab as any)['desc_zh-Hans']??ab.desc_fr, 'zh-Hant': (ab as any)['desc_zh-Hant']??ab.desc_fr, 'pt-BR': (ab as any)['desc_pt-BR']??ab.desc_fr },
       })),
     })} />
+    <span id="page-title-i18n" style="display:none" data-name-el="pkm-name" data-name-fr={pokemonName} data-suffix-key="title.suffix.pokemon" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: 'Pokémon', href: '/' },
-      { label: pokemonName },
+      { label: pokemonName, pkmNames: currentPkmNamesAttr },
     ]} />
 
     <header class="pkm-header">
@@ -366,7 +395,12 @@ const schema = {
           </div>
         )}
 
-        {descFr && <blockquote class="pkm-desc" data-i18n="pkm-desc">{descFr}</blockquote>}
+        {descFr && (
+          <blockquote class="pkm-desc" data-i18n="pkm-desc">
+            <cite class="pkm-desc__version"></cite>
+            <span class="pkm-desc__text">{descFr}</span>
+          </blockquote>
+        )}
 
         <p class="pkm-summary" data-i18n-ui="pkm-summary" data-count={trainerCount} data-game-count={games.length}>
           <strong>{trainerCount} dresseur{trainerCount > 1 ? 's' : ''}</strong>
@@ -379,13 +413,15 @@ const schema = {
         {(evFromFr || evToFr.length > 0) && (
           <div class="pkm-evolutions">
             {evFromFr && (
-              <a href={`/pokemon/${toPokemonSlug(evFromFr)}`} class="evo-chip evo-chip--from">
+              <a href={`/pokemon/${toPokemonSlug(evFromFr)}`} class="evo-chip evo-chip--from"
+                 data-evo-name-fr={evFromFr} data-pkm-names={buildPkmNamesAttr(evFromFr)}>
                 ← {evFromFr}
               </a>
             )}
-            <span class="evo-current">{pokemonName}</span>
+            <span class="evo-current" data-pkm-names={currentPkmNamesAttr}>{pokemonName}</span>
             {evToFr.map(e => (
-              <a href={`/pokemon/${toPokemonSlug(e.fr)}`} class="evo-chip evo-chip--to">
+              <a href={`/pokemon/${toPokemonSlug(e.fr)}`} class="evo-chip evo-chip--to"
+                 data-evo-name-fr={e.fr} data-pkm-names={buildPkmNamesAttr(e.fr)}>
                 {e.fr} →
               </a>
             ))}
@@ -409,14 +445,6 @@ const schema = {
                 </>
               ))}
             </svg>
-            {captureRate !== null && (
-              <p class="radar-capture">
-                <span data-i18n-ui="capture-rate">Taux de capture</span> : <strong>{captureRate}</strong>
-                <span class="radar-capture__hint" data-i18n-difficulty={captureRate >= 200 ? 'very-easy' : captureRate >= 100 ? 'easy' : captureRate >= 45 ? 'normal' : captureRate >= 10 ? 'hard' : 'very-hard'}>
-                  {captureRate >= 200 ? ' · très facile' : captureRate >= 100 ? ' · facile' : captureRate >= 45 ? ' · normal' : captureRate >= 10 ? ' · difficile' : ' · très difficile'}
-                </span>
-              </p>
-            )}
           </div>
         )}
       </div>
@@ -439,7 +467,7 @@ const schema = {
             <><dt data-i18n-ui="base-happiness">Bonheur de base</dt><dd>{baseHappiness}/255</dd></>
           )}
           {hatchSteps !== null && (
-            <><dt data-i18n-ui="hatch-steps">Éclosion</dt><dd>~{hatchSteps.toLocaleString('fr-FR')} pas</dd></>
+            <><dt data-i18n-ui="hatch-steps">Éclosion</dt><dd data-hatch-steps={hatchSteps}>~{hatchSteps.toLocaleString('fr-FR')} pas</dd></>
           )}
           {baseExperience !== null && (
             <><dt data-i18n-ui="base-exp">Exp. de base</dt><dd>{baseExperience} XP</dd></>
@@ -725,7 +753,6 @@ const schema = {
       'abilities': 'Talents', 'hidden-ability': 'Talent caché', 'pokedex-entries': 'Entrées Pokédex',
       'bio': 'Informations', 'gender': 'Genre', 'habitat': 'Habitat',
       'base-happiness': 'Bonheur de base', 'hatch-steps': 'Éclosion', 'base-exp': 'Exp. de base',
-      'capture-rate': 'Taux de capture', 'which-games': 'Dans quels jeux ?',
       'trainers-using': 'Dresseurs utilisant', 'who-uses': 'Qui utilise',
       'legendary-badge': 'Légendaire', 'mythical-badge': 'Mythique',
     },
@@ -733,7 +760,6 @@ const schema = {
       'abilities': 'Abilities', 'hidden-ability': 'Hidden ability', 'pokedex-entries': 'Pokédex Entries',
       'bio': 'Info', 'gender': 'Gender', 'habitat': 'Habitat',
       'base-happiness': 'Base happiness', 'hatch-steps': 'Hatch time', 'base-exp': 'Base exp.',
-      'capture-rate': 'Catch rate', 'which-games': 'In which games?',
       'trainers-using': 'Trainers using', 'who-uses': 'Who uses',
       'legendary-badge': 'Legendary', 'mythical-badge': 'Mythical',
     },
@@ -741,7 +767,6 @@ const schema = {
       'abilities': 'Fähigkeiten', 'hidden-ability': 'Versteckte Fähigkeit', 'pokedex-entries': 'Pokédex-Einträge',
       'bio': 'Informationen', 'gender': 'Geschlecht', 'habitat': 'Lebensraum',
       'base-happiness': 'Grundfreundschaft', 'hatch-steps': 'Schritte bis Schlupf', 'base-exp': 'Basis-EP',
-      'capture-rate': 'Fangrate', 'which-games': 'In welchen Spielen?',
       'trainers-using': 'Trainer, die nutzen', 'who-uses': 'Wer benutzt',
       'legendary-badge': 'Legendär', 'mythical-badge': 'Mysteriös',
     },
@@ -749,7 +774,6 @@ const schema = {
       'abilities': 'Habilidades', 'hidden-ability': 'Habilidad oculta', 'pokedex-entries': 'Entradas de la Pokédex',
       'bio': 'Información', 'gender': 'Género', 'habitat': 'Hábitat',
       'base-happiness': 'Felicidad base', 'hatch-steps': 'Pasos de eclosión', 'base-exp': 'Exp. base',
-      'capture-rate': 'Tasa de captura', 'which-games': '¿En qué juegos?',
       'trainers-using': 'Entrenadores que usan', 'who-uses': 'Quién usa',
       'legendary-badge': 'Legendario', 'mythical-badge': 'Mítico',
     },
@@ -757,7 +781,6 @@ const schema = {
       'abilities': '特性', 'hidden-ability': '隠れ特性', 'pokedex-entries': '図鑑の説明',
       'bio': '情報', 'gender': '性別', 'habitat': '生息地',
       'base-happiness': '基本なつき度', 'hatch-steps': '孵化歩数', 'base-exp': '基本経験値',
-      'capture-rate': '捕捉率', 'which-games': 'どのゲームに？',
       'trainers-using': '使用トレーナー', 'who-uses': '誰が使う',
       'legendary-badge': '伝説', 'mythical-badge': '幻',
     },
@@ -765,7 +788,6 @@ const schema = {
       'abilities': 'Abilità', 'hidden-ability': 'Abilità nascosta', 'pokedex-entries': 'Voci del Pokédex',
       'bio': 'Informazioni', 'gender': 'Genere', 'habitat': 'Habitat',
       'base-happiness': 'Felicità base', 'hatch-steps': 'Passi per la schiusa', 'base-exp': 'Esp. base',
-      'capture-rate': 'Tasso di cattura', 'which-games': 'In quali giochi?',
       'trainers-using': 'Allenatori che usano', 'who-uses': 'Chi usa',
       'legendary-badge': 'Leggendario', 'mythical-badge': 'Mitico',
     },
@@ -773,7 +795,6 @@ const schema = {
       'abilities': '특성', 'hidden-ability': '숨겨진 특성', 'pokedex-entries': '포켓몬 도감 설명',
       'bio': '정보', 'gender': '성별', 'habitat': '서식지',
       'base-happiness': '기본 친밀도', 'hatch-steps': '부화 걸음 수', 'base-exp': '기본 경험치',
-      'capture-rate': '포획률', 'which-games': '어떤 게임에?',
       'trainers-using': '사용 트레이너', 'who-uses': '누가 사용',
       'legendary-badge': '전설', 'mythical-badge': '환상',
     },
@@ -781,7 +802,6 @@ const schema = {
       'abilities': '特性', 'hidden-ability': '隐藏特性', 'pokedex-entries': '图鉴说明',
       'bio': '信息', 'gender': '性别', 'habitat': '栖息地',
       'base-happiness': '基础亲密度', 'hatch-steps': '孵化步数', 'base-exp': '基础经验值',
-      'capture-rate': '捕获率', 'which-games': '在哪些游戏中？',
       'trainers-using': '使用该宝可梦的训练家', 'who-uses': '谁在使用',
       'legendary-badge': '传说', 'mythical-badge': '幻之',
     },
@@ -789,7 +809,6 @@ const schema = {
       'abilities': '特性', 'hidden-ability': '隱藏特性', 'pokedex-entries': '圖鑑說明',
       'bio': '資訊', 'gender': '性別', 'habitat': '棲息地',
       'base-happiness': '基礎親密度', 'hatch-steps': '孵化步數', 'base-exp': '基礎經驗值',
-      'capture-rate': '捕獲率', 'which-games': '在哪些遊戲中？',
       'trainers-using': '使用該寶可夢的訓練家', 'who-uses': '誰在使用',
       'legendary-badge': '傳說', 'mythical-badge': '幻之',
     },
@@ -797,7 +816,6 @@ const schema = {
       'abilities': 'Habilidades', 'hidden-ability': 'Habilidade oculta', 'pokedex-entries': 'Entradas da Pokédex',
       'bio': 'Informações', 'gender': 'Gênero', 'habitat': 'Habitat',
       'base-happiness': 'Felicidade base', 'hatch-steps': 'Passos para eclosão', 'base-exp': 'Exp. base',
-      'capture-rate': 'Taxa de captura', 'which-games': 'Em quais jogos?',
       'trainers-using': 'Treinadores que usam', 'who-uses': 'Quem usa',
       'legendary-badge': 'Lendário', 'mythical-badge': 'Mítico',
     },
@@ -846,7 +864,7 @@ const schema = {
   // Détecte la meilleure langue disponible (localStorage > navigator.languages > fr)
   function detectLang(): string {
     const supported = ['fr', 'en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'];
-    const saved = localStorage.getItem('pokenom_lang');
+    const saved = localStorage.getItem('ldresseurenmoi_lang');
     if (saved && supported.includes(saved)) return saved;
     for (const l of navigator.languages ?? [navigator.language]) {
       // Chinois traditionnel : zh-Hant, zh-TW, zh-HK, zh-MO
@@ -872,12 +890,23 @@ const schema = {
       el.textContent = data.categories[lang] ?? data.categories['fr'];
     });
 
-    // Description courte
+    // Description courte — random depuis la langue native, précédée de la version
     const descEl = document.querySelector<HTMLElement>('[data-i18n="pkm-desc"]');
     if (descEl) {
-      const descs = data.descriptions[lang] ?? {};
-      const games = Object.keys(descs);
-      if (games.length) descEl.textContent = descs[games[games.length - 1]];
+      const rawDescs: Record<string, string> = (data.descriptionsRaw ?? {})[lang] ?? {};
+      const nativeEntries = Object.entries(rawDescs).filter(([, v]) => v);
+      const entries = nativeEntries.length > 0
+        ? nativeEntries
+        : Object.entries((data.descriptionsRaw ?? {})['en'] ?? {}).filter(([, v]) => v);
+      if (entries.length) {
+        const [gameKeyFr, descText] = entries[Math.floor(Math.random() * entries.length)];
+        const versionMap: Record<string, string> = VERSION_I18N[lang] ?? VERSION_I18N['fr'];
+        const gameName = versionMap[gameKeyFr] ?? gameKeyFr;
+        const citeEl = descEl.querySelector<HTMLElement>('.pkm-desc__version');
+        const spanEl = descEl.querySelector<HTMLElement>('.pkm-desc__text');
+        if (citeEl) citeEl.textContent = gameName;
+        if (spanEl) spanEl.textContent = descText;
+      }
     }
 
     // Types — on cible le <span class="type-name"> pour préserver l'<img>
@@ -895,8 +924,8 @@ const schema = {
       if (descEl) descEl.textContent = ab.descs[lang] ?? ab.descs['fr'];
     });
 
-    // Descriptions Pokédex par jeu
-    const allDescs = data.descriptions[lang] ?? {};
+    // Descriptions Pokédex par jeu — fallback EN→FR déjà intégré dans data.descriptions au build
+    const allDescs = data.descriptions[lang] ?? data.descriptions['en'] ?? {};
     document.querySelectorAll<HTMLElement>('[data-i18n="pokedex-desc"]').forEach(dd => {
       const game = dd.dataset.game!;
       if (allDescs[game]) dd.textContent = allDescs[game];
@@ -1074,6 +1103,12 @@ const schema = {
   font-size: 0.92rem; color: var(--text-mid); line-height: 1.65;
   border-left: 3px solid var(--red-soft); padding-left: 14px;
   margin: 0 0 16px; font-style: italic;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.pkm-desc__version {
+  font-size: 0.72rem; font-style: normal; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--red-soft); opacity: 0.85;
 }
 .pkm-summary { color: var(--text-mid); font-size: 1rem; margin-bottom: 16px; line-height: 1.6; }
 
@@ -1233,45 +1268,4 @@ const schema = {
   margin-top: 14px; display: block; width: 100%;
   padding: 10px; border: 1.5px dashed var(--border);
   border-radius: var(--radius-sm); background: none;
-  font-size: 0.85rem; color: var(--text-soft); cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-.tcg-more-btn:hover { border-color: var(--red); color: var(--red); }
-
-/* TCG zoom modal */
-.tcg-modal {
-  position: fixed; inset: 0; z-index: 1000;
-  display: none; align-items: center; justify-content: center;
-}
-.tcg-modal__backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
-}
-.tcg-modal__content {
-  position: relative; z-index: 1;
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
-  padding: 16px; max-width: 340px; width: 90%;
-}
-.tcg-modal__close {
-  position: absolute; top: -8px; right: -8px;
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--bg2); border: 1.5px solid var(--border);
-  color: var(--text); font-size: 0.85rem; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, color 0.15s; z-index: 2;
-}
-.tcg-modal__close:hover { background: var(--red); color: #fff; border-color: var(--red); }
-.tcg-modal__img {
-  width: 100%; height: auto; border-radius: 12px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
-  animation: modal-pop 0.18s ease;
-}
-@keyframes modal-pop {
-  from { transform: scale(0.88); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
-}
-.tcg-modal__caption {
-  font-size: 0.78rem; color: rgba(255,255,255,0.75); text-align: center;
-  margin: 0; line-height: 1.4;
-}
-</style>
+  f

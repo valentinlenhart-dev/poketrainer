@@ -26,7 +26,7 @@ const rest = sorted.slice(3).map((n, i) => ({
   barPct: Math.round(n.count / top1Count * 100),
 }));
 
-const title = "Top 100 prénoms Pokémon les plus répandus | PokéNom";
+const title = "Top 100 prénoms Pokémon les plus répandus | Le Dresseur en Moi";
 const description = `Classement des 100 prénoms les plus portés par les dresseurs Pokémon. Le prénom #1 est partagé par ${sorted[0]?.count ?? '?'} dresseurs ! Et le tien ?`;
 
 const schema = {
@@ -34,7 +34,7 @@ const schema = {
   "@type": "ItemList",
   "name": "Top 100 prénoms de dresseurs Pokémon",
   "description": description,
-  "url": "https://pokenom.fr/top/repandus",
+  "url": "https://ledresseurenmoi.com/top/repandus",
   "numberOfItems": sorted.length,
   "itemListElement": sorted.map((n, i) => ({
     "@type": "ListItem",
@@ -42,7 +42,7 @@ const schema = {
     "item": {
       "@type": "Thing",
       "name": n.name,
-      "url": `https://pokenom.fr/prenom/${n.slug}`
+      "url": `https://ledresseurenmoi.com/prenom/${n.slug}`
     }
   }))
 };
@@ -51,10 +51,11 @@ const schema = {
 <Base
   title={title}
   description={description}
-  canonical="https://pokenom.fr/top/repandus"
+  canonical="https://ledresseurenmoi.com/top/repandus"
   schema={schema}
 >
   <main id="main" class="container">
+    <span id="page-title-i18n-static" style="display:none" data-key="title.top" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: 'Top prénoms' },
@@ -74,11 +75,11 @@ const schema = {
     <!-- Podium top 3 -->
     <section class="podium" aria-label="Podium top 3">
       {podium.map((n, i) => {
-        const medals = ['🥇', '🥈', '🥉'];
+        const medals = ['/assets/icons/medal-gold.svg', '/assets/icons/medal-silver.svg', '/assets/icons/medal-bronze.svg'];
         const classes = ['podium__item--gold', 'podium__item--silver', 'podium__item--bronze'];
         return (
           <a href={`/prenom/${n.slug}`} class={`podium__item ${classes[i]}`}>
-            <span class="podium__medal">{medals[i]}</span>
+            <span class="podium__medal"><img src={medals[i]} alt={`#${i+1}`} width="36" height="36" /></span>
             <span class="podium__rank">#{i + 1}</span>
             <span class="podium__name">{n.name}</span>
             <span class="podium__count" data-i18n-ui="top.podium-count" data-count={n.count}>{n.count} dresseurs</span>

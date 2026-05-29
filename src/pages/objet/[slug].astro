@@ -121,6 +121,13 @@ for (const [frName, d] of Object.entries(pokemonMeta as Record<string, any>)) {
   if (d?.slug) slugToFrPokemon[d.slug] = frName;
 }
 
+// Helper noms Pokémon multilingues (pour data-pkm-names)
+function pkmNamesAttr(frName: string): string | undefined {
+  const intl = (pokemonMeta[frName] as any)?.names_intl;
+  if (!intl) return undefined;
+  return Object.entries(intl as Record<string, string>).map(([l, n]) => `${l}:${n}`).join('|');
+}
+
 // Sprite Pokémon helper
 const SPRITE_BASE_PKM = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 
@@ -135,7 +142,7 @@ const itemI18nPayload = {
 };
 
 // SEO
-const title       = `${nameFr} — Objet Pokémon | PokéNom`;
+const title       = `${nameFr} — Objet Pokémon | Le Dresseur en Moi`;
 const description = effectEn
   ? `${nameFr} : ${effectEn} ${cost !== null ? `Prix : ${cost}₽.` : ''}`
   : `Tout savoir sur l'objet ${nameFr} dans les jeux Pokémon.`;
@@ -145,7 +152,7 @@ const schema = {
   "@type": "Thing",
   "name": nameFr,
   "description": description,
-  "url": `https://pokenom.fr/objet/${slug}`,
+  "url": `https://ledresseurenmoi.com/objet/${slug}`,
   ...(spriteUrl ? { "image": spriteUrl } : {}),
 };
 ---
@@ -153,17 +160,18 @@ const schema = {
 <Base
   title={title}
   description={description}
-  canonical={`https://pokenom.fr/objet/${slug}`}
-  ogImage={spriteUrl ?? '/og-default.png'}
+  canonical={`https://ledresseurenmoi.com/objet/${slug}`}
+  ogImage={spriteUrl ?? '/img/pages/og-default.png'}
   schema={schema}
 >
   <!-- Données i18n injectées pour le switch JS côté client — doit être DANS Base pour que meta charset soit lu avant -->
   <div id="item-i18n-data" style="display:none" aria-hidden="true" set:text={JSON.stringify(itemI18nPayload)} />
   <main id="main" class="container">
+    <span id="page-title-i18n" style="display:none" data-name-el="item-name" data-name-fr={nameFr} data-suffix-key="title.suffix.item" />
     <Breadcrumb crumbs={[
       { label: 'Accueil', href: '/' },
       { label: 'Objets', href: '/' },
-      { label: nameFr },
+      { label: nameFr, pkmNames: namesI18nData ? Object.entries(namesI18nData as Record<string,string>).map(([l,n]) => `${l}:${n}`).join('|') : undefined },
     ]} />
 
     <!-- ── En-tête ── -->
@@ -208,10 +216,11 @@ const schema = {
       <section class="item-section">
         <h2 data-i18n-ui="item-effect">Effet</h2>
         <div class="item-effect-box">
+          <p class="item-effect-lang-badge" id="item-effect-lang-badge" style="display:none">🇬🇧 EN</p>
           <p id="item-effect-short" class="item-effect-short">{effectEn}</p>
           {effectLongEn && effectLongEn !== effectEn && (
             <details>
-              <summary>Détail complet</summary>
+              <summary data-i18n-ui="item-effect-detail">Détail complet</summary>
               <p id="item-effect-long" class="item-effect-long">{effectLongEn}</p>
             </details>
           )}
@@ -279,7 +288,7 @@ const schema = {
                 ) : (
                   <div class="held-by-card__no-sprite">?</div>
                 )}
-                <span class="held-by-card__name">{frName}</span>
+                <span class="held-by-card__name" data-pkm-names={pkmNamesAttr(frName) || undefined}>{frName}</span>
                 {h.rarity > 0 && <span class="held-by-card__rarity">{h.rarity}%</span>}
               </a>
             );
@@ -354,7 +363,7 @@ const schema = {
   // ── Détection de langue ────────────────────────────────────────
   function detectLang(): string {
     const supported = ['fr', 'en', 'de', 'es', 'ja', 'it', 'ko', 'zh-Hans', 'zh-Hant', 'pt-BR'];
-    const saved = localStorage.getItem('pokenom_lang');
+    const saved = localStorage.getItem('ldresseurenmoi_lang');
     if (saved && supported.includes(saved)) return saved;
     for (const l of (navigator.languages ?? [navigator.language])) {
       const lower = l.toLowerCase();
@@ -408,16 +417,16 @@ const schema = {
       const entries = Object.entries(langFlavors);
       if (entries.length > 0) {
         flavorsList.innerHTML = entries.map(([game, text]) => {
-          // Si la source est FR, traduire le nom du jeu; sinon l'afficher tel quel
-          const gameLabel = sourceLang === 'fr' ? translateGame(game, lang) : game;
+          // Les clés de flavors sont toujours en FR — on traduit dans tous les cas
+          const gameLabel = translateGame(game, lang);
           return `<div class="flavor-entry"><dt class="flavor-game">${gameLabel}</dt><dd class="flavor-text">${text}</dd></div>`;
         }).join('');
       }
     }
 
-    // Effet (uniquement EN disponible depuis PokéAPI)
-    // On garde l'anglais sauf si la langue est FR (on garde vide = pas traduit)
-    // Note : si un jour les effets sont traduits, on pourra switcher ici
+    // Effet — uniquement EN disponible, on affiche un badge si la langue n'est pas EN
+    const badge = document.getElementById('item-effect-lang-badge');
+    if (badge) badge.style.display = (lang !== 'en' && lang !== 'fr') ? '' : 'none';
   }
 
   // ── Init ──────────────────────────────────────────────────────
@@ -553,31 +562,39 @@ const schema = {
 
 /* ── Flavors ──────────────────────────────────────────────────── */
 .item-flavors-list {
-  display: grid;
-  gap: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin: 0;
 }
 .flavor-entry {
-  display: grid;
-  grid-template-columns: minmax(140px, 200px) 1fr;
-  gap: 8px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  align-items: baseline;
-}
-.flavor-entry:last-child {
-  border-bottom: none;
+  border-left: 3px solid var(--red-soft, #e35);
+  padding: 6px 0 6px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 .flavor-game {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-soft);
+  letter-spacing: 0.05em;
+  color: var(--red-soft, #e35);
+  opacity: 0.85;
 }
 .flavor-text {
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--text-mid);
+}
+
+/* ── Effect lang badge ────────────────────────────────────────── */
+.item-effect-lang-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin: 0 0 6px;
 }
 
 /* ── Held by grid ─────────────────────────────────────────────── */

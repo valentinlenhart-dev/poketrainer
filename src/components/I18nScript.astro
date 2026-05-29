@@ -95,13 +95,8 @@ const T = allTranslations as Record<string, Record<string, string>>;
       const translated = GAME_I18N[lang]?.[gameFr];
       if (translated) {
         const img = el.querySelector('img');
-        el.textContent = translated;
-        if (img) el.prepend(img);
-      }
-    });
-  }
-
-  const lang = detectLang();
-  if (lang !== 'fr') applyI18n(lang);
-})();
-</script>
+        if (el.dataset.count !== undefined) {
+          el.textContent = `${translated} (${el.dataset.count})`;
+        } else {
+          el.textContent = translated;
+       
