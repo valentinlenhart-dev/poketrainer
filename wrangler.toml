@@ -1,7 +1,7 @@
 # Cloudflare Workers Static Assets — configuration déploiement
 # Doc : https://developers.cloudflare.com/workers/static-assets/
 
-name = "ledresseurenmoi"
+name = "poketrainer"
 compatibility_date = "2026-05-21"
 main = "src-worker/index.js"
 
